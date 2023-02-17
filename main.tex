@@ -1,0 +1,405 @@
+
+%%
+%% forked from https://gits-15.sys.kth.se/giampi/kthlatex kthlatex-0.2rc4 on 2020-02-13
+%% expanded upon by Gerald Q. Maguire Jr.
+%% This template has been adapted by Anders Sjögren to the University
+%% Engineering Program in Computer Science at KTH ICT. This adaptation was to
+%% translation of English headings into Swedish as the addition of Swedish.
+%% Many thanks to others who have provided constructive input regarding the template.
+
+% Make it possible to conditionally depend on the TeX engine used
+\RequirePackage{ifxetex}
+\RequirePackage{ifluatex}
+\newif\ifxeorlua
+\ifxetex\xeorluatrue\fi
+\ifluatex\xeorluatrue\fi
+
+\ifxeorlua
+% The following is to ensure that the PDF uses a recent version rather than the typical PDF 1-5
+%  This same version of PDF should be set as an option for hyperef
+
+\RequirePackage{expl3}
+\ExplSyntaxOn
+%pdf_version_gset:n{2.0}
+%\pdf_version_gset:n{1.5}
+
+%% Alternatively, if you have a LaTeX newer than June 2022, you can use the following. However, then you have to remove the pdfversion from hyperef. It also breaks hyperxmp. So perhaps it is too early to try using it!
+%\DocumentMetadata
+%{
+%% testphase = phase-I, % tagging without paragraph tagging
+%% testphase = phase-II % tagging with paragraph tagging and other new stuff.
+%pdfversion = 2.0 % pdfversion must be set here.
+%}
+
+% Optionally, you can set the uncompress flag to make it easier to examine the PDF
+%\pdf_uncompress: % to check the pdf
+\ExplSyntaxOff
+\else
+\RequirePackage{expl3}
+\ExplSyntaxOn
+%\pdf_version_gset:n{2.0}
+\pdf_version_gset:n{1.5}
+\ExplSyntaxOff
+\fi
+
+
+%% The template is designed to handle a thesis in English or Swedish
+% set the default language to english or swedish by passing an option to the documentclass - this handles the inside tile page
+% To optimize for digital output (this changes the color palette add the option: digitaloutput
+% To use \ifnomenclature add the option nomenclature
+% To use bibtex or biblatex - include one of these as an option
+\documentclass[nomenclature, english, bibtex]{kththesis}
+%\documentclass[swedish, biblatex]{kththesis}
+% if pdflatex \usepackage[utf8]{inputenc}
+
+% Add main preamble of main
+\input{preamble}
+
+% insert the configuration information with author(s), examiner, supervisor(s), ...
+\input{custom_configuration}
+
+\title{Topological regularization and relative latent representations}
+%\subtitle{A subtitle in the language of the thesis}
+
+% give the alternative title - i.e., if the thesis is in English, then give a Swedish title
+\alttitle{Topologisk regularisering och relativa latenta representationer}
+%\altsubtitle{Detta är den svenska översättningen av undertiteln}
+% alternative, if the thesis is in Swedish, then give an English title
+%\alttitle{This is the English translation of the title}
+%\altsubtitle{This is the English translation of the subtitle}
+
+% Enter the English and Swedish keywords here for use in the PDF meta data _and_ for later use
+% following the respective abstract.
+% Try to put the words in the same order in both languages to facilitate matching. For example:
+\EnglishKeywords{Algebraic Topology, Regularization, Relative Representation, Representation Learning, Stitching, Topological Data Analysis, Zero-shot}
+\SwedishKeywords{Algebraisk topologi, Regularisering, Relativ representation, Representationsinlärning, Stitching, Topologisk dataanalys, Zero-shot}
+
+%%%%% For the oral presentation
+%% Add this information once your examiner has scheduled your oral presentation
+\presentationDateAndTimeISO{2022-03-15 13:00}
+\presentationLanguage{eng}
+\presentationRoom{via Zoom https://kth-se.zoom.us/j/ddddddddddd}
+\presentationAddress{Isafjordsgatan 22 (Kistagången 16)}
+\presentationCity{Stockholm}
+
+% When there are multiple opponents, separate their names with '\&'
+% Opponent's information
+\opponentsNames{A. B. Normal \& A. X. E. Normalè}
+
+% Once a thesis is approved by the examiner, add the TRITA number
+% The TRITA number for a thesis consists of two parts a series (unique to each school)
+% and the number in the series which is formatted as the year followed by a colon and
+% then a unique series number for the thesis - starting with 1 each year.
+\trita{TRITA-EECS-EX}{2023:0000}
+
+% Put the title, author, and keyword information into the PDF meta information
+\input{lib/pdf_related_includes}
+
+
+\ifnomenclature
+% The following lines make the page numbers and equations hyperlinks in the Nomenclature list
+\renewcommand*{\pagedeclaration}[1]{\unskip, \dotfill\hyperlink{page.#1}{page\nobreakspace#1}}
+% The following does not work correctly, as the name of the cross-reference is incorrect
+%\renewcommand*{\eqdeclaration}[1]{, see equation\nobreakspace(\hyperlink{equation.#1}{#1})}
+
+% You can also change the page heading for the nomenclature
+\renewcommand{\nomname}{List of Symbols Used}
+
+% You can even add customization text before the list
+\renewcommand{\nompreamble}{The following symbols will be later used within the body of the thesis.}
+\makenomenclature
+\fi
+
+
+
+\begin{document}
+
+\selectlanguage{english}
+
+%%% Set the numbering for the title page to a numbering series not in the preface or body
+\pagenumbering{alph}
+\kthcover
+\clearpage\thispagestyle{empty}\mbox{} % empty back of front cover
+\titlepage
+
+% If you do not want to have a bookinfo page, comment out the line saying \bookinfopage and add a \cleardoublepage
+% If you want a bookinfo page: you will get a copyright notice, unless you have used the doclicense package in which case you will get a Creative Commons license. To include the doclicense package, uncomment the configuration of this package above and configure it with your choice of license.
+\bookinfopage
+
+% Frontmatter includes the abstracts and table-of-contents
+\frontmatter
+\setcounter{page}{1}
+\subfile{Chapters/0_abstract}
+
+\fancypagestyle{plain}{}
+\renewcommand{\chaptermark}[1]{ \markboth{#1}{}} 
+\tableofcontents
+  \markboth{\contentsname}{}
+
+\cleardoublepage
+\listoffigures
+
+\cleardoublepage
+\listoftables
+
+\cleardoublepage
+\lstlistoflistings\engExpl{If you have listings in your thesis. If not, then remove this preface page.}
+
+\cleardoublepage
+% Align the text expansion of the glossary entries
+\newglossarystyle{mylong}{%
+  \setglossarystyle{long}%
+  \renewenvironment{theglossary}%
+     {\begin{longtable}[l]{@{}p{\dimexpr 2cm-\tabcolsep}p{0.8\hsize}}}% <-- change the value here
+     {\end{longtable}}%
+ }
+%\glsaddall
+%\printglossaries[type=\acronymtype, title={List of acronyms}]
+\printglossary[style=mylong, type=\acronymtype, title={List of acronyms and abbreviations}]
+%\printglossary[type=\acronymtype, title={List of acronyms and abbreviations}]
+
+%\printnoidxglossary[style=mylong, title={List of acronyms and abbreviations}]
+\engExpl{The list of acronyms and abbreviations should be in alphabetical order based on the spelling of the acronym or abbreviation.
+}
+
+% if the nomenclature option was specified, then include the nomenclature page(s)
+\ifnomenclature
+    \cleardoublepage
+    % Output the nomenclature list
+    \printnomenclature
+\fi
+
+%% The following label is essential to know the page number of the last page of the preface
+%% It is used to compute the data for the "For DIVA" pages
+\label{pg:lastPageofPreface}
+
+% Mainmatter is where the actual contents of the thesis goes
+\mainmatter
+\glsresetall
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\selectlanguage{english}
+
+\subfile{Chapters/1_introduction}
+
+\cleardoublepage
+\subfile{Chapters/2_background}
+
+\cleardoublepage
+\subfile{Chapters/3_methods}
+
+\cleardoublepage
+\subfile{Chapters/4_development}
+
+\cleardoublepage
+\subfile{Chapters/5_results}
+
+
+\noindent\rule{\textwidth}{0.4mm}
+\engExpl{In the references, let Zotero or other tool fill this in for you. I suggest an extended version of the IEEE style, to include URLs, DOIs, ISBNs, etc., to make it easier for your reader to find them. This will make life easier for your opponents and examiner. \\IEEE Editorial Style Manual: \url{https://www.ieee.org/content/dam/ieee-org/ieee/web/org/conferences/style_references_manual.pdf}}
+\sweExpl{Låt Zotero eller annat verktyg fylla i det här för dig. Jag föreslår en utökad version av IEEE stil - att inkludera webbadresser, DOI, ISBN osv. - för att göra det lättare för läsaren att hitta dem. Detta kommer att göra livet lättare för dina opponenter och examinator.}
+
+\cleardoublepage
+% Print the bibliography (and make it appear in the table of contents)
+\renewcommand{\bibname}{References}
+\addcontentsline{toc}{chapter}{References}
+
+\ifbiblatex
+    %\typeout{Biblatex current language is \currentlang}
+    \printbibliography[heading=bibintoc]
+\else
+    \bibliography{references}
+\fi
+
+\warningExpl{If you do not have an appendix, do not include the \textbackslash cleardoublepage command below; otherwise, the last page number in the metadata will be one too large.}
+\cleardoublepage
+\appendix
+\renewcommand{\chaptermark}[1]{\markboth{Appendix \thechapter\relax:\thinspace\relax#1}{}}
+\chapter{Supporting materials}
+\label{sec:supportingMaterial}
+\generalExpl{Here is a place to add supporting material that can help others build upon your work. You can include files as attachments to the PDF file or indirectly via URLs. Alternatively, consider adding supporting material uploaded as separate files in DiVA.}
+
+% Attach the BibTeX for your references to make it easy for a reader to find and use them
+The BibTeX references used in this thesis are attached. \attachfile[description={references.bib}]{references.bib}
+
+% Attach source code file(s) or add a URL to the github or other repository
+Some source code relevant to this project can be found at \url{https://github.com/gqmaguirejr/E-learning} and \url{https://github.com/gqmaguirejr/Canvas-tools}.
+
+Your reader can access the attached (embedded) files using a PDF tool such as Adobe Acrobat Reader using the paperclip icon in the left menu, as shown in \Cref{fig:PDFreaderPaperclipExample} or by right-clicking on the push-pin icon in the PDF file and then using the menu to save the embedded file as shown in \Cref{fig:PDFreaderPushpinExample}.
+
+An argument for including supporting material in the PDF file is that it will be available to anyone who has a copy of the PDF file. As a result, they do not have to look elsewhere for this material. This comes at the cost of a larger PDF file. However, the embedded files are encoded into a compressed stream within the PDF file; thus, reducing the number of additional bytes. For example, the references.bib file that was used in this example is \SI{10617}{\byte} in size but only occupies \SI{4261}{\byte} in the PDF file.
+
+\warningExpl{DiVA is limited to $\approx$\SI{1}{\giga\byte} for each supporting file. If you have very large amounts of supporting material, you will probably want to use one of the data repositories. For additional help about this, contact KTH Library via 
+\href{mailto:researchdata@kth.se}{researchdata@kth.se}.
+}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.50\textwidth]{README_notes/pdf-viewer-attached-files.png}
+  \end{center}
+  \caption{Adobe Acrobat Reader using the paperclip icon for the attached references.bib file}
+  \label{fig:PDFreaderPaperclipExample}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.99\textwidth]{README_notes/Bib-save-embedded-example.png}
+  \end{center}
+  \caption{Adobe Acrobat Reader after right-clicking on the push-pin icon for the attached references.bib file}
+  \label{fig:PDFreaderPushpinExample}
+\end{figure}
+\FloatBarrier
+\cleardoublepage
+
+\chapter{Something Extra}
+\sweExpl{svensk: Extra Material som Bilaga}
+
+\section{Just for testing KTH colors}
+\ifdigitaloutput
+    \textbf{You have selected to optimize for digital output}
+\else
+    \textbf{You have selected to optimize for print output}
+\fi
+\begin{itemize}[noitemsep]
+    \item Primary color
+    \begin{itemize}
+    \item \textcolor{kth-blue}{kth-blue \ifdigitaloutput
+    actually Deep sea
+    \fi} {\color{kth-blue} \rule{0.3\linewidth}{1mm} }\\
+
+    \item \textcolor{kth-blue80}{kth-blue80} {\color{kth-blue80} \rule{0.3\linewidth}{1mm} }\\
+\end{itemize}
+
+\item  Secondary colors
+\begin{itemize}[noitemsep]
+    \item \textcolor{kth-lightblue}{kth-lightblue \ifdigitaloutput
+    actually Stratosphere
+    \fi} {\color{kth-lightblue} \rule{0.3\linewidth}{1mm} }\\
+
+    \item \textcolor{kth-lightred}{kth-lightred \ifdigitaloutput
+    actually Fluorescence\fi} {\color{kth-lightred} \rule{0.3\linewidth}{1mm} }\\
+
+    \item \textcolor{kth-lightred80}{kth-lightred80} {\color{kth-lightred80} \rule{0.3\linewidth}{1mm} }\\
+
+    \item \textcolor{kth-lightgreen}{kth-lightgreen \ifdigitaloutput
+    actually Front-lawn\fi} {\color{kth-lightgreen} \rule{0.3\linewidth}{1mm} }\\
+
+    \item \textcolor{kth-coolgray}{kth-coolgray \ifdigitaloutput
+    actually Office\fi} {\color{kth-coolgray} \rule{0.3\linewidth}{1mm} }\\
+
+    \item \textcolor{kth-coolgray80}{kth-coolgray80} {\color{kth-coolgray80} \rule{0.3\linewidth}{1mm} }
+\end{itemize}
+\end{itemize}
+
+\textcolor{black}{black} {\color{black} \rule{\linewidth}{1mm} }
+
+% Include an example of using nomenclature
+\ifnomenclature
+\cleardoublepage
+\chapter{Main equations}
+\label{ch:NomenclatureExamples}
+This appendix gives some examples of equations that are used throughout this thesis.
+\section{A simple example}
+The following example is adapted from Figure 1 of the documentation for the package nomencl (\url{https://ctan.org/pkg/nomencl}).
+\begin{equation}\label{eq:mainEq}
+a=\frac{N}{A}
+\end{equation}
+\nomenclature{$a$}{The number of angels per unit area\nomrefeq}%       %% include the equation number in the list
+\nomenclature{$N$}{The number of angels per needle point\nomrefpage}%  %% include the page number in the list
+\nomenclature{$A$}{The area of the needle point}%
+The equation $\sigma = m a$%
+\nomenclature{$\sigma$}{The total mass of angels per unit area\nomrefeqpage}%
+\nomenclature{$m$}{The mass of one angel}
+follows easily from \Cref{eq:mainEq}.
+
+\section{An even simpler example}
+The formula for the diameter of a circle is shown in \Cref{eq:secondEq} area of a circle is shown in \cref{eq:thirdEq}.
+\begin{equation}\label{eq:secondEq}
+D_{circle}=2\pi r
+\end{equation}
+\nomenclature{$D_{circle}$}{The diameter of a circle\nomrefeqpage}%
+\nomenclature{$r$}{The radius of a circle\nomrefeqpage}%
+
+\begin{equation}\label{eq:thirdEq}
+A_{circle}=\pi r^2
+\end{equation}
+\nomenclature{$A_{circle}$}{The area of a circle\nomrefeqpage}%
+
+Some more text that refers to \eqref{eq:thirdEq}.
+\fi  %% end of nomenclature example
+
+\cleardoublepage
+% Information for authors
+%\include{README_author}
+\subfile{README_author}
+
+\cleardoublepage
+% information about the template for everyone
+\input{README_notes/README_notes}
+
+\begin{comment}
+% information for examiners
+\ifxeorlua
+\cleardoublepage
+\input{README_notes/README_examiner_notes}
+\fi
+\end{comment}
+
+\begin{comment}
+% Information for administrators
+\ifxeorlua
+\cleardoublepage
+\input{README_notes/README_for_administrators.tex}
+\fi
+\end{comment}
+
+\begin{comment}
+% Information for Course coordinators
+\ifxeorlua
+\cleardoublepage
+\input{README_notes/README_for_course_coordinators}
+\fi
+\end{comment}
+
+%% The following label is necessary for computing the last page number of the body of the report to include in the "For DIVA" information
+\label{pg:lastPageofMainmatter}
+
+\cleardoublepage
+\clearpage\thispagestyle{empty}\mbox{} % empty page with backcover on the other side
+\kthbackcover
+
+% REMEMBER TO UNCOMMENT!!!!!!!!!!!!
+\begin{comment}
+
+\fancyhead{}  % Do not use header on this extra page or pages
+\section*{€€€€ For DIVA €€€€}
+\lstset{numbers=none} %% remove any list line numbering
+\divainfo{pg:lastPageofPreface}{pg:lastPageofMainmatter}
+
+% If there is an acronyms.tex file,
+% add it to the end of the For DIVA information
+% so that it can be used with the abstracts
+% Note that the option "nolol" stops it from being listed in the List of Listings
+
+% The following bit of ugliness is because of the problems PDFLaTeX has handling a non-breaking hyphen
+% unless it is converted to UTF-8 encoding.
+% If you do not use such characters in your acronyms, this could be simplified.
+\ifxeorlua
+\IfFileExists{lib/acronyms.tex}{
+\section*{acronyms.tex}
+\lstinputlisting[language={[LaTeX]TeX}, nolol, basicstyle=\ttfamily\color{black},
+commentstyle=\color{black}, backgroundcolor=\color{white}]{lib/acronyms.tex}
+}
+{}
+\else
+\IfFileExists{lib/acronyms-for-pdflatex.tex}{
+\section*{acronyms.tex}
+\lstinputlisting[language={[LaTeX]TeX}, nolol, basicstyle=\ttfamily\color{black},
+commentstyle=\color{black}, backgroundcolor=\color{white}]{lib/acronyms-for-pdflatex.tex}
+}
+{}
+\fi
+
+\end{comment}
+
+\end{document}
