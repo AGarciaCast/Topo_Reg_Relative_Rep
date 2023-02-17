@@ -1,2 +1,2 @@
-# https://github.com/AGarciaCast/Topo_Reg_Relative_Rep.git
+# Topological regularization and relative latent representations
 Master thesis project code
