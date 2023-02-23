@@ -470,7 +470,7 @@ Therefore, we can see that we can define a basis for this space formed by elemen
 \end{matrix}\right.
 \]
 
-So the notation that we have seen in the example of representing a element as a (unique) linear combination $\sum_{x \in X} a_x x$ can be formalized if we identify each element $x$ in $X$ with $e_x$. Furthermore, given two elements $c = \sum_{x \in X} a_x x$ and $c' = \sum_{x \in X} b_x x$, their sum is defined as
+So the notation that we have seen in the example of representing an element as a (unique) linear combination $\sum_{x \in X} a_x x$ can be formalized if we identify each element $x$ in $X$ with $e_x$. Furthermore, given two elements $c = \sum_{x \in X} a_x x$ and $c' = \sum_{x \in X} b_x x$, their sum is defined as
 \[
 c + c' = \sum_{x \in X} (a_x + b_x) x\,.
 \]
@@ -486,7 +486,7 @@ Let $K$ be a simplicial complex, $F$ a field, and $p$ be a non-negative integer.
 \[
 c = \sum a_i\sigma_i
 \]
-with $\sigma_i$ is a $p$-simplex for each $i$ and $a_i$ are the \emph{coefficients}. These coefficients can be taken from any commutative ring $F$, however, we will use coefficients in the field of two elements, i.e.,  $a_i \in \mathbb{Z}_2$.
+with $\sigma_i$ is a $p$-simplex for each $i$ and $a_i$ are the \emph{coefficients}. These coefficients can be taken from any commutative ring $F$; however, we will use coefficients in the field of two elements, i.e.,  $a_i \in \mathbb{Z}_2$.
 
 \begin{exmp}
 We will write the simplices as the list of their vertices, $\sigma = [u_0, u_1, ..., u_p]$.
@@ -653,7 +653,7 @@ The $p$-chains with the operation addition $+$ form the \emph{group of $p$-chain
 This group is an abelian group, and as we have seen above, $\text{C}_p(K)$ is a vector space over $\mathbb{Z}_2$. Hence, fixed $p \in \mathbb{Z}$, a basis of the vector space $\text{C}_p(K)$ is the set $\{\sigma_i^p \mid i=1,...,s_p\}$ formed by the simplices of dimension $p$ of $K$. As a consequence $\text{C}_p(K)=\{0\}$, where $0 = \sum 0\cdot\sigma_i$, if $p < 0$ or $p > \text{dim}(K)$.
 
 \subsubsection*{Boundary operator}
-To be able to relate these groups we will define the \emph{boundary operator}, therefore, we will start with the definition of the $p$-boundary of a simplex..
+To be able to relate these groups, we will define the \emph{boundary operator}. Therefore, we will start with the definition of the $p$-boundary of a simplex.
 
 \begin{definition}
 Let $p$ be an integer and $\sigma \in K$ be a $p$-simplex $\sigma = [v_0, v_1, ..., v_p]$ its \emph{$p$-boundary} is defined, $\partial_p\sigma$, as the formal sum its $(p-1)$-dimensional faces, that is,
@@ -663,7 +663,7 @@ Let $p$ be an integer and $\sigma \in K$ be a $p$-simplex $\sigma = [v_0, v_1, .
 where $\hat{v}_j$ denotes that $v_j$ is omitted.
 \end{definition}
 
-In general, given a $p$-chain $c =\sum a_i\sigma_i$, its $p$-boundary is defined by linear extension as $\partial_p c= \sum_{j=0}^{p} a_i \partial_p \sigma_i $. As a consequence, the boundary defines a linear mapping $\partial_p: \text{C}_p \to \text{C}_{p-1}$ between vector spaces of chains called the \emph{boundary operator}. To simplify the notation, the subscript $p$ of the boundary operator is often omitted, since it always matches the dimension of the chain to which it is applied.
+In general, given a $p$-chain $c =\sum a_i\sigma_i$, its $p$-boundary is defined by linear extension as $\partial_p c= \sum_{j=0}^{p} a_i \partial_p \sigma_i $. As a consequence, the boundary defines a linear mapping $\partial_p: \text{C}_p \to \text{C}_{p-1}$ between vector spaces of chains called the \emph{boundary operator}. To simplify the notation, the subscript $p$ of the boundary operator is often omitted since it always matches the dimension of the chain to which it is applied.
 
 
 \begin{exmp}
@@ -686,7 +686,7 @@ or, equivalently, if $c \in \text{ker }\partial$.
 Because $\partial$ commutes with addition $+$, 
 
 \begin{exmp}
-We will see that geometrically the $p$-cycles represent cycles in the simplicial complex. These in turn can be holes of dimension $p$. In the figure \ref{ref:1-cycle} the $1$-cycle $[4,5] + [4,6] + [5,6]$ is shown in red, which is a hole. While blue represents the $1$-cycle $[6,7] + [6,8] + [7,8]$, which is not a hole.
+We will see that geometrically, the $p$-cycles represent cycles in the simplicial complex. These, in turn, can be holes of dimension $p$. In the figure \ref{ref:1-ciclo} the $1$-cycle $[4,5] + [4,6] + [5,6]$ is shown in red, which is a hole. While blue represents the $1$-cycle $[6,7] + [6,8] + [7,8]$, which is not a hole.
 
 \begin{figure}[!ht]
 \centering
@@ -755,14 +755,14 @@ or, equivalently, if $c \in \text{im }\partial_{p+1}$.
 \end{definition}
 
 \begin{exmp}
-The $1$-cycle that we had highlighted in blue in the figure \ref{ref:1-ciclo} is a $1$-boundary.
+The $1$-cycle that we had highlighted in blue in the Figure \ref{ref:1-ciclo} is a $1$-boundary.
 \end{exmp}
 
 \begin{remark}
 The sets of $p$-cycles $\text{Z}_p = \text{ker }\partial_p$, and $p$-boundaries $\text{B}_p = \text{im }\partial_{p+1} $ are linear subspaces of $\text{C}_p$.
 \end{remark}
 
-We will prove that the $p$-boundaries are $p$-cycles, as in the previous example. For this we will state the following lemma.
+We will prove that the $p$-boundaries are $p$-cycles, as in the previous example. For this, we will state the following lemma.
 
 \begin{lemma}[Fundamental lemma of homology {\cite[Chapter~4]{edelsbrunner_computational_2010}}]
 $\partial_p \partial_{p+1} c = 0$ for every integer $p$ and every $(p + 1)$-chain $c$.
@@ -784,7 +784,7 @@ We can see in Figure \ref{ref:gruposCadenasOpBorde} this relationship between th
 
 
 \subsubsection*{Simplicial homology}
-The main idea of simplicial homology groups is to be able to find the holes making use of the cycles. To do this we will have to ``discard'' those cycles that are boundaries. This is why we will quotient the group of cycles by the group of boundaries, since then all the boundaries will be trivial in homology.
+The main idea of simplicial homology groups is to be able to find the holes by making use of the cycles. To do this, we will have to ``discard'' those cycles that are boundaries. This is why we will quotient the group of cycles by the group of boundaries since then, all the boundaries will be trivial in homology.
 
 \begin{definition}
 Given a simplicial complex $K$, its \emph{$p$-dimensional simplicial homology group} is defined as the quotient space
@@ -811,8 +811,8 @@ Also, since $\text{Z}_p$, $\text{B}_p$, and $\text{H}_p$ are vector spaces over 
 
 \subsubsection*{Topological properties}
 
-One of the most important values regarding homology groups are their corresponding Betti numbers, as these will give us a lot of information about the underlying space.
-\begin{theorem}[{\cite[Proposition~2.7]{Hatcher}}]
+One of the most important values regarding homology groups is their corresponding Betti numbers, as these will give us a lot of information about the underlying space.
+\begin{theorem}[{\cite[Proposition~2.7]{hatcher_algebraic_2002}}]
 Let $K$ be a simplicial complex. Then $\beta_0(K)$ matches the number of connected components of $\abs{K}$.
 \end{theorem}
 
@@ -820,7 +820,7 @@ Let $K$ be a simplicial complex. Then $\beta_0(K)$ matches the number of connect
 $\abs{K}$ is connected if and only if $\beta_0(K)=1$.
 \end{corollary}
 
-We will see that our topological regularization will exploit the ability of studying connectivity though homology. However, we can extract higher dimensional topological properties if we use a higher dimensional homology groups. The \emph{Alexander duality theorem} \cite[Chapter~5]{edelsbrunner_computational_2010} allows us to interpret the Betti numbers of a polyhedron contained in $\mathbb{R}^3$: \todo{not sure if is this theorem}
+We will see that our topological regularization will exploit the ability to study connectivity through homology. However, we can extract higher dimensional topological properties if we use higher dimensional homology groups. The \emph{Alexander duality theorem} \cite[Chapter~5]{edelsbrunner_computational_2010} allows us to interpret the Betti numbers of a polyhedron contained in $\mathbb{R}^3$: \todo{not sure if is this theorem}
 \begin{itemize}
 \item $\beta_0(K)$ tells us the number of connected components.
 \item $\beta_1(K)$ tells us the number of tunnels.
@@ -830,12 +830,12 @@ We will see that our topological regularization will exploit the ability of stud
 In conclusion, the $p$-homology groups will represent $p$-dimensional holes in topological spaces.
 
 \subsection{Persistence}
-We will introduce the concept of persistence first for functions of one variable and then we will deepen in the case of simplicial complexes. In this section I will use \cite{goodman_persistent_2008} as our main reference.
+We will introduce the concept of persistence first for functions of one variable and then we will deepen in the case of simplicial complexes. In this section, I will use \cite{goodman_persistent_2008} as our main reference.
 
 \subsubsection*{One-dimensional real functions}
 Let $f: \mathbb{R} \to \mathbb{R}$ be a smooth function. Remember that $x$ is a \emph{critical point} and $f(x)$ is a \emph{critical value of $f$} if $f'(x)=0$. Furthermore, a critical point $x$ is \emph{non-degenerate} if $f''(x) \neq 0$. So, suppose that $f$ contains only non-degenerate critical points with distinct critical values.\\
 
-Let the \emph{sublevel set} $\mathbb{R}_t=f^{-1}(-\infty, t]$ for each $t \in \mathbb{R}$. Then we see that as we increase $t$, the number of connected components of $\mathbb{R}_t$ will remain constant until we pass through a $t_0$ critical value of $f$.  As we can see in the figure \ref{ref:sublevelR}, when we pass through a local minimum a new connected component is created and when we pass through a local maximum two connected components are combined into one.\\
+Let the \emph{sublevel set} $\mathbb{R}_t=f^{-1}(-\infty, t]$ for each $t \in \mathbb{R}$. Then we see that as we increase $t$, the number of connected components of $\mathbb{R}_t$ will remain constant until we pass through a $t_0$ critical value of $f$.  As we can see in the figure \ref{ref:sublevelR}, when we pass through a local minimum, a new connected component is created. When we pass through a local maximum, two connected components are combined into one.\\
 
 \begin{figure}[!ht]
     \centering
@@ -850,24 +850,24 @@ The critical points of $f$ are paired as follows:
     \item When we pass through a local maximum and two components meet, we pair the maximum with the higher (youngest) of the two local minima that these components represent. The other minimum (the oldest) becomes the representative of the new component resulting from joining the two previous ones.
 \end{enumerate}
 
-When the points $x_1$ and $x_2$ are paired following this method, we define the \emph{persistence} of the pair as $f(x_2) - f(x_1)$. This persistence is coded through the \emph{persistence diagram}, representing each pair with the point $(f(x_1),f(x_2))$, as can be seen in the figure \ref{ref:persistenceR}. It can be seen that all points will lie above the diagonal $y=x$, and that persistence is the vertical distance from a point to the diagonal. For reasons that will be explained later, the points on the diagonal will be added to the persistence diagram.
+When the points $x_1$ and $x_2$ are paired following this method, we define the \emph{persistence} of the pair as $f(x_2) - f(x_1)$. This persistence is coded through the \emph{persistence diagram}, representing each pair with the point $(f(x_1),f(x_2))$, as can be seen in the figure \ref{ref:persistenceR}. It can be seen that all points will lie above the diagonal $y=x$ and that persistence is the vertical distance from a point to the diagonal. For reasons that will be explained later, the points on the diagonal will be added to the persistence diagram.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/bg/diagramaR.png} 
-\caption{Pairing of the critical points of the function of the function on the left represented as points in the persistence diagram on the right. Modified from: \cite{articuloPersistenciaEH}}
+\caption{Pairing of the critical points of the function on the left represented as points in the persistence diagram on the right. Modified from: \cite{goodman_persistent_2008}}
 \label{ref:persistenceR}
 \end{figure}
 
 
 \subsubsection*{Persistence on simplicial complexes}
-We will see that we can expand the concept of persistence seen for real functions to simplicial complexes. To do this we will use the \emph{filtrations} of a simplicial complex as sub-level sets and we will use the \emph{simplicial homology} as a homology theory.
+We will see that we can expand the concept of persistence seen for real functions to simplicial complexes. To do this, we will use the \emph{filtrations} of a simplicial complex as sub-level sets and we will use the \emph{simplicial homology} as a homology theory.
 
 \begin{definition}
-Let $K$ a simplicial complex and $f: K \to \mathbb{R}$ a function. It is said that, $f$ is \emph{monotonous} if $f(\sigma) \leq f(\tau) $ when $\sigma$ is a face of $\tau$.
+Let $K$ be a simplicial complex and $f: K \to \mathbb{R}$ a function. It is said that, $f$ is \emph{monotonous} if $f(\sigma) \leq f(\tau) $ when $\sigma$ is a face of $\tau$.
 \end{definition}
 \begin{sloppypar}
-The monotony of $f$ guarantees that for every $a \in \mathbb {R}$, the sub-level set ${K(a) = f^{-1} (-\infty, a]} $ is a subcomplex of $K$. As an example, we can define for a Vietoris Rips restricted to its 1-skeleton using a monotone function as follows.
+The monotony of $f$ guarantees that for every $a \in \mathbb {R}$, the sub-level set ${K(a) = f^{-1} (-\infty, a]} $ is a subcomplex of $K$. As an example, we can define a Vietoris Rips restricted to its 1-skeleton using a monotone function as follows.
 \end{sloppypar}
 
 \begin{proposition}[\cite{hofer_connectivity-optimized_2019}]
@@ -890,7 +890,7 @@ Let $a_1 <a_2 <... <a_n$ the values that the function takes on the simplices and
 \]
 \end{definition}
  
-Since $K_i \subseteq K_j$ for all indices $i,j$ with $i \leq j$, then the inclusions induce a linear function $f^{i,j}_p: \text{H}_p(K_i) \to \text{H}_p(K_j)$ for all $p$. We could say that this functions sees on which homology class of $K_j$ a cycle on $K_i$ will belong to. Hence we can formalize the idea of simplicial persistence making use of this functions.
+Since $K_i \subseteq K_j$ for all indices $i,j$ with $i \leq j$, then the inclusions induce a linear function $f^{i,j}_p: \text{H}_p(K_i) \to \text{H}_p(K_j)$ for all $p$. We could say that this function sees on which homology class of $K_j$ a cycle on $K_i$ will belong. Hence we can formalize the idea of simplicial persistence, making use of these functions.
 
 \begin{definition}
 Let ${f_{p}^{i,j}: \text{H}_p(K_i) \to \text{H}_p(K_j)}$ be the linear mapping induced by the inclusion $K_i \subseteq K_j$ . The \emph{persistent homology groups} are defined as the image of $\text{H}_p(K_i)$ in $\text{H}_p(K_j)$ of the map $f_{p}^{i,j}$, that is ,
@@ -932,17 +932,17 @@ Where $\beta_p^{i, j-1}$ can be interpreted as the number of homology classes th
 
 
 \begin{definition}
-The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\mathbb{R}}^2$ of $f$ is the multiset of points $(a_i, a_j)$ with multiplicity $ \mu_p{i, j}$ for all $0 \leq i < j \leq n+1$, union of diagonal points, $\Delta=\{(x, y) \in \overline{\mathbb{R }}^2 \mid y = x\}$, with infinite multiplicity.
+The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\mathbb{R}}^2$ of $f$ is the multiset of points $(a_i, a_j)$ with multiplicity $ \mu_p^{i, j}$ for all $0 \leq i < j \leq n$, union of diagonal points, $\Delta=\{(x, y) \in \overline{\mathbb{R }}^2 \mid y = x\}$, with infinite multiplicity.
 \end{definition}
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.35\textwidth]{figures/bg/The-Persistence-Diagram-Associated-to-a-Barcode.png} 
-\caption{Código de barras asociado a un diagrama de persistencia. Fuente: \cite{articuloJustin}}
+\caption{Barcode associated with a persistence diagram. Source: \cite{curry_fiber_2019}}
 \label{ref:codigoBarras}
 \end{figure}
 
-Therefore, in a persistence diagram each point $(a_i, a_j)$ represents $\mu_{i}^{j}$ independent homology classes whose persistence coincides with the distance from point $(a_i, a_j)$ to its vertical projection on the diagonal $\Delta $. In addition to the persistence diagrams, we can encode information about persistent homology through so-called \emph{barcodes}. These representations can be obtained from the persistence diagram by drawing for each point $(a_i, a_j)$ with $a_i < a_j$ of said diagram $\mu_{i}^{j}$ half-open intervals $[a_i, a_j) $, as shown in the Figure \ref{ref:codigoBarras}.\\
+Therefore, in a persistence diagram, each point $(a_i, a_j)$ represents $\mu_p^{i, j}$ independent homology classes whose persistence coincides with the distance from point $(a_i, a_j)$ to its vertical projection on the diagonal $\Delta $. In addition to the persistence diagrams, we can encode information about persistent homology through so-called \emph{barcodes}. These representations can be obtained from the persistence diagram by drawing for each point $(a_i, a_j)$ with $a_i < a_j$ of said diagram $\mu_p^{i, j}$ half-open intervals $[a_i, a_j) $, as shown in the Figure \ref{ref:codigoBarras}.\\
 
 Finally, we will denote by $\#(A)$ the \emph{total multiplicity} of a multiset $A$, which, by definition, is the sum of the multiplicities of the elements of $A$. Thus the total multiplicity of the persistence diagram minus the diagonal is
 \[
@@ -965,7 +965,7 @@ This lemma guarantees us that the persistence diagram encodes all information ab
 \centering
 \includegraphics[width=0.7\textwidth]{figures/bg/persistenceEx.png} 
 \caption{Persistence diagram, where 0-dimensional persistence homology is in red and 1-dimensional case is in blue. The 1-dimensional persistent Betti number corresponding to the green point is 5.}
-\label{ref:codigoBarras}
+\label{ref:persEx}
 \end{figure}
 
 
@@ -977,6 +977,6 @@ This lemma guarantees us that the persistence diagram encodes all information ab
 
 \section{Summary}
 
-%\engExpl{It is nice to have this chapter conclude with a summary. For example, you can include a table that summarizes other people's ideas and benefits and drawbacks with each - so as later you can compare your solution to each of them. This will also help you define the variables that you will use for your evaluation.}
+%\engExpl{It is nice to have this chapter conclude with a summary. For example, you can include a table that summarizes other people's ideas and benefits and drawbacks - so that later, you can compare your solution to each of them. This will also help you define the variables that you will use for your evaluation.}
 
 \end{document}
