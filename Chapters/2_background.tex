@@ -6,6 +6,7 @@
 \label{ch:background}
 
 \section{Mathematical backgound}
+\label{sec:tda}
 In this section, we will introduce the basic mathematic notions needed to understand the methods proposed in \cite{hofer_densified_2021, moschella_relative_2022} as well as the ones described in Chapter \ref{ch:methods}.  For that, I will mainly follow \cite{edelsbrunner_computational_2010} \todo{add the rest} as a reference.
 
 \subsection{Simplicial complex}
@@ -27,7 +28,7 @@ We say that $x \in \mathbb{R}^d$ is a \emph{convex combination} of the points ${
 
 \begin{definition}
 \begin{sloppypar}
-We call \emph{convex hull} of $u_0, u_1, ..., u_k$, denoted by ${\text{conv}\{u_0, u_1, ..., u_k\}}$, to the set of all convex combinations of the given points.
+We call \emph{convex hull} of $u_0, u_1, ..., u_k$, denoted by ${\text{conv}\{u_0, u_1, ..., u_k\}}$, the set of all convex combinations of the given points.
 \end{sloppypar}
 \end{definition}
 Using this set, we can define our decomposition pieces as follows:
@@ -47,7 +48,7 @@ We say that the $k$-simplex $\sigma$ has dimension $k$ and we call \emph{vertex 
     	\tikzstyle{point}=[circle,thick,draw=black,fill=black,inner sep=0pt,minimum width=4pt,minimum height=4pt]
     	\node (a)[point] at (0,0) {};
     \end{tikzpicture}
-    \caption{0-simplex}\label{ref:0simp}
+    \caption{0-simplex}\label{fig:0simp}
 \end{subfigure}
 \begin{subfigure}[b]{0.2\textwidth}
 \centering
@@ -58,7 +59,7 @@ We say that the $k$-simplex $\sigma$ has dimension $k$ and we call \emph{vertex 
  
     	\draw (a.center) -- (b.center) --cycle;
 	\end{tikzpicture}
-	\caption{1-simplex}\label{ref:1simp}
+	\caption{1-simplex}\label{fig:1simp}
 \end{subfigure}\hspace{0.05\textwidth}
 \begin{subfigure}[b]{0.2\textwidth}
 \centering
@@ -76,7 +77,7 @@ We say that the $k$-simplex $\sigma$ has dimension $k$ and we call \emph{vertex 
     	\node ()[point] at (b) {};
     	\node ()[point] at (c) {};
 	\end{tikzpicture}
-	\caption{2-simplex}\label{ref:2simp}
+	\caption{2-simplex}\label{fig:2simp}
 \end{subfigure}\hspace{0.05\textwidth}
 \begin{subfigure}[b]{0.2\textwidth}
 \centering
@@ -99,7 +100,7 @@ We say that the $k$-simplex $\sigma$ has dimension $k$ and we call \emph{vertex 
 	\node ()[point] at (A4) {};
 	\node ()[point] at (B1) {};
 	\end{tikzpicture}
-	\caption{3-simplex}\label{ref:3simp}
+	\caption{3-simplex}\label{fig:3simp}
 \end{subfigure}
 \caption{Representation of 0, 1, 2, and 3-dimensional simplices}
 \end{figure}
@@ -131,7 +132,7 @@ A \emph{simplicial complex} is a finite collection of simplices $K$ that satisfy
 
 We define the dimension of $K$ as the maximum of its simplices dimensions.
 
-We can see in Figure \ref{ref:comp1} an example of a simplicial complex, while Figure \ref{ref:noComp} shows an example of something that does not verify the abovementioned properties.
+We can see in Figure \ref{fig:comp1} an example of a simplicial complex, while Figure \ref{fig:noComp} shows an example of something that does not verify the abovementioned properties.
 
 \begin{figure}[ht]
 \centering
@@ -180,7 +181,7 @@ We can see in Figure \ref{ref:comp1} an example of a simplicial complex, while F
 	
 	\end{tikzpicture}
 \caption{Example of a simplicial complex}
-\label{ref:comp1}
+\label{fig:comp1}
 \end{figure}
 
 \begin{figure}[ht]
@@ -216,7 +217,7 @@ We can see in Figure \ref{ref:comp1} an example of a simplicial complex, while F
     \node ()[point] at (p) {};    
 \end{tikzpicture}
 \caption{Example of simplices that does not verify the simplicial complex conditions}
-\label{ref:noComp}
+\label{fig:noComp}
 \end{figure}
 
 \begin{definition}
@@ -287,7 +288,7 @@ Every abstract simplicial complex of dimension $d$ admits a geometric realizatio
 
 Thus, abstract simplicial complexes are a faithful representation of (geometric) simplicial complexes.
 
-\subsection{Simplicial complexes build from point clouds}
+\subsection{Simplicial complexes built from point clouds}
 From the computational point of view, we find ourselves with the problem that we have a representation of a topological space through a finite discretization, and our objective is to be able to recover properties of the original topological space from this cloud of points. Hence, to give some structure to our distance space $(X,d)$, where $X$ is the dataset and $d: X \to \overline{\mathbb{R}}_+$ is a distance function, we will create a simplicial complex with the data points as vertices, and encoding some of the relevant information of $d$.
 
 \subsubsection*{\v{C}ech complex}
@@ -303,9 +304,9 @@ Let $F$ be a finite collection of sets. The \emph{nerve} of F is defined as the 
 One of the reasons we are interested in simplicial complexes constructed through the nerve of a collection is based on the implications of the following theorem.
 
 \begin{theorem}[Nerve theorem {\cite[Chapter~3]{edelsbrunner_computational_2010}}]
-If $F$ is a finite collection of closed and convex subsets in Euclidean space, then the rib of $F$ has the same type of homotopy as the union of the sets of $F$.
+If $F$ is a finite collection of closed and convex subsets in Euclidean space, then the nerve of $F$ has the same type of homotopy as the union of the sets of $F$.
 \end{theorem}
-Therefore, by this theorem, we know that \v{C}ech complexes ``behaves similarly'' to subsets of $\mathbb{R}^d$ (since it is homopoty equivalent). This property will ensure us that our analysis of the topological properties obtained through homology groups of our simplicial complex will be the same as if we studied them on neighborhoods of our dataset $X\subset \mathbb{R}^d$ \cite{doherty_cech_2018}. \todo{check this claim}\\
+Therefore, by this theorem, we know that \v{C}ech complexes ``behaves similarly'' to subsets of $\mathbb{R}^d$ (since it is homopoty equivalent). This property will ensure us that our analysis of the topological properties obtained through homology groups of our simplicial complex will be the same as if we studied them on neighborhoods of our dataset $X\subset \mathbb{R}^d$ \cite{doherty_cech_2018}.\\
 
 We consider the particular case in which the sets of the family are the disks, i.e. closed balls, $D_r(x)\equiv\overline{B_r}(x)= \{y\in \mathbb{R}^d \mid d(x, y) \leq r\}$ in $\mathbb{R}^d$.
 
@@ -320,7 +321,7 @@ Let $X\subset \mathbb{R}^d$ be a finite set of points. We will call \emph{\v{C}e
 \centering
 \includegraphics[width=0.5\textwidth]{figures/bg/Cech.png} 
 \caption{\v{C}ech complex for a set of nine points and a radius $r$. Source: \cite{edelsbrunner_computational_2010}}
-\label{ref:cech}
+\label{fig:cech}
 \end{figure}
 
 We can check that for large enough values of $r$, $\text{\v{C}ech}(r)$ is a simplex of dimension $\text{card }(X)-1$ {\cite[Chapter~3]{edelsbrunner_computational_2010}}, so the \v{C}ech complex is computationally inefficient.
@@ -331,29 +332,31 @@ Furthermore, in general, the \v{C}ech complex of a set of points $X \subset \mat
 
 \begin{definition}
 Let $X \subset \mathbb{R}^d$ be a finite set of points. We call \emph{Vietoris-Rips} complex of $X$ of radius $r$ to the abstract simplicial complex 
-\[
-\text{VR}(r) = \{\sigma \subseteq  X \mid \textrm{diam } \sigma \leq r\} = \left\{ \{x_0, ..., x_n\} \subseteq  X \mid d(x_i, x_j) \leq r\ \forall i,j\right\}
-\]
+\begin{gather*}
+\text{VR}(X, r) = \{\sigma \subseteq  X \mid \textrm{diam } \sigma \leq r\} =\\
+\left\{ \{x_0, ..., x_n\} \subseteq  X \mid d(x_i, x_j) \leq r\ \forall i,j\right\} 
+\end{gather*}
+If the set $X$ is understood from the context, then we can note it as $\text{VR}(r)$.
 \end{definition}
 
-We can see in Figure \ref{ref:vr} how the various VR complexes are generated as the radius increases.
+We can see in Figure \ref{fig:vr} how the various VR complexes are generated as the radius increases.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/bg/vr.png} 
 \caption{Vietoris-Rips complexes for a set of seven points as we increase the radius from left to right. Source: \cite{ulmer_topological_2019}}
-\label{ref:vr}
+\label{fig:vr}
 \end{figure}
 
 
-Let $\sigma \subset X$, then we remember that the diameter is defined as
+Let $\sigma \subset X$, then we recall that the diameter is defined as
 \[\textrm{diam } \sigma = \max_{u,v \in \sigma} d(u,v)\,.\]
 This observation guarantees that $\sigma \in \text{VR}(r)$ if and only if all its edges are in $\text{VR}(r)$. In other words, $\text{VR}(r)$ is completely determined by its $1$-skeleton. This makes the Vietoris-Rips complex much more efficient than the \v{C}ech complex from the computational point of view. However, as with the \v{C}ech complex, it does not admit a geometric realization in $\mathbb{R}^d$.
 
 On the other hand, the Vietoris-Rips complex is not the nerve of any collection of subsets of $\mathbb{R}^d$. However, the following result guarantees that the VR complex approximates the \v{C}ech complex.
 
 \begin{lemma}[Vietoris-Rips lemma {\cite[Chapter~3]{edelsbrunner_computational_2010}}]
-\label{ref:lemaVR}
+\label{fig:lemaVR}
 Let $X \subset \mathbb{R}^d$ be a finite set of points and let $r \geq 0$. Then,
 \[
 \text{\rm \v{C}ech}(r) \subset \text{\rm VR}(r) \subset \text{\rm \v{C}ech}(\sqrt{2}r)\,.
@@ -364,38 +367,69 @@ Let $X \subset \mathbb{R}^d$ be a finite set of points and let $r \geq 0$. Then,
 Another important property regarding VR complexes is their ability to encode $\epsilon$-connectivity. We will talk more in detail about $\epsilon$-connectivity and how it will be a crucial property for constructing our topological regularization. 
 
 \begin{definition}[\cite{robins_resolutions_2000}]
-We say that a metric space $X$ is \emph{$\epsilon$-disconnected} if there exist two subsets $U$ and $V$ with $U\cup V = X$, and $d(U,V)\equiv \inf_{x\in U, y\in V}d(x,y) \geq \epsilon$.
+We say that a metric space $X$ is \emph{$\epsilon$-disconnected} if there exist two subsets $U$ and $V$ with $U\cup V = X$, and $d(U,V)\equiv \inf_{x\in U, y\in V}d(x,y) > \epsilon$.
 \end{definition}
-Hence if the space is not $\epsilon$-disconnected, we will say that $X$ is $\epsilon$-connected. Moreover, a subset $A \subset X$ is an \emph{$\epsilon$-component} if $A$ is $\epsilon$-connected and $d(A, X \setminus A)\geq \epsilon$. Hence, for any given $\epsilon$, we can decompose our dataset $X$ in disjoint $\epsilon$-components.
+Hence if the space is not $\epsilon$-disconnected, we will say that $X$ is $\epsilon$-connected. Moreover, a subset $A \subset X$ is an \emph{$\epsilon$-component} if $A$ is $\epsilon$-connected and $d(A, {X \setminus A}) > \epsilon$. Hence, for any given $\epsilon$, we can decompose our dataset $X$ in disjoint $\epsilon$-components.
 
 However, to see the connection of VR complex with $\epsilon$-connectivity, we will use another definition based on \emph{$\epsilon$-chains}.
 
 \begin{definition}[\cite{robins_resolutions_2000}]
-We call \emph{$\epsilon$-chain} to a finite sequence of points $x_0, .., x_n$ such as $d(x_i, x_{i+1})<\epsilon$ for $i=1,...,n$. 
+We call \emph{$\epsilon$-chain} to a finite sequence of points $x_0, .., x_n$ such as $d(x_i, x_{i+1})\leq \epsilon$ for $i=1,...,n$. 
 \end{definition}
 
 Therefore, for any set $X$, if we can form an \emph{$\epsilon$-chain} between any pair of points, then our set is $\epsilon$-connected. 
 
 \begin{proposition}
+\label{prop:connected}
 For any distance $d$ on $X$, and $\epsilon \geq 0$, the partition corresponding to the connected components of $VR(\epsilon)$, denoted as $\pi_0(VR(\epsilon))$, coincides with the $\epsilon$-components of $X$.
 \end{proposition}
 
-This can be easily seen since two points $u,v$ (vertices) are in the same connected component of a simplicial complex $K$ if there exists a sequence of vertices $u=x_0,..., x_n=v$ such as $\{x_i, x_{i+1}\} \in K$. So, we can see that in the case that $K$ is a Vietoris-Rips complex of radius $\epsilon$, then $\{x_i, x_{i+1}\} \in K$ iff $d(x_i, x_{i+1})<\epsilon$, i.e, there exist an $\epsilon$-chain between $u$ and $v$. \todo{not true since distance for edges should be leq. How do we reflect the inequality? With the limit?}
+This can be easily seen since two points $u,v$ (vertices) are in the same connected component of a simplicial complex $K$ if there exists a sequence of vertices $u=x_0,..., x_n=v$ such as $\{x_i, x_{i+1}\} \in K$. So, we can see that in the case that $K$ is a Vietoris-Rips complex of radius $\epsilon$, then $\{x_i, x_{i+1}\} \in K$ iff $d(x_i, x_{i+1})\leq\epsilon$, i.e, there exist an $\epsilon$-chain between $u$ and $v$. 
 
 \subsubsection*{Witness complex}
 
+A common \glsxtrshort{ML} scenario is that we will have a big dataset, and we apply our training procedure to small batches of that given set. Hence, ideally, we would want to be able to infer the topology of our whole dataset just from studying our reduced batches. Therefore, this type of ideas motivated Vin de Silva and Gunnar Carlsson when they introduced the Witness Complex in \cite{silva_topological_2004}: a subset of the data points, called the landmarks points, is used to construct the simplices ``seen'' by the witnesses, which are the rest of the points of the data set \cite{medbouhi_towards_2022}.
 
+However, the construction of the simplicial complex that we will use differs from the ones used in standard TDA libraries, such as GUDHI, when defining Witness complexes \cite{noauthor_gudhi_nodate}. We will focus on a specific type of complex presented in \cite{silva_topological_2004}, which can be seen as an example of a Dowker complex\footnote{Denoted as $W(D; R, 0)$ in the original paper \cite{silva_topological_2004}.}.
 
+\begin{definition}[\cite{dowker_homology_1952}]
+The \emph{Dowker complex} of a relation $(R, X, Y)$ is the simplicial complex $(\text{D}(R)), X)$ where
+\[
+\text{D}(R) = \{\sigma \subseteq X \mid \exists y \in Y \text{ with } \sigma \times \{y\} \subseteq R\}\,.
+\]
+We say that \emph{ the simplex $\sigma \in \text{D}(R)$ is witnessed by $y \in Y$} if $\sigma \times \{y\} \subseteq R$, i.e., all elements in the simplex $\sigma$ are related with y.
+\end{definition}
 
+We will call Witness complex the Dowker complex of $(R_\epsilon, L, X)$ where
+\begin{itemize}
+    \item $X$ is the whole dataset,
+    \item $L\subseteq X$ is a batch, and
+    \item $R_\epsilon=\{(l,x)\in L \times X \mid d(l,x)<\epsilon\}$. 
+\end{itemize}
 
+\begin{definition}[Nested family of witness complexes \cite{silva_topological_2004}]
+Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, $L = \{l_0, ..., l_n\} \subseteq X$ be a set of landmark points, and $\epsilon>0$. Then the $k$-simplex $\sigma = \{u_1, ..., u_k\}$ with $u_i \in L$ belongs to the \emph{Witness complex} $\text{W}_\epsilon(X, L)$ iff all its faces belong to $\text{W}_\epsilon(X, L)$ and there is a witness $x \in X$, such that:
+\[
+\max(d(u_i, x) : u_i \in \{u_1, ..., u_k\}) \leq \epsilon\,.
+\]
+\end{definition}
+
+A remarkable result about witness complexes is Dowker's Theorem, which states that exchanging the role of the witnesses and landmarks doesn't change the topology of the complex \cite{dowker_homology_1952}. This result is exploited in \cite{schonenberger_witness_2022} to enforce the topological regularization of a Topological Autoencoder (further explained in Section \ref{sec:topoML}) only using the data points of the batches instead of the whole dataset.
+
+\begin{proposition}[\cite{silva_topological_2004}]
+The family of complexes $\text{W}_\epsilon(X, L)$ is closely related to the family $\text{VR}(L, \epsilon)$. Specifically, there are inclusions:
+\[
+\text{W}_\epsilon(X, L) \subseteq \text{VR}(L, 2\epsilon) \subseteq \text{W}_{2\epsilon}(X, L)\,.
+\]
+\end{proposition}
 
 \subsection{Homology}
-As can be seen in \cite{hatcher_algebraic_2002}, the homotopy is an algebraic tool to obtain properties of topological spaces. However, the methods for calculating the homotopy are not computationally manageable. Thus, homology is proposed as an algebraic formalism, which, although it is not capable of obtaining as much topological information about space as with other formalisms, it is highly beneficial from a computational perspective.
+As can be seen in \cite{hatcher_algebraic_2002}, the homotopy is an algebraic tool to obtain properties of topological spaces. However, the methods for calculating the homotopy are not computationally manageable. Thus, homology is proposed as an algebraic formalism, which, although it is not capable of obtaining as much topological information about space as with other formalisms, is highly beneficial from a computational perspective.
 
-We will start by reviewing some linear algebra concepts that will be useful to fully understand the homology's formal definition.
+We will start by reviewing some linear algebra concepts that will be useful to understand homology's formal definition fully.
 
 \subsubsection*{Linear algebra interlude}
-This subsection is based on Wojciech Chachólski's lecture notes of his course on Topological Data Analysis \cite{chacholski_sf2956_2022}.\\
+This subsection is based on Wojciech Chachólski's lecture notes from his course on Topological Data Analysis \cite{chacholski_sf2956_2022}.\\
 
 In TDA we tend to use vector spaces over $F_2$, the field with 2 elements $\{0,1\}$. This field is isomorphic to $\mathbb{Z}_2 \equiv \mathbb{Z}/2\mathbb{Z}$ with operations modulo 2:
 \[
@@ -410,7 +444,7 @@ We recall that an $F_2$ vector space is a set $V$ with a zero element $0 \in V$ 
     \item $v + v = 0$.
 \end{itemize}
 
-Another vector spaces that we will use are \emph{quotient spaces}. Let $W \subset V$ be a vector subspace. We define the following equivalence relation: we say that two elements $v$ and $w$ in $V$ are \emph{equivalent modulo} $W$ if $v-w \in W$. As we can see in Figure \ref{fig:quot_ex} the equivalence classes are of the form $[v]=v+W \subset V$. Moreover, the set of equivalence classes, denoted by $V/W$, with the following operations is a vector space:
+Another vector spaces that we will use are \emph{quotient spaces}. Let $W \subset V$ be a vector subspace. We define the following equivalence relation: we say that two elements $v$ and $w$ in $V$ are \emph{equivalent modulo} $W$ if $v-w \in W$. As we can see in Figure \ref{fig:quot_ex}, the equivalence classes are of the form $[v]=v+W \subset V$. Moreover, the set of equivalence classes, denoted by $V/W$, with the following operations, is a vector space:
 \begin{itemize}
     \item $(v+W)+(w+W)=v+w+W$,
     \item $0 = 0 +W = W$,
@@ -455,7 +489,7 @@ Another vector spaces that we will use are \emph{quotient spaces}. Let $W \subse
 Lastly, we will see that one of our main components for constructing homology is by ``transforming'' a set to a vector space. Hence, for any finite set $X$, and field $F$, we define $FX \equiv \oplus_{x \in X} K$. The vector space $FX$ is isomorphic to $F^{\abs{X}}$, which means that we can represent an element of $FX$ as sequences $(k_x)_{x \in X}$ indexed by elements of X.
 
 \begin{exmp}
-Let the set $S=\{a, b, c\}$, and the field $F_4$. Then an element of $F_4S$ can be
+Let the set $S=\{a, b, c\}$, and the field $\mathbb{Z}_3$. Then an element of $\mathbb{Z}_3S$ can be
 \[
 ( \underbrace{1}_\text{a}, \underbrace{0}_\text{b}, \underbrace{2}_\text{c}) = 1 \cdot a + 0 \cdot b + 2 \cdot c = a + 2c\,.
 \]
@@ -466,7 +500,7 @@ Therefore, we can see that we can define a basis for this space formed by elemen
 \[
 (e_x)_y = \left\{\begin{matrix}
 1 & \text{ if } y=x\\
-1 & \text{ if } y \neq x\\
+0 & \text{ if } y \neq x\\
 \end{matrix}\right.
 \]
 
@@ -491,7 +525,7 @@ with $\sigma_i$ is a $p$-simplex for each $i$ and $a_i$ are the \emph{coefficien
 \begin{exmp}
 We will write the simplices as the list of their vertices, $\sigma = [u_0, u_1, ..., u_p]$.
 \begin{itemize}
-	\item In the figure \ref{ref:0cad} the $0$-chain $c=[0]+[2]+[6]+[9]$ is shown in red.
+	\item In the figure \ref{fig:0cad} the $0$-chain $c=[0]+[2]+[6]+[9]$ is shown in red.
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick,scale=3]
@@ -539,9 +573,9 @@ We will write the simplices as the list of their vertices, $\sigma = [u_0, u_1, 
 	
 	\end{tikzpicture}
 \caption{Example of $0$-chain}
-\label{ref:0cad}
+\label{fig:0cad}
 \end{figure}
-	\item In the figure \ref{ref:1cad} the $1$-chain $c=[0,1]+[1,2]+[2,4]+[8,9]$ is shown in red.
+	\item In the figure \ref{fig:1cad} the $1$-chain $c=[0,1]+[1,2]+[2,4]+[8,9]$ is shown in red.
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick,scale=3]
@@ -590,9 +624,9 @@ We will write the simplices as the list of their vertices, $\sigma = [u_0, u_1, 
 	
 	\end{tikzpicture}
 \caption{Example of $1$-chain}
-\label{ref:1cad}
+\label{fig:1cad}
 \end{figure}
-	\item In the figure \ref{ref:2cad} the $2$-chain $c=[1,2,3] + [2,3,4] + [6,7,8]$ is shown in red.
+	\item In the figure \ref{fig:2cad} the $2$-chain $c=[1,2,3] + [2,3,4] + [6,7,8]$ is shown in red.
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick,scale=3]
@@ -642,7 +676,7 @@ We will write the simplices as the list of their vertices, $\sigma = [u_0, u_1, 
 	
 	\end{tikzpicture}
 \caption{Example of $2$-chain}
-\label{ref:2cad}
+\label{fig:2cad}
 \end{figure}
 \end{itemize}
 \end{exmp}
@@ -686,7 +720,7 @@ or, equivalently, if $c \in \text{ker }\partial$.
 Because $\partial$ commutes with addition $+$, 
 
 \begin{exmp}
-We will see that geometrically, the $p$-cycles represent cycles in the simplicial complex. These, in turn, can be holes of dimension $p$. In the figure \ref{ref:1-ciclo} the $1$-cycle $[4,5] + [4,6] + [5,6]$ is shown in red, which is a hole. While blue represents the $1$-cycle $[6,7] + [6,8] + [7,8]$, which is not a hole.
+We will see that geometrically, the $p$-cycles represent cycles in the simplicial complex. These, in turn, can be holes of dimension $p$. In the figure \ref{fig:1-ciclo} the $1$-cycle $[4,5] + [4,6] + [5,6]$ is shown in red, which is a hole. While blue represents the $1$-cycle $[6,7] + [6,8] + [7,8]$, which is not a hole.
 
 \begin{figure}[!ht]
 \centering
@@ -739,7 +773,7 @@ We will see that geometrically, the $p$-cycles represent cycles in the simplicia
 	
 	\end{tikzpicture}
 \caption{Example of $1$-cycle}
-\label{ref:1-ciclo}
+\label{fig:1-ciclo}
 \end{figure}
 \end{exmp}
 
@@ -755,7 +789,7 @@ or, equivalently, if $c \in \text{im }\partial_{p+1}$.
 \end{definition}
 
 \begin{exmp}
-The $1$-cycle that we had highlighted in blue in the Figure \ref{ref:1-ciclo} is a $1$-boundary.
+The $1$-cycle that we had highlighted in blue in the Figure \ref{fig:1-ciclo} is a $1$-boundary.
 \end{exmp}
 
 \begin{remark}
@@ -773,13 +807,13 @@ It follows that $\text{B}_p$ is a vector subspace of $\text{Z}_p$, that is, $\te
 ...\overset{\partial_{p+2}}{\longrightarrow}\text{C}_{p+1}\overset{\partial_{p+1}}{\longrightarrow}\text{C}_ {p}\overset{\partial_{p}}{\longrightarrow}\text{C}_{p-1}\overset{\partial_{p-1}}{\longrightarrow}...
 \]
 
-We can see in Figure \ref{ref:gruposCadenasOpBorde} this relationship between the chain group $\text{C}_p$, the group of cycles $\text{Z}_p$ and the group of boundaries $\text{B}_p $; and its connections generated by the boundary operator.
+We can see in Figure \ref{fig:gruposCadenasOpBorde} this relationship between the chain group $\text{C}_p$, the group of cycles $\text{Z}_p$ and the group of boundaries $\text{B}_p $; and its connections generated by the boundary operator.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/bg/chain_complex.png} 
 \caption{Chain complex representing the chain group, the cycle group, and the boundary group. Source: \cite{edelsbrunner_computational_2010}}
-\label{ref:gruposCadenasOpBorde}
+\label{fig:gruposCadenasOpBorde}
 \end{figure}
 
 
@@ -820,7 +854,7 @@ Let $K$ be a simplicial complex. Then $\beta_0(K)$ matches the number of connect
 $\abs{K}$ is connected if and only if $\beta_0(K)=1$.
 \end{corollary}
 
-We will see that our topological regularization will exploit the ability to study connectivity through homology. However, we can extract higher dimensional topological properties if we use higher dimensional homology groups. The \emph{Alexander duality theorem} \cite[Chapter~5]{edelsbrunner_computational_2010} allows us to interpret the Betti numbers of a polyhedron contained in $\mathbb{R}^3$: \todo{not sure if is this theorem}
+We will see that our topological regularization will exploit the ability to study connectivity through homology. However, we can extract higher dimensional topological properties if we use higher dimensional homology groups. It can be shown \cite[Chapter~5]{edelsbrunner_computational_2010} that Betti numbers of a polyhedron contained in $\mathbb{R}^3$ can be interpreted in the following way:
 \begin{itemize}
 \item $\beta_0(K)$ tells us the number of connected components.
 \item $\beta_1(K)$ tells us the number of tunnels.
@@ -835,13 +869,13 @@ We will introduce the concept of persistence first for functions of one variable
 \subsubsection*{One-dimensional real functions}
 Let $f: \mathbb{R} \to \mathbb{R}$ be a smooth function. Remember that $x$ is a \emph{critical point} and $f(x)$ is a \emph{critical value of $f$} if $f'(x)=0$. Furthermore, a critical point $x$ is \emph{non-degenerate} if $f''(x) \neq 0$. So, suppose that $f$ contains only non-degenerate critical points with distinct critical values.\\
 
-Let the \emph{sublevel set} $\mathbb{R}_t=f^{-1}(-\infty, t]$ for each $t \in \mathbb{R}$. Then we see that as we increase $t$, the number of connected components of $\mathbb{R}_t$ will remain constant until we pass through a $t_0$ critical value of $f$.  As we can see in the figure \ref{ref:sublevelR}, when we pass through a local minimum, a new connected component is created. When we pass through a local maximum, two connected components are combined into one.\\
+Let the \emph{sublevel set} $\mathbb{R}_t=f^{-1}(-\infty, t]$ for each $t \in \mathbb{R}$. Then we see that as we increase $t$, the number of connected components of $\mathbb{R}_t$ will remain constant until we pass through a $t_0$ critical value of $f$.  As we can see in the figure \ref{fig:sublevelR}, when we pass through a local minimum, a new connected component is created. When we pass through a local maximum, two connected components are combined into one.\\
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/bg/Sub-level-Filtrations.png}
     \caption{Connected components in $\mathbb{R}$ in the different leaks. Source: \cite{curry_counting_2020}}
-    \label{ref:sublevelR}
+    \label{fig:sublevelR}
 \end{figure}
 
 The critical points of $f$ are paired as follows:
@@ -850,13 +884,13 @@ The critical points of $f$ are paired as follows:
     \item When we pass through a local maximum and two components meet, we pair the maximum with the higher (youngest) of the two local minima that these components represent. The other minimum (the oldest) becomes the representative of the new component resulting from joining the two previous ones.
 \end{enumerate}
 
-When the points $x_1$ and $x_2$ are paired following this method, we define the \emph{persistence} of the pair as $f(x_2) - f(x_1)$. This persistence is coded through the \emph{persistence diagram}, representing each pair with the point $(f(x_1),f(x_2))$, as can be seen in the figure \ref{ref:persistenceR}. It can be seen that all points will lie above the diagonal $y=x$ and that persistence is the vertical distance from a point to the diagonal. For reasons that will be explained later, the points on the diagonal will be added to the persistence diagram.
+When the points $x_1$ and $x_2$ are paired following this method, we define the \emph{persistence} of the pair as $f(x_2) - f(x_1)$. This persistence is coded through the \emph{persistence diagram}, representing each pair with the point $(f(x_1),f(x_2))$, as can be seen in the figure \ref{fig:persistenceR}. It can be seen that all points will lie above the diagonal $y=x$ and that persistence is the vertical distance from a point to the diagonal. For reasons that will be explained later, the points on the diagonal will be added to the persistence diagram.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/bg/diagramaR.png} 
 \caption{Pairing of the critical points of the function on the left represented as points in the persistence diagram on the right. Modified from: \cite{goodman_persistent_2008}}
-\label{ref:persistenceR}
+\label{fig:persistenceR}
 \end{figure}
 
 
@@ -939,10 +973,10 @@ The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\mathbb{R}}^2$ o
 \centering
 \includegraphics[width=0.35\textwidth]{figures/bg/The-Persistence-Diagram-Associated-to-a-Barcode.png} 
 \caption{Barcode associated with a persistence diagram. Source: \cite{curry_fiber_2019}}
-\label{ref:codigoBarras}
+\label{fig:codigoBarras}
 \end{figure}
 
-Therefore, in a persistence diagram, each point $(a_i, a_j)$ represents $\mu_p^{i, j}$ independent homology classes whose persistence coincides with the distance from point $(a_i, a_j)$ to its vertical projection on the diagonal $\Delta $. In addition to the persistence diagrams, we can encode information about persistent homology through so-called \emph{barcodes}. These representations can be obtained from the persistence diagram by drawing for each point $(a_i, a_j)$ with $a_i < a_j$ of said diagram $\mu_p^{i, j}$ half-open intervals $[a_i, a_j) $, as shown in the Figure \ref{ref:codigoBarras}.\\
+Therefore, in a persistence diagram, each point $(a_i, a_j)$ represents $\mu_p^{i, j}$ independent homology classes whose persistence coincides with the distance from point $(a_i, a_j)$ to its vertical projection on the diagonal $\Delta $. In addition to the persistence diagrams, we can encode information about persistent homology through so-called \emph{barcodes}. These representations can be obtained from the persistence diagram by drawing for each point $(a_i, a_j)$ with $a_i < a_j$ of said diagram $\mu_p^{i, j}$ half-open intervals $[a_i, a_j) $, as shown in the Figure \ref{fig:codigoBarras}.\\
 
 Finally, we will denote by $\#(A)$ the \emph{total multiplicity} of a multiset $A$, which, by definition, is the sum of the multiplicities of the elements of $A$. Thus the total multiplicity of the persistence diagram minus the diagonal is
 \[
@@ -965,13 +999,232 @@ This lemma guarantees us that the persistence diagram encodes all information ab
 \centering
 \includegraphics[width=0.7\textwidth]{figures/bg/persistenceEx.png} 
 \caption{Persistence diagram, where 0-dimensional persistence homology is in red and 1-dimensional case is in blue. The 1-dimensional persistent Betti number corresponding to the green point is 5.}
-\label{ref:persEx}
+\label{fig:persEx}
 \end{figure}
 
 
 
 \section{Related work}
+Once we have reviewed the required mathematical background, we will study some related work. First, we will focus on the relevant literature regarding \glsxtrfull{TopoML} and see how we can use the \glsxtrfull{TDA} toolkit to create a regularization technique for our \glsxtrshort{NN}. Secondly, we will focus on Representation Learning literature, where we will discuss how much we know about the latent space produced by our networks and how we can utilize that knowledge in our favor.
 
+\subsection{Topological Machine Learning}
+\label{sec:topoML}
+
+We have seen in Section \ref{sec:tda} that Persistent Homology is a great tool to obtain some of the ``possible'' topological characteristics of the underlying manifold from where our dataset has been sampled. This tool has been of great use for exploratory data analysis \cite{cheng_application_2020, topaz_topological_2015, amezquita_shape_2020} since it allows us to get a new sense of how our data looks from a geometric perspective. We can see in Figure \ref{fig:tdaPipe} a standard pipeline for this purpose.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/bg/pipelineTDA.png} 
+\caption{Standard TDA pipeline. Modified from: \cite{berwald_mathematics_2019}}
+\label{fig:tdaPipe}
+\end{figure}
+
+
+Usually, our goal would be to see if there are certain groups of data points that share similar topological properties. Hence, starting with our pseudometric space $(X, d)$, we will identify our data points by some neighborhood, such as balls centered at each point with a fixed radius. However, we could have more complex neighborhoods, such as annulus centered at each point or even k-NN groupings. Once obtained this identification $\pi: X \to \mathcal{P}(X)$, we will compute the persistent homology for each subset $\pi(x) \subseteq X,\ x \in X$.  Even though we can obtain the persistent diagram of these subsets, the fact that we are dealing with multisets hinders the task of comparing the topological characteristics. 
+
+Therefore, there are multiple ways to be able to handle these multisets as input for Machine Learning or Data Science methods \cite{hensel_survey_2021}. The main ones are:
+
+\begin{itemize}
+    \item We can encode the persistent homology information in a piecewise constant function, such as Stable Ranks \cite{agerberg_supervised_2021} or Betti curves \cite{hensel_survey_2021}. Furthermore, one of the most popular techniques is the use of persistence landscapes \cite{bubenik_statistical_2015}, which, as we can see in Figure \ref{fig:landscapes}, are functional vector spaces. The main benefit of using these representations is the facility that it gives us to compare them by using distances such as interleaving distance or $L_p$ norms. Moreover, we can use all our knowledge of calculus to obtain statistical analysis rewarding our newly obtained functions. 
+
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=0.7\textwidth]{figures/bg/landscapes.png} 
+        \caption{Persistence landscape construction. Source: \cite{bubenik_statistical_2015}}
+        \label{fig:landscapes}
+    \end{figure}
+
+    From an ML perspective, we could either use some kernel methods such as SVMs making use of a scalar product defined on these functions, but also we could simulate a signal processing setup and perform some sampling and quantization to be able to vectorize the functions over a certain domain.
+
+    \item We can transform the persistence diagram to a more common input format for ML, such as images or vectors. Starting with images, the main objective of Persistence images \cite{adams_persistence_2016} is to obtain some ``heat map'' that reflects both the persistence and the relative importance of the features (see Figure \ref{fig:persImages}). On the other hand, we could encode pairwise distances of points from the multiset as a distance vector \cite{carriere_stable_2015}.
+
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=\textwidth]{figures/bg/persImage.png} 
+        \caption{Persistence image construction. Source: \cite{adams_persistence_2016}}
+        \label{fig:persImages}
+    \end{figure}
+    
+\end{itemize}
+
+If we focus on \glsxtrfull{DL}, we can see some novel work that proposes to put the focus on the network instead of preprocessing the persistent diagram, as we have seen before. Currently, the two main approaches are creating layers that learn to embed the persistent diagram or utilizing a more complex network architecture that enables the use of multisets as input \cite{hensel_survey_2021}.\\
+
+However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, I will present an interesting use of \glsxtrshort{TDA} to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a \glsxtrshort{DL} context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples'' (see Figure \ref{fig:trojanTrain}).
+
+\begin{figure}[ht!]
+     \centering
+     \begin{subfigure}[b]{0.7\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/bg/trojanTrain.png}
+        \caption{Trojan attack training}
+         \label{fig:trojanTrain}
+     \end{subfigure}\\
+    \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=0.8\textwidth]{figures/bg/noTrojan.png}
+        \caption{Clean Model + Trojaned Input}
+         \label{fig:noTrojan}
+     \end{subfigure}
+      \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=0.8\textwidth]{figures/bg/withTrojan.png}
+        \caption{Trojaned Model + Trojaned Input}
+         \label{fig:withTrojan}
+     \end{subfigure}
+    \caption{Trojan attacks. Source: \cite{zheng_topological_2022}}
+    \label{fig:trojan}
+\end{figure}
+
+Therefore, it has been shown that if we analyze the persistent homology of the neuron connectivity graph, we can extend the Hebbian learning rule of \textit{``fire together, wire together''} to higher-level connections (now the wiring is not only for adjacent nodes but also for path-connected nodes). Hence, as we can see in Figure \ref{fig:withTrojan}, a trojaned input on a trojaned network will generate a highly persistent cycle, which will connect the shallow and deep layers, short-cutting the proper classification. The reason we showcase this study is to remark on the fact that with some creativity and ingenuity, you can utilize persistent homology in more ways than to study the geometric characteristics of your dataset.\\
+
+As briefly explained in the Introduction, we are going to focus on the application of \glsxtrshort{TDA} to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space (see Figure \ref{fig:topoAuto}). By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.  
+
+
+\begin{figure}[ht!]
+     \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/bg/topologicalAutoencoder.png}
+        \caption{Topo-autoencoder. Source: \cite{moor_topological_2021}}
+         \label{fig:topoAuto}
+     \end{subfigure}\hfill
+      \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=0.9\textwidth]{figures/bg/boundaryReg.png}
+        \caption{Boundary reg. Source: \cite{chen_topological_2018}}
+         \label{fig:boundReg}
+     \end{subfigure}
+    \caption{Topological regularization examples}
+    \label{fig:topoRegExtraEx}
+\end{figure}
+
+
+When it comes to classification tasks, we remark on the work of Chen \etal \cite{chen_topological_2018}, where they reduce the generalization error by imposing a simpler topology of the boundary (see Figure \ref{fig:boundReg}). The benefit of using this technique is the ability to have direct control of how much you want to suppress spurious topological structures based on their importance for the classification task, in contrast to other regularization techniques that obtain a simpler decision boundary as a proxy of variance reduction.
+
+
+\subsubsection*{Topologically Densified Distributions}
+
+The type of topological regularization that we will study in this project belongs to the family of internal representation regularization. The objective of this type of regularization technique is to impose certain kinds of characteristics that can be beneficial to the classification task. As an example, we can find cw-VR and cw-CR \cite{choi_utilizing_2019}, which try to reduce the class-wise variance and correlation of the latent space representation.
+
+Let $(\mathcal{X}, P)$ be our input space with probability measure $P$, $\mathcal{Y} = [K] =\{1, ...,K\}$ the target space, and our network decomposed as $\gamma \circ \phi: \mathcal{X}  \to \mathcal{Y}$, where $\phi: \mathcal{X}  \to \mathcal{Z}$ is a feature extractor and $\gamma: \mathcal{Z}  \to \mathcal{Y}$ is the classification head. Moreover, since we are dealing with a classification task, we will define the function $c: \text{supp}(P) \to \mathcal{Y}$ that assigns to input its true label. Note that we can restrict the domain of this function to the support of $P$ without loss of generality due to the assumption of the manifold thesis \cite{fefferman_testing_2016}.
+
+Therefore, if our training set $S=\{x_1, ..., x_n\}$, is generated by $n$ i.i.d samples $X \sim P$, and the subset $S_{x\mid k} = \{x \in S \mid c(x)=k\}$ is its restriction to the class $k$, then
+
+\[
+\Omega_{cw\text{-}CR}= \sum_{k} \sum_{i\neq j} \left(c_{i,j}^{(k)}\right)^2\,, \text{ and }
+\Omega_{cw\text{-}VR}= \sum_{k} \sum_{i} v_{i}^{(k)}
+\]
+where we define the class mean vector, covariance matrix, and variance vector as
+\begin{gather*}
+\mu_i^{(k)} = \frac{1}{\abs{\phi(S_{x\mid k})}} \sum_{z \in \phi(S_{x\mid k})} z_i\,,\\
+c_{i,j}^{(k)}= \frac{1}{\abs{\phi(S_{x\mid k})}} \sum_{z \in \phi(S_{x\mid k})} (z_i-\mu_i^{(k)})(z_j-\mu_j^{(k)})\,,\\
+v_{i}^{(k)} =c_{i,i}^{(k)}\,.
+\end{gather*}
+
+\begin{remark}
+The cw-VR and cw-CR regularization techniques resemble what we can obtain by applying the KL divergence with some prior distribution of the latent space  $\mathcal{Z}=\mathbb{R}^m$ \footnote{For the topological densified distribution technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\phi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, $Q(B)= P(\phi^{-1}(B))$). However, even in image classification, we tend to vectorize our latent space before feeding it to an MLP-based classification head $\gamma$.}, as done in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, this bayesian setup can be more flexible than the two previously proposed since, in the selection of the prior, we can take into account more of the knowledge that we have of the latent space. Nevertheless, it would require us to have an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\phi: \mathcal{X} \to \mathcal{Z}$ from $P$.
+\end{remark}
+
+As we can see, these statistical and probabilistic approaches have been successful, but they mainly rely  on empirical evidence to justify how they can directly reduce the generalization error \cite{hofer_densified_2021}. However, Hofer \etal \cite{hofer_densified_2021} proposes a new internal regularization method that has been mathematically proven that, under mild assumptions, we can ensure a reduction in the generalization error. To be precise, we define generalization error as follows:
+
+\begin{definition}
+For a classifier $h: (\mathcal{X}, P) \to \mathcal{Y}$, we define the \emph{generalization error} as $\E_{X \sim P}[\1{h}{c}(X)]$, where 
+\[
+\1{h}{c}(x) = \left\{\begin{matrix}
+0 & \text{ if } h(x)=c(x)\\
+1 &  \text{ otherwise }\\
+\end{matrix}\right.\,.
+\]
+\end{definition}
+
+For this purpose, we will use the conditional push-forward probability on $\mathcal{Z}$, which can be defined as $Q_k(\sigma)\equiv Q(\sigma \mid C_k) = Q(\sigma \cap C_k)/Q(C_k)$, for any class $k\in \mathcal{Y}$, event $\sigma \in \mathcal{B}$, and internal class representation $C_k=\phi(c^{-1}(k))$. Hence, we will see that if we can ensure to set an upper bound to each of the conditional probabilities of miss-classifying the decision region of that given class, then we will reduce the generalization error. This statement is formalized in the following lemma:
+
+\begin{lemma}[\cite{hofer_densified_2021}]
+\label{lem:genErr}
+For any class $k\in \mathcal{Y} = [K]$, let $C_k=\phi(c^{-1}(k))$ be its internal representation, and $D_k= \gamma^{-1}(k)$ be its decision region in $\mathcal{Z}$ w.r.t $\gamma$. If exists $\epsilon >0$ s.t.
+\begin{equation}
+\label{eq:concentration}
+ \forall k\ 1-Q_k(D_k) \leq \epsilon\,,   
+\end{equation}
+
+then 
+\[
+\E_{X \sim P}[\1{\gamma \circ \phi}{c}(X)] \leq K\epsilon\,. 
+\]
+\end{lemma}
+
+In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view \footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq. \ref{eq:concentration} of Lemma \ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\phi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\overline{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\overline{B_r}(z_i)$, $Q_k(\overline{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
+
+Now that we know the benefits of obtaining mass concentration over some specific reference set $M \subseteq \mathcal{Z}$, we will see that we can provably enforce this property by applying some topological constraint on $Q_k$ in a process called \emph{topological densification}. To be precise, as we can see in Figure \ref{fig:densiScheme}, this topological constraint will give us a non-trivial lower bound on $Q_k(M_{l\cdot \epsilon})$ in terms of $Q_k(M)$, where $M_{l\cdot \epsilon}$ represents the $l\cdot \epsilon$-extension of $M$ for any $\epsilon>0$ and $l\in \mathbb{N}$, i.e.
+\[
+M_{l\cdot \epsilon} = \bigcup_{z\in M} \overline{B_{l\cdot \epsilon}}(z)\,.
+\]
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/bg/densification.png} 
+    \caption{$Q_k$ before and after being topological densified. Source: \cite{hofer_densified_2021}}
+    \label{fig:densiScheme}
+\end{figure}
+
+
+The topological constraint that we will use is the natural extension of the $\beta$-connectivity to random samples. Hence, we will create an indicator function (random variable) $\mathfrak{c}_b^\beta: \mathcal{Z}^b \to \{0,1\}$ as 
+\[
+\mathfrak{c}_b^\beta(z_1, ..., z_b) = 1 \Leftrightarrow \{z_1, ..., z_b\} \text{ is } \beta\text{-connected}\,.
+\]
+\begin{definition}
+Let $\beta>0$, $c_\beta\in [0,1]$, $b\in \mathbb{N}$, and $Q_k^b$ the product measure of $Q_k$. We call $Q_k$ \emph{$(b, c_\beta)$-connected} if $Q_k^b(\{\mathfrak{c}_b^\beta = 1\})\geq c_\beta$.
+\end{definition}
+
+Hofer \etal proves that: \emph{If a measure is $(b, c_\beta)$-connected, then mass attracts mass; the higher $c_\beta$, the stronger the effect} \cite{hofer_densified_2021}. In the original paper, they have an in-depth study on the properties of the lower bound of $Q_k(M_{l\cdot \epsilon})$ in terms of a $(b, c_\beta)$-connected $Q_k(M)$, such as the minimum required mass to enforce proper mass condensation. As a broad idea, the way to obtain the lower bound is to study the properties of the trinomial distribution that characterizes certain events where the samples $\{z_1, ..., z_b\}$ are not $\beta$-connected.\\
+
+Therefore, based on this property, we will enforce that for each batch $B$, the subsets $B_k=\{b \in B \mid c(b)=k\}$ are $\beta$-connected. In order to measure how close they are to be $\beta$-connected and to have a numerical cost function penalizing these deviations, we will restate $\beta$-connectivity using persistent homology.
+
+\begin{definition}
+Let $\beta>0$. A set $M\subseteq \mathcal{Z}$ is \emph{$\beta$-connected} iff all $0$-dimmensional death-times of its Vietoris-Rips persistent homology, denoted as $\dag(M)$, are in the open interval $(0, \beta)$. \todo{again issue with the interval and the new definition}
+\end{definition}
+
+We can clearly see that the two definitions are equivalent if we remember the proposition \ref{prop:connected}, stating:
+
+\begin{repproposition}{prop:connected}
+For any distance $d$ on $X$, and $\beta \geq 0$, the partition corresponding to the connected components of $VR(\beta)$, denoted as $\pi_0(VR(\beta))$, coincides with the $\beta$-components of $X$.
+\end{repproposition}
+
+Hence, the steps to enforce this topological regularisation are:
+
+\begin{enumerate}
+    \item We construct each mini-batch, $B$, as a collection of n sub-batches, i.e., $B = (B_1, . . . , B_n)$. Each sub-batch consists of $b$ samples from the same class, so we end up having an effective batch size of $n\cdot b$.
+    \item We add the topological regularization cost function to our classification loss as follows
+    \begin{equation}
+    \label{eq:topo_reg}
+    \mathcal{L} = \mathcal{L}_{cls} + \lambda\mathcal{L}_\beta,\ \lambda > 0 
+    \end{equation}
+    where,
+    \begin{equation}
+    \label{eq:topo_loss}
+    \mathcal{L}_\beta = \sum_{i=1}^{n} \underbrace{\sum_{d \in \dag(B_i)} \abs{d-\beta}}_{\widetilde{\mathcal{L}}_\beta(B_i)}\,.
+    \end{equation}
+\end{enumerate}
+
+Lastly, it can be proven that this cost function is differentiable if we refine $\tilde{\mathcal{L}}_\beta(B_i)$ using a new indicator function under the mild assumption that the pairwise distances of elements in $B_i$ are unique. This assumption will be fulfilled almost surely if we consider that $Q$ is non-atomic, i.e., $Q(\phi(x) = z)=0$ for $x \in \mathcal{X}$, and $z \in \mathcal{Z}$. Furthermore, we will assume that $\mathcal{Z}=\mathbb{R}^m$ (i.e., we vectorized our latent space).
+
+\begin{theorem}[Topological regularization differentiability  \cite{hofer_connectivity-optimized_2019}]
+Let $M \subseteq \mathbb{R}^m$, with $\abs{M}$. Hence, $\widetilde{\mathcal{L}}_\beta(B_i)$ as described on eq. \ref{eq:topo_loss} can be rewritten as
+\[
+\widetilde{\mathcal{L}}_\beta(M) = \sum_{\{i,j\} \subset [b]} \abs{\beta - d(z_i, z_j)} \cdot \1{i}{j}(z_1, ..., z_b)\,,
+\]
+where
+\[
+\1{i}{j}(z_1, ..., z_b) = \left\{\begin{matrix}
+1 & \text{ if } d(z_i, z_j) \in \dag(M)\\
+0 & \text{ otherwise } \\
+\end{matrix}\right.\,.
+\]
+Furthermore, for $1\leq u \leq b$ and $1 \leq v \leq m$, the partial (sub-)derivative of  $\widetilde{\mathcal{L}}_\beta(M)$ w.r.t. the $v$-coordinate of $z_u$ exist and is given by
+\[
+\frac{\partial \widetilde{\mathcal{L}}_\beta(M)}{\partial z_{u,v}} = \sum_{\{i,j\} \subset [b]} \frac{\partial \abs{\beta - d(z_i, z_j)}}{\partial z_{u,v}} \cdot \1{i}{j}(z_1, ..., z_b)\,.
+\]
+\end{theorem}
 
 
 
