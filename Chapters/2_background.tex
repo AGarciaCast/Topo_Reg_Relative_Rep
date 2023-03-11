@@ -289,7 +289,7 @@ Every abstract simplicial complex of dimension $d$ admits a geometric realizatio
 Thus, abstract simplicial complexes are a faithful representation of (geometric) simplicial complexes.
 
 \subsection{Simplicial complexes built from point clouds}
-From the computational point of view, we find ourselves with the problem that we have a representation of a topological space through a finite discretization, and our objective is to be able to recover properties of the original topological space from this cloud of points. Hence, to give some structure to our distance space $(X,d)$, where $X$ is the dataset and $d: X \to \overline{\mathbb{R}}_+$ is a distance function, we will create a simplicial complex with the data points as vertices, and encoding some of the relevant information of $d$.
+From the computational point of view, we find ourselves with the problem that we have a representation of a topological space through a finite discretization, and our objective is to be able to recover properties of the original topological space from this cloud of points. Hence, to give some structure to our distance space $(X,d)$, where $X$ is the dataset and $d: X \to \closure{\mathbb{R}}_+$ is a distance function, we will create a simplicial complex with the data points as vertices, and encoding some of the relevant information of $d$.
 
 \subsubsection*{\v{C}ech complex}
 The \v{C}ech complex is defined from the intersection of a collection of disks (closed balls). The idea underlying this construction is that of the nerve of a collection, which is introduced below.
@@ -308,7 +308,7 @@ If $F$ is a finite collection of closed and convex subsets in Euclidean space, t
 \end{theorem}
 Therefore, by this theorem, we know that \v{C}ech complexes ``behaves similarly'' to subsets of $\mathbb{R}^d$ (since it is homopoty equivalent). This property will ensure us that our analysis of the topological properties obtained through homology groups of our simplicial complex will be the same as if we studied them on neighborhoods of our dataset $X\subset \mathbb{R}^d$ \cite{doherty_cech_2018}.\\
 
-We consider the particular case in which the sets of the family are the disks, i.e. closed balls, $D_r(x)\equiv\overline{B_r}(x)= \{y\in \mathbb{R}^d \mid d(x, y) \leq r\}$ in $\mathbb{R}^d$.
+We consider the particular case in which the sets of the family are the disks, i.e. closed balls, $D_r(x)\equiv\closure{B_r}(x)= \{y\in \mathbb{R}^d \mid d(x, y) \leq r\}$ in $\mathbb{R}^d$.
 
 \begin{definition}
 Let $X\subset \mathbb{R}^d$ be a finite set of points. We will call \emph{\v{C}ech complex} of $X$ of radius $r$ to the abstract simplicial complex
@@ -966,7 +966,7 @@ Where $\beta_p^{i, j-1}$ can be interpreted as the number of homology classes th
 
 
 \begin{definition}
-The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\mathbb{R}}^2$ of $f$ is the multiset of points $(a_i, a_j)$ with multiplicity $ \mu_p^{i, j}$ for all $0 \leq i < j \leq n$, union of diagonal points, $\Delta=\{(x, y) \in \overline{\mathbb{R }}^2 \mid y = x\}$, with infinite multiplicity.
+The \emph{persistence diagram} $\text{Dgm}(f) \subset \closure{\mathbb{R}}^2$ of $f$ is the multiset of points $(a_i, a_j)$ with multiplicity $ \mu_p^{i, j}$ for all $0 \leq i < j \leq n$, union of diagonal points, $\Delta=\{(x, y) \in \closure{\mathbb{R }}^2 \mid y = x\}$, with infinite multiplicity.
 \end{definition}
 
 \begin{figure}[!ht]
@@ -1049,7 +1049,7 @@ Therefore, there are multiple ways to be able to handle these multisets as input
 
 If we focus on \glsxtrfull{DL}, we can see some novel work that proposes to put the focus on the network instead of preprocessing the persistent diagram, as we have seen before. Currently, the two main approaches are creating layers that learn to embed the persistent diagram or utilizing a more complex network architecture that enables the use of multisets as input \cite{hensel_survey_2021}.\\
 
-However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, I will present an interesting use of \glsxtrshort{TDA} to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a \glsxtrshort{DL} context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples'' (see Figure \ref{fig:trojanTrain}).
+However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, We will present an interesting use of \glsxtrshort{TDA} to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a \glsxtrshort{DL} context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples'' (see Figure \ref{fig:trojanTrain}).
 
 \begin{figure}[ht!]
      \centering
@@ -1077,7 +1077,7 @@ However, in this project, we will not focus our attention on using the persisten
 
 Therefore, it has been shown that if we analyze the persistent homology of the neuron connectivity graph, we can extend the Hebbian learning rule of \textit{``fire together, wire together''} to higher-level connections (now the wiring is not only for adjacent nodes but also for path-connected nodes). Hence, as we can see in Figure \ref{fig:withTrojan}, a trojaned input on a trojaned network will generate a highly persistent cycle, which will connect the shallow and deep layers, short-cutting the proper classification. The reason we showcase this study is to remark on the fact that with some creativity and ingenuity, you can utilize persistent homology in more ways than to study the geometric characteristics of your dataset.\\
 
-As briefly explained in the Introduction, we are going to focus on the application of \glsxtrshort{TDA} to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space (see Figure \ref{fig:topoAuto}). By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.  
+As briefly explained in the Introduction, we are going to focus on the application of \glsxtrshort{TDA} to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space (see Figure \ref{fig:topoAuto}). By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use a simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.  
 
 
 \begin{figure}[ht!]
@@ -1099,7 +1099,7 @@ As briefly explained in the Introduction, we are going to focus on the applicati
 \end{figure}
 
 
-When it comes to classification tasks, we remark on the work of Chen \etal \cite{chen_topological_2018}, where they reduce the generalization error by imposing a simpler topology of the boundary (see Figure \ref{fig:boundReg}). The benefit of using this technique is the ability to have direct control of how much you want to suppress spurious topological structures based on their importance for the classification task, in contrast to other regularization techniques that obtain a simpler decision boundary as a proxy of variance reduction.
+When it comes to classification tasks, we remark on the work of Chen \etal \cite{chen_topological_2018}, where they reduce the generalization error by imposing a simpler topology of the boundary (see Figure \ref{fig:boundReg}). The benefit of using this technique is the ability to have direct control of how much direct control of the amount of suppressed spurious topological structures based on their importance for the classification task, in contrast to other regularization techniques that obtain a simpler decision boundary as a proxy of variance reduction.
 
 
 \subsubsection*{Topologically Densified Distributions}
@@ -1108,7 +1108,7 @@ The type of topological regularization that we will study in this project belong
 
 Let $(\mathcal{X}, P)$ be our input space with probability measure $P$, $\mathcal{Y} = [K] =\{1, ...,K\}$ the target space, and our network decomposed as $\gamma \circ \phi: \mathcal{X}  \to \mathcal{Y}$, where $\phi: \mathcal{X}  \to \mathcal{Z}$ is a feature extractor and $\gamma: \mathcal{Z}  \to \mathcal{Y}$ is the classification head. Moreover, since we are dealing with a classification task, we will define the function $c: \text{supp}(P) \to \mathcal{Y}$ that assigns to input its true label. Note that we can restrict the domain of this function to the support of $P$ without loss of generality due to the assumption of the manifold thesis \cite{fefferman_testing_2016}.
 
-Therefore, if our training set $S=\{x_1, ..., x_n\}$, is generated by $n$ i.i.d samples $X \sim P$, and the subset $S_{x\mid k} = \{x \in S \mid c(x)=k\}$ is its restriction to the class $k$, then
+Therefore, if our training set $S=\{x_1, ..., x_n\}$, is generated by $n$ i.i.d samples $S \sim P$, and the subset $S_{x\mid k} = \{x \in S \mid c(x)=k\}$ is its restriction to the class $k$, then
 
 \[
 \Omega_{cw\text{-}CR}= \sum_{k} \sum_{i\neq j} \left(c_{i,j}^{(k)}\right)^2\,, \text{ and }
@@ -1122,7 +1122,7 @@ v_{i}^{(k)} =c_{i,i}^{(k)}\,.
 \end{gather*}
 
 \begin{remark}
-The cw-VR and cw-CR regularization techniques resemble what we can obtain by applying the KL divergence with some prior distribution of the latent space  $\mathcal{Z}=\mathbb{R}^m$ \footnote{For the topological densified distribution technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\phi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, $Q(B)= P(\phi^{-1}(B))$). However, even in image classification, we tend to vectorize our latent space before feeding it to an MLP-based classification head $\gamma$.}, as done in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, this bayesian setup can be more flexible than the two previously proposed since, in the selection of the prior, we can take into account more of the knowledge that we have of the latent space. Nevertheless, it would require us to have an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\phi: \mathcal{X} \to \mathcal{Z}$ from $P$.
+The cw-VR and cw-CR regularization techniques resemble what we can obtain by applying the KL divergence with some prior distribution of the latent space  $\mathcal{Z}=\mathbb{R}^m$ \footnote{For the topological densified distribution technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\phi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, $Q(B)= P(\phi^{-1}(B))$). However, even in image classification, we tend to vectorize our latent space before feeding it to an MLP-based classification head $\gamma$, so it is not a big assumption considering $\mathcal{Z}=\mathbb{R}^m$.}, as done in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, this bayesian setup can be more flexible than the two previously proposed since, in the selection of the prior, we can take into account more of the knowledge that we have of the latent space. Nevertheless, it would require us to have an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\phi: \mathcal{X} \to \mathcal{Z}$ from $P$.
 \end{remark}
 
 As we can see, these statistical and probabilistic approaches have been successful, but they mainly rely  on empirical evidence to justify how they can directly reduce the generalization error \cite{hofer_densified_2021}. However, Hofer \etal \cite{hofer_densified_2021} proposes a new internal regularization method that has been mathematically proven that, under mild assumptions, we can ensure a reduction in the generalization error. To be precise, we define generalization error as follows:
@@ -1153,11 +1153,11 @@ then
 \]
 \end{lemma}
 
-In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view \footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq. \ref{eq:concentration} of Lemma \ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\phi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\overline{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\overline{B_r}(z_i)$, $Q_k(\overline{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
+In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view \footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq. \ref{eq:concentration} of Lemma \ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\phi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\closure{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\closure{B_r}(z_i)$, $Q_k(\closure{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
 
 Now that we know the benefits of obtaining mass concentration over some specific reference set $M \subseteq \mathcal{Z}$, we will see that we can provably enforce this property by applying some topological constraint on $Q_k$ in a process called \emph{topological densification}. To be precise, as we can see in Figure \ref{fig:densiScheme}, this topological constraint will give us a non-trivial lower bound on $Q_k(M_{l\cdot \epsilon})$ in terms of $Q_k(M)$, where $M_{l\cdot \epsilon}$ represents the $l\cdot \epsilon$-extension of $M$ for any $\epsilon>0$ and $l\in \mathbb{N}$, i.e.
 \[
-M_{l\cdot \epsilon} = \bigcup_{z\in M} \overline{B_{l\cdot \epsilon}}(z)\,.
+M_{l\cdot \epsilon} = \bigcup_{z\in M} \closure{B_{l\cdot \epsilon}}(z)\,.
 \]
 
 \begin{figure}[!ht]
@@ -1181,7 +1181,7 @@ Hofer \etal proves that: \emph{If a measure is $(b, c_\beta)$-connected, then ma
 Therefore, based on this property, we will enforce that for each batch $B$, the subsets $B_k=\{b \in B \mid c(b)=k\}$ are $\beta$-connected. In order to measure how close they are to be $\beta$-connected and to have a numerical cost function penalizing these deviations, we will restate $\beta$-connectivity using persistent homology.
 
 \begin{definition}
-Let $\beta>0$. A set $M\subseteq \mathcal{Z}$ is \emph{$\beta$-connected} iff all $0$-dimmensional death-times of its Vietoris-Rips persistent homology, denoted as $\dag(M)$, are in the open interval $(0, \beta)$. \todo{again issue with the interval and the new definition}
+Let $\beta>0$. A set $M\subseteq \mathcal{Z}$ is \emph{$\beta$-connected} iff all $0$-dimmensional death-times of its Vietoris-Rips persistent homology, denoted as $\dag(M)$, are in the open interval $(0, \beta]$. 
 \end{definition}
 
 We can clearly see that the two definitions are equivalent if we remember the proposition \ref{prop:connected}, stating:
@@ -1225,6 +1225,83 @@ Furthermore, for $1\leq u \leq b$ and $1 \leq v \leq m$, the partial (sub-)deriv
 \frac{\partial \widetilde{\mathcal{L}}_\beta(M)}{\partial z_{u,v}} = \sum_{\{i,j\} \subset [b]} \frac{\partial \abs{\beta - d(z_i, z_j)}}{\partial z_{u,v}} \cdot \1{i}{j}(z_1, ..., z_b)\,.
 \]
 \end{theorem}
+
+\subsection{Representation Comparison \& Model Stitching \todo{I don't know if this title is a good fit}}
+\label{sec:repLearn}
+
+\textbf{intro:} say that we still dont know much about the latent space of the network. State that representation learning tries to either study how to "automatically" obtain good representations of our dataset (instead of tailored features such as SWIFT in CV). Also in this field and in general in ML there is an interest to understand more about about our latent spaces, and a way to asses some properties of the latent space will requiere us to be able to compare one to another.\\
+
+Therefore, we are in the setup where we want to compare the layer $L_1$ of network $f_\theta$ with the layer $L_2$ of the network $g_\phi$. Notice that the dimensionality of the two networks can be completely different. For simplicity, we will suppose w.l.o.g that we can vectorize the output of both layers into $\mathbb{R}^{d_1}$ and $\mathbb{R}^{d_2}$, respectively, and that $d_1 \leq d_2$.
+
+A common practice when comparing layers of different networks is to compare the activations of the neurons for a test batch of $n$ samples. Hence, if we let $X\in \mathbb{R}^{d_1 \times n}, Y \in \mathbb{R}^{d_2 \times n}$ be the matrices containing the activations of the two layers for a sample set of $n$ points, then we can define the following similarity metrics:
+
+\begin{itemize}
+    \item \textbf{CCA:} a statistical way of comparing the activation layers is by using canonical correlation analysis (CCA). This method tries to find the best low-dimensional linear projections of $X$ and $Y$, such as we maximize its correlation, i.e., we wish to find the vectors $\mathbf{w} \in \mathbb{R}^{d_1}$, $\mathbf{s} \in \mathbb{R}^{d_2}$ such as we maximize
+    \[
+    \rho = \text{corr}(\mathbf{w}^T X, \mathbf{s}^T Y ) = \frac{\langle \mathbf{w}^T X, \mathbf{s}^T Y \rangle}{\norm{\mathbf{w}^T X} \norm{\mathbf{s}^T Y}}\,.
+    \]
+    As we can see in \cite{morcos_insights_2018}, if we assume that the rows of $X$ and $Y$ are centered and letting $\Sigma_{X, X}= \text{cov}(X,X)$, $\Sigma_{Y, Y}= \text{cov}(Y,Y)$, and $\Sigma_{X, Y}= \text{cov}(X, Y)$, then we can reformulate the previous equation as
+
+    \begin{align*}
+    \max \rho &= \max_{\mathbf{w, s}} \frac{\mathbf{w}^T \Sigma_{X,Y} \mathbf{s}}{\sqrt{\mathbf{w}^T \Sigma_{X, X} \mathbf{w}} \sqrt{\mathbf{s}^T \Sigma_{Y, Y} \mathbf{s}}}\\
+    &= \max_{\mathbf{u, v}} \frac{\mathbf{u}^T \Sigma_{X,X}^{-1/2} \Sigma_{X,Y} \Sigma_{Y,Y}^{-1/2} \mathbf{v}}{\sqrt{\mathbf{u}^T \mathbf{u}} \sqrt{\mathbf{v}^T \mathbf{v}}} && \left( \mathbf{w}= \Sigma_{X,X}^{-1/2} \mathbf{u} \text{ and } \mathbf{s} =  \Sigma_{Y,Y}^{-1/2} \mathbf{v} \right) 
+    \end{align*}
+
+    This maximization problem can be solved with singular value decomposition \cite{morcos_insights_2018}: $U \Lambda V =  \mathbf{u}^T \Sigma_{X,X}^{-1/2} \Sigma_{X,Y} \Sigma_{Y,Y}^{-1/2} \mathbf{v}$, being $\max \rho \equiv \rho_1$ the first singular value, and $\mathbf{u}^{(1)}, \mathbf{v}^{(1)}$ its corresponding left and right singular vectors. As we know from properties of the SVD, the second highest correlation under the constraint that $\langle \mathbf{u}^{(1)}, \mathbf{u}^{(2)} \rangle=0$, $\langle \mathbf{v}^{(1)}, \mathbf{v}^{(2)} \rangle=0$ is given by the second highest singular value $\rho_2$ and its corresponding left and right singular vectors. Hence, an intuitive way to assess the similarity between network representations is by the following summary statistics:
+    \[
+        R_{CCA}^2 = \frac{\sum_{i=1}^{d_1}\rho_i^2}{d_1},\text{ and }\ 
+        \bar{\rho}_{CCA} = \frac{\sum_{i=1}^{d_1}\rho_i}{d_1}\,.
+    \]
+
+    However, it has been seen that these metrics are sensitive to perturbations when the condition number of $X$ or $Y$ is large \cite{kornblith_similarity_2019}. Therefore, we have the following two variations that try to increase the robustness:
+    \begin{itemize}
+        \item \textbf{SVCCA:} a simple way to avoid these perturbations is to restrict the number of singular values used when computing the metric.
+        \item \textbf{PWCCA:} a less harsh way to reduce the contribution of ``less important'' singular components is by having a weighted average, i.e.
+        \[
+        \rho_{PW} = \frac{\sum_{i=1}^{d_1}\alpha_i \rho_i}{\sum_{i=1}\alpha_i},\ \alpha_i = \sum_j \abs{\langle 
+\mathbf{h}_i, \mathbf{x}_j \rangle}
+        \]
+        where $\mathbf{h}_i = (\mathbf{u}^{(i)})^T\Sigma_{X, X}^{-1/2}X $ and $\mathbf{x}_j$ is the $j^{\text{th}}$ row of $X$. These weights, $\alpha_i$, are based on the hypothesis that CCA vectors that account for a larger proportion of the original outputs are likely to be more important to the underlying representation. \cite{morcos_insights_2018}.
+    \end{itemize}
+
+    \item \textbf{CKA}: this method proposes that instead of comparing directly the covariance of the (projected) activations, as done in CCA, we could first compute the similarity matrices of the activations in each representation separately and then compare this similarity matrices \cite{kornblith_similarity_2019}. Hence, if we use the standard inner product, then our similarity metric between the layers $L_1$ and $L_2$ will be $\langle \text{vec}(X^T X), \text{vec}(Y^T Y) \rangle$. Furthermore, we will see that we can generalize this metric to any inner product in a reproducing kernel Hilbert Space (RKHS). For that, we will first review the following property of the Frobenious norm: let $A \in \mathbb{R}^{n \times m}$, then
+    \[
+    \norm{A}_F = \sqrt{\sum_{i=1}^n\sum_{j=1}^m A_{ij}^2} = \sqrt{\text{tr}(A^TA)}\,.
+    \]
+    Moreover, if we have $A=Y X^T$, then
+    \begin{align*}
+    \norm{Y X^T}_F^2 &= \text{tr}(X Y^T Y X^T) \\
+    &= \text{tr}(X^T X Y^T Y) &&(\text{tr}(AB) = \text{tr}(BA))\\
+    &= \langle \text{vec}(X^TX), \text{vec}(Y^TY) \rangle && (X^TX, Y^TY \text{symmetric matrices})
+    \end{align*}
+    
+    So if we further assume that the rows of $X$ and $Y$ are centered, then this last result states that the similarity between the similarity matrices of the activations of each layer is equal to the squared Frobenious norm of the covariance matrix between the activation matrices, i.e., $\norm{\Sigma_{X, Y}}_F^2$.\\
+
+    The \emph{Hilbert-Schmidt Independence Criterion} \cite{gretton_measuring_2005} will generalize the previous statement to any inner product in an RKHS as follows:
+    \[
+    \text{HSIC}(K, L) = \frac{1}{(n-1)^2}\text{tr}(KHLH)\,,
+    \]
+    where $K$ and $L$ are the kernel matrices such as $K_{ij}=k(\mathbf{x}_i, \mathbf{x}_j)$, $L_{ij}=l(\mathbf{y}_i, \mathbf{y}_j)$ for any kernel $k,l$, and $H$ is a centering matrix $H_n= I_n - \frac{1}{n}\mathbf{1}\mathbf{1}^T$. 
+
+    \begin{remark}
+        If we use linear kernels $k(\mathbf{x}, \mathbf{y})=l(\mathbf{x}, \mathbf{y})=\langle\mathbf{x}, \mathbf{y}\rangle$, then $\text{HSIC}(X^T X,Y^T Y) = \norm{\Sigma_{X, Y}}_F^2$
+    \end{remark}
+
+    However, in order to make HSIC invariant to isotropic scaling, we will normalize it. This normalized index is known as centered kernel alignment \cite{kornblith_similarity_2019}:
+    \begin{equation}
+    \label{eq:CKA}
+    \text{CKA}(K, L) = \frac{\text{HSIC}(K,L)}{\sqrt{\text{HSIC}(K,L) \cdot \text{HSIC}(K,L)}}\,.    
+    \end{equation}
+
+
+    If we have a more in-depth look at CKA with a linear kernel, denoted as Linear CKA, we can see that it will resemble CCA weighted by the eigenvalues of the corresponding eigenvectors \cite{kornblith_similarity_2019}. Hence, in this case, CKA encodes similar information to SVCCA and PWCCA, but we will not require computing any matrix decomposition.
+    
+    Moreover, the fact that CKA is defined for any kernel in an RKHS gives us more flexibility than the previous metrics. For instance, if we use the RBF kernel $k(\mathbf{x}, \mathbf{y}) = \exp(-\norm{\mathbf{x}-\mathbf{y}}_2^2/(2\sigma^2))$, we can control the extent to which similarity of small distances is emphasized over large distances \cite{kornblith_similarity_2019}, by varying the bandwidth $\sigma$.
+    
+    \item \textbf{Others:} The CKA is the most used similarity metric for this task. However, we can find other more complex methods to compare two latent representations, such as maximum matching similarity \cite{wang_towards_2018} or representation topology divergence (RTD) \cite{barannikov_representation_2022}. The former tries to compare the two layers by the subspaces generated by activation vectors of a subset of neurons, while the latter will try to compare the topological characteristics of the latent spaces similar to the Topological Autoencoder with the input and latent space.
+    
+\end{itemize}
+
 
 
 
