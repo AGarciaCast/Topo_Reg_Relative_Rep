@@ -17,12 +17,30 @@ Furthermore, as shown in \cite{hensel_survey_2021}, there is a rising interest i
 
 In this case, we are going to focus on the second option, i.e., see how we can impose certain properties by what we will call ``topological regularization''. Mainly we will develop the work proposed by Hofer \etal \cite{hofer_densified_2021}, where they prove that we can increase the generalization capabilities by imposing topological densification of each class distribution. Hence, the main idea is to condensate the density function of each class in the latent space so there is a better chance to have each class distribution contained in its decision region. The authors of the paper observed that we could impose that property by regularizing the size of the connected components using novel \glsxtrshort{TopoML} techniques.\\
 
-One of the main fields that have studied the properties of latent spaces of \glsxtrshort{ML} models is Representation Learning. Furthermore, one of the main topics of interest in this field is to analyze the similarities of latent representation between networks. It has been shown in \cite{moschella_relative_2022} that by using ``relative latent representations'' we can increase the similarities of latent spaces. The relative latent representation is obtained as follows: let $X\subset\mathbb{R}^n$ a dataset, $\phi: \mathbb{R}^n \to \mathbb{R}^m$ the feature extractor component of your network, and $A=\{a_1, ..., a_k\}\subset\mathbb{R}^n$ a set of points called \textit{anchors}. Then for any similarity function $sim$ we define the relative representation  of a point $x\in X$  w.r.t. $A$ as
+One of the main fields that have studied the properties of latent spaces of \glsxtrshort{ML} models is Representation Learning. Furthermore, one of the main topics of interest in this field is to analyze the similarities of latent representation between networks. It has been shown in \cite{moschella_relative_2022} that by using ``relative latent representations'' we can increase the similarities of latent spaces. The relative latent representation is obtained as follows: let $S\subset\mathcal{X}$ a dataset, $\varphi: \mathcal{X} \to \mathcal{Z}$ the feature extractor component of your network, and $\mathcal{A}=\{a_1, ..., a_k\}\subset\mathcal{X}$ a set of points called \emph{anchors}. Then for any similarity function $sim$ we define the relative representation of a point $x\in S$  w.r.t. $\mathcal{A}$ as
 \[
-(sim(\phi(a_1), \phi(x)), ..., sim(\phi(a_k), \phi(x)))\in \mathbb{R}^k.
+(sim(\varphi(x), \varphi(a_1)), ..., sim(\varphi(x)), \varphi(a_k))\in \mathbb{R}^k.
 \]
 
-Furthermore, the authors showcased that this technique allows zero-shot stitching, i.e., without additional fine-tuning, to be able to combine models with different architectures, datasets, or seeds, as shown in Figure []\todo{make a figure of zero-shot}.\\
+Furthermore, the authors showcased that this technique allows zero-shot stitching, i.e., without additional fine-tuning, to be able to combine models with different architectures, datasets, or seeds, as shown in Figure \ref{fig:crossDomainScheme_intro}.\\
+
+\begin{figure}[ht!]
+     \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/bg/relativeTrainScheme.pdf}
+        \caption{Train w/ relative transformations.}
+         \label{fig:relTrainScheme_intro}
+     \end{subfigure}\hfill
+      \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=0.9\textwidth]{figures/bg/relativeStitchScheme.pdf}
+        \caption{Model stitching}
+         \label{fig:relStitchScheme_intro}
+     \end{subfigure}
+    \caption{Cross-domain model stitching training and testing}
+    \label{fig:crossDomainScheme_intro}
+\end{figure}
 
 Further details on the mathematical background and the described methods can be found in Chapter~\ref{ch:background}.
 

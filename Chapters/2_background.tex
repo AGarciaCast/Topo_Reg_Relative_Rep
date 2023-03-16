@@ -289,7 +289,7 @@ Every abstract simplicial complex of dimension $d$ admits a geometric realizatio
 Thus, abstract simplicial complexes are a faithful representation of (geometric) simplicial complexes.
 
 \subsection{Simplicial complexes built from point clouds}
-From the computational point of view, we find ourselves with the problem that we have a representation of a topological space through a finite discretization, and our objective is to be able to recover properties of the original topological space from this cloud of points. Hence, to give some structure to our distance space $(X,d)$, where $X$ is the dataset and $d: X \to \closure{\mathbb{R}}_+$ is a distance function, we will create a simplicial complex with the data points as vertices, and encoding some of the relevant information of $d$.
+From the computational point of view, we find ourselves with the problem that we have a representation of a topological space through a finite discretization, and our objective is to be able to recover properties of the original topological space from this cloud of points. Hence, to give some structure to our distance space $(X,d)$, where $X$ is the dataset and $d: X \to \overline{\mathbb{R}}_+$ is a distance function, we will create a simplicial complex with the data points as vertices, and encoding some of the relevant information of $d$.
 
 \subsubsection*{\v{C}ech complex}
 The \v{C}ech complex is defined from the intersection of a collection of disks (closed balls). The idea underlying this construction is that of the nerve of a collection, which is introduced below.
@@ -308,7 +308,7 @@ If $F$ is a finite collection of closed and convex subsets in Euclidean space, t
 \end{theorem}
 Therefore, by this theorem, we know that \v{C}ech complexes ``behaves similarly'' to subsets of $\mathbb{R}^d$ (since it is homopoty equivalent). This property will ensure us that our analysis of the topological properties obtained through homology groups of our simplicial complex will be the same as if we studied them on neighborhoods of our dataset $X\subset \mathbb{R}^d$ \cite{doherty_cech_2018}.\\
 
-We consider the particular case in which the sets of the family are the disks, i.e. closed balls, $D_r(x)\equiv\closure{B_r}(x)= \{y\in \mathbb{R}^d \mid d(x, y) \leq r\}$ in $\mathbb{R}^d$.
+We consider the particular case in which the sets of the family are the disks, i.e. closed balls, $D_r(x)\equiv\overline{B_r}(x)= \{y\in \mathbb{R}^d \mid d(x, y) \leq r\}$ in $\mathbb{R}^d$.
 
 \begin{definition}
 Let $X\subset \mathbb{R}^d$ be a finite set of points. We will call \emph{\v{C}ech complex} of $X$ of radius $r$ to the abstract simplicial complex
@@ -418,7 +418,7 @@ Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/bg/witnessCons.png} 
-    \caption{Witness complex for a set  dataset of 11 points using a subset of 5 landmarks points and radius $r$. Source: \cite{medbouhi_towards_2022}}
+    \caption{Witness complex for a set  dataset of 11 points using a subset of 5 landmarks points and radius $r$. Adapted from: \cite{medbouhi_towards_2022}}
 \label{fig:witnessCons}
 \end{figure}
 
@@ -898,7 +898,7 @@ When the points $x_1$ and $x_2$ are paired following this method, we define the 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/bg/diagramaR.png} 
-\caption{Pairing of the critical points of the function on the left represented as points in the persistence diagram on the right. Modified from: \cite{goodman_persistent_2008}}
+\caption{Pairing of the critical points of the function on the left represented as points in the persistence diagram on the right. Adapted from: \cite{goodman_persistent_2008}}
 \label{fig:persistenceR}
 \end{figure}
 
@@ -975,7 +975,7 @@ Where $\beta_p^{i, j-1}$ can be interpreted as the number of homology classes th
 
 
 \begin{definition}
-The \emph{persistence diagram} $\text{Dgm}(f) \subset \closure{\mathbb{R}}^2$ of $f$ is the multiset of points $(a_i, a_j)$ with multiplicity $ \mu_p^{i, j}$ for all $0 \leq i < j \leq n$, union of diagonal points, $\Delta=\{(x, y) \in \closure{\mathbb{R }}^2 \mid y = x\}$, with infinite multiplicity.
+The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\mathbb{R}}^2$ of $f$ is the multiset of points $(a_i, a_j)$ with multiplicity $ \mu_p^{i, j}$ for all $0 \leq i < j \leq n$, union of diagonal points, $\Delta=\{(x, y) \in \overline{\mathbb{R }}^2 \mid y = x\}$, with infinite multiplicity.
 \end{definition}
 
 \begin{figure}[!ht]
@@ -1024,7 +1024,7 @@ We have seen in Section \ref{sec:tda} that Persistent Homology is a great tool t
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.75\textwidth]{figures/bg/pipelineTDA.png} 
-\caption{Standard TDA pipeline. Modified from: \cite{berwald_mathematics_2019}}
+\caption{Standard TDA pipeline. Adapted from: \cite{berwald_mathematics_2019}}
 \label{fig:tdaPipe}
 \end{figure}
 
@@ -1115,7 +1115,7 @@ When it comes to classification tasks, we remark on the work of Chen \etal \cite
 
 The type of topological regularization that we will study in this project belongs to the family of internal representation regularization. The objective of this type of regularization technique is to impose certain kinds of characteristics that can be beneficial to the classification task. As an example, we can find cw-VR and cw-CR \cite{choi_utilizing_2019}, which try to reduce the class-wise variance and correlation of the latent space representation.
 
-Let $(\mathcal{X}, P)$ be our input space with probability measure $P$, $\mathcal{Y} = [K] =\{1, ...,K\}$ the target space, and our network decomposed as $\gamma \circ \phi: \mathcal{X}  \to \mathcal{Y}$, where $\phi: \mathcal{X}  \to \mathcal{Z}$ is a feature extractor and $\gamma: \mathcal{Z}  \to \mathcal{Y}$ is the classification head. Moreover, since we are dealing with a classification task, we will define the function $c: \text{supp}(P) \to \mathcal{Y}$ that assigns to input its true label. Note that we can restrict the domain of this function to the support of $P$ without loss of generality due to the assumption of the manifold thesis \cite{fefferman_testing_2016}.
+Let $(\mathcal{X}, P)$ be our input space with probability measure $P$, $\mathcal{Y} = [K] =\{1, ...,K\}$ the target space, and our network decomposed as $\gamma \circ \varphi: \mathcal{X}  \to \mathcal{Y}$, where $\varphi: \mathcal{X}  \to \mathcal{Z}$ is a feature extractor and $\gamma: \mathcal{Z}  \to \mathcal{Y}$ is the classification head. Moreover, since we are dealing with a classification task, we will define the function $c: \text{supp}(P) \to \mathcal{Y}$ that assigns to input its true label. Note that we can restrict the domain of this function to the support of $P$ without loss of generality due to the assumption of the manifold thesis \cite{fefferman_testing_2016}.
 
 Therefore, if our training set $S=\{x_1, ..., x_n\}$, is generated by $n$ i.i.d samples $S \sim P$, and the subset $S_{x\mid k} = \{x \in S \mid c(x)=k\}$ is its restriction to the class $k$, then
 
@@ -1125,13 +1125,13 @@ Therefore, if our training set $S=\{x_1, ..., x_n\}$, is generated by $n$ i.i.d 
 \]
 where we define the class mean vector, covariance matrix, and variance vector as
 \begin{gather*}
-\mu_i^{(k)} = \frac{1}{\abs{\phi(S_{x\mid k})}} \sum_{z \in \phi(S_{x\mid k})} z_i\,,\\
-c_{i,j}^{(k)}= \frac{1}{\abs{\phi(S_{x\mid k})}} \sum_{z \in \phi(S_{x\mid k})} (z_i-\mu_i^{(k)})(z_j-\mu_j^{(k)})\,,\\
+\mu_i^{(k)} = \frac{1}{\abs{\varphi(S_{x\mid k})}} \sum_{z \in \varphi(S_{x\mid k})} z_i\,,\\
+c_{i,j}^{(k)}= \frac{1}{\abs{\varphi(S_{x\mid k})}} \sum_{z \in \varphi(S_{x\mid k})} (z_i-\mu_i^{(k)})(z_j-\mu_j^{(k)})\,,\\
 v_{i}^{(k)} =c_{i,i}^{(k)}\,.
 \end{gather*}
 
 \begin{remark}
-The cw-VR and cw-CR regularization techniques resemble what we can obtain by applying the KL divergence with some prior distribution of the latent space  $\mathcal{Z}=\mathbb{R}^m$ \footnote{For the topological densified distribution technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\phi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, $Q(B)= P(\phi^{-1}(B))$). However, even in image classification, we tend to vectorize our latent space before feeding it to an MLP-based classification head $\gamma$, so it is not a big assumption considering $\mathcal{Z}=\mathbb{R}^m$.}, as done in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, this bayesian setup can be more flexible than the two previously proposed since, in the selection of the prior, we can take into account more of the knowledge that we have of the latent space. Nevertheless, it would require us to have an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\phi: \mathcal{X} \to \mathcal{Z}$ from $P$.
+The cw-VR and cw-CR regularization techniques resemble what we can obtain by applying the KL divergence with some prior distribution of the latent space  $\mathcal{Z}=\mathbb{R}^m$ \footnote{For the topological densified distribution technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\varphi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, $Q(B)= P(\varphi^{-1}(B))$). However, even in image classification, we tend to vectorize our latent space before feeding it to an MLP-based classification head $\gamma$, so it is not a big assumption considering $\mathcal{Z}=\mathbb{R}^m$.}, as done in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, this bayesian setup can be more flexible than the two previously proposed since, in the selection of the prior, we can take into account more of the knowledge that we have of the latent space. Nevertheless, it would require us to have an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\varphi: \mathcal{X} \to \mathcal{Z}$ from $P$.
 \end{remark}
 
 As we can see, these statistical and probabilistic approaches have been successful, but they mainly rely  on empirical evidence to justify how they can directly reduce the generalization error \cite{hofer_densified_2021}. However, Hofer \etal \cite{hofer_densified_2021} proposes a new internal regularization method that has been mathematically proven that, under mild assumptions, we can ensure a reduction in the generalization error. To be precise, we define generalization error as follows:
@@ -1146,11 +1146,11 @@ For a classifier $h: (\mathcal{X}, P) \to \mathcal{Y}$, we define the \emph{gene
 \]
 \end{definition}
 
-For this purpose, we will use the conditional push-forward probability on $\mathcal{Z}$, which can be defined as $Q_k(\sigma)\equiv Q(\sigma \mid C_k) = Q(\sigma \cap C_k)/Q(C_k)$, for any class $k\in \mathcal{Y}$, event $\sigma \in \mathcal{B}$, and internal class representation $C_k=\phi(c^{-1}(k))$. Hence, we will see that if we can ensure to set an upper bound to each of the conditional probabilities of miss-classifying the decision region of that given class, then we will reduce the generalization error. This statement is formalized in the following lemma:
+For this purpose, we will use the conditional push-forward probability on $\mathcal{Z}$, which can be defined as $Q_k(\sigma)\equiv Q(\sigma \mid C_k) = Q(\sigma \cap C_k)/Q(C_k)$, for any class $k\in \mathcal{Y}$, event $\sigma \in \mathcal{B}$, and internal class representation $C_k=\varphi(c^{-1}(k))$. Hence, we will see that if we can ensure to set an upper bound to each of the conditional probabilities of miss-classifying the decision region of that given class, then we will reduce the generalization error. This statement is formalized in the following lemma:
 
 \begin{lemma}[\cite{hofer_densified_2021}]
 \label{lem:genErr}
-For any class $k\in \mathcal{Y} = [K]$, let $C_k=\phi(c^{-1}(k))$ be its internal representation, and $D_k= \gamma^{-1}(k)$ be its decision region in $\mathcal{Z}$ w.r.t $\gamma$. If exists $\epsilon >0$ s.t.
+For any class $k\in \mathcal{Y} = [K]$, let $C_k=\varphi(c^{-1}(k))$ be its internal representation, and $D_k= \gamma^{-1}(k)$ be its decision region in $\mathcal{Z}$ w.r.t $\gamma$. If exists $\epsilon >0$ s.t.
 \begin{equation}
 \label{eq:concentration}
  \forall k\ 1-Q_k(D_k) \leq \epsilon\,,   
@@ -1158,15 +1158,15 @@ For any class $k\in \mathcal{Y} = [K]$, let $C_k=\phi(c^{-1}(k))$ be its interna
 
 then 
 \[
-\E_{X \sim P}[\1{\gamma \circ \phi}{c}(X)] \leq K\epsilon\,. 
+\E_{X \sim P}[\1{\gamma \circ \varphi}{c}(X)] \leq K\epsilon\,. 
 \]
 \end{lemma}
 
-In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view \footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq. \ref{eq:concentration} of Lemma \ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\phi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\closure{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\closure{B_r}(z_i)$, $Q_k(\closure{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
+In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view \footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq. \ref{eq:concentration} of Lemma \ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\varphi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\overline{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\overline{B_r}(z_i)$, $Q_k(\overline{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
 
 Now that we know the benefits of obtaining mass concentration over some specific reference set $M \subseteq \mathcal{Z}$, we will see that we can provably enforce this property by applying some topological constraint on $Q_k$ in a process called \emph{topological densification}. To be precise, as we can see in Figure \ref{fig:densiScheme}, this topological constraint will give us a non-trivial lower bound on $Q_k(M_{l\cdot \epsilon})$ in terms of $Q_k(M)$, where $M_{l\cdot \epsilon}$ represents the $l\cdot \epsilon$-extension of $M$ for any $\epsilon>0$ and $l\in \mathbb{N}$, i.e.
 \[
-M_{l\cdot \epsilon} = \bigcup_{z\in M} \closure{B_{l\cdot \epsilon}}(z)\,.
+M_{l\cdot \epsilon} = \bigcup_{z\in M} \overline{B_{l\cdot \epsilon}}(z)\,.
 \]
 
 \begin{figure}[!ht]
@@ -1215,7 +1215,7 @@ Hence, the steps to enforce this topological regularisation are:
     \end{equation}
 \end{enumerate}
 
-Lastly, it can be proven that this cost function is differentiable if we refine $\tilde{\mathcal{L}}_\beta(B_i)$ using a new indicator function under the mild assumption that the pairwise distances of elements in $B_i$ are unique. This assumption will be fulfilled almost surely if we consider that $Q$ is non-atomic, i.e., $Q(\phi(x) = z)=0$ for $x \in \mathcal{X}$, and $z \in \mathcal{Z}$. Furthermore, we will assume that $\mathcal{Z}=\mathbb{R}^m$ (i.e., we vectorized our latent space).
+Lastly, it can be proven that this cost function is differentiable if we refine $\tilde{\mathcal{L}}_\beta(B_i)$ using a new indicator function under the mild assumption that the pairwise distances of elements in $B_i$ are unique. This assumption will be fulfilled almost surely if we consider that $Q$ is non-atomic, i.e., $Q(\varphi(x) = z)=0$ for $x \in \mathcal{X}$, and $z \in \mathcal{Z}$. Furthermore, we will assume that $\mathcal{Z}=\mathbb{R}^m$ (i.e., we vectorized our latent space).
 
 \begin{theorem}[Topological regularization differentiability  \cite{hofer_connectivity-optimized_2019}]
 Let $M \subseteq \mathbb{R}^m$, with $\abs{M}$. Hence, $\widetilde{\mathcal{L}}_\beta(B_i)$ as described on eq. \ref{eq:topo_loss} can be rewritten as
@@ -1245,12 +1245,14 @@ We can see in Figure \ref{fig:attrac} a representation of the mass attraction th
     \label{fig:attrac}
 \end{figure}
 
-\subsection{Representation Comparison \& Model Stitching \todo{I don't know if this title is a good fit}}
+\subsection{Representation Comparison \& Model Stitching}
 \label{sec:repLearn}
 
-\textbf{intro:} say that we still dont know much about the latent space of the network. State that representation learning tries to either study how to "automatically" obtain good representations of our dataset (instead of tailored features such as SWIFT in CV). Also in this field and in general in ML there is an interest to understand more about about our latent spaces, and a way to asses some properties of the latent space will requiere us to be able to compare one to another.\\
+In multiple areas in \glsxtrshort{ML}, there has been a great interest in obtaining a function that is capable to extract the most relevant features of our inputs. We can see that the field that tackles all these interests, called Representation Learning, had existed before the use of DL. For instance, in Computer Vision, multiple algorithms are based on the fact that we can extract these relevant features and descriptors, such as SWIFT descriptors. These "classical" feature extractors were hand-made in the sense that they had to be designed specifically for the domain they will be used for (e.g., using Haar features for face detection). However, nowadays, we have a new paradigm in representation learning since DL networks can be seen as a complex feature extractor composed of a task-specific map. Nevertheless, even if we can see that this new approach can obtain state-of-the-art results, we still do not know much about the limits of the properties of these feature extractors. Some reasonable questions that we could have are: \textit{How unique are the learned features of our model? How do we compare the latent spaces of two different networks in order to assess their similarity? What do we refer to when we say that two layers act similarly?} \todo{add citations}
 
-Therefore, we are in the setup where we want to compare the layer $L_1$ of network $f_\theta$ with the layer $L_2$ of the network $g_\phi$. Notice that the dimensionality of the two networks can be completely different. For simplicity, we will suppose w.l.o.g that we can vectorize the output of both layers into $\mathbb{R}^{d_1}$ and $\mathbb{R}^{d_2}$, respectively, and that $d_1 \leq d_2$.
+In this subsection, we will try to explain some of the most relevant methods used to try to answer these questions, as well as some of the possible benefits that can give us knowing this information about our networks.\\
+
+Therefore, we are in the setup where we want to compare the layer $L_1$ of network $f_A$ with the layer $L_2$ of the network $f_B$. Notice that the dimensionality of the two networks can be completely different. For simplicity, we will suppose w.l.o.g that we can vectorize the output of both layers into $\mathbb{R}^{d_1}$ and $\mathbb{R}^{d_2}$, respectively, and that $d_1 \leq d_2$.
 
 A common practice when comparing layers of different networks is to compare the activations of the neurons for a test batch of $n$ samples. Hence, if we let $X\in \mathbb{R}^{d_1 \times n}, Y \in \mathbb{R}^{d_2 \times n}$ be the matrices containing the activations of the two layers for a sample set of $n$ points, then we can define the following similarity metrics:
 
@@ -1322,17 +1324,89 @@ A common practice when comparing layers of different networks is to compare the 
 \end{itemize}
 
 
-By using these similarity metrics, we can study which are the cases where our networks tend to be more similar to one another. Some of the most relevant properties are that wider networks converge, networks with low generalization error converge to more similar solutions when trained with the same dataset \cite{morcos_insights_2018}, and that early layers, but not later layers, learn similar representations on different datasets \cite{barannikov_representation_2022}. Furthermore, it has been seen that if we have networks with a great number of layers, then even when training the same network with the same dataset but with different weight initialization, we can only ensure to preserve substantial (functional) similarities in the first and last layers of the network \cite{wang_towards_2018}.
+By using these similarity metrics, we can study which are the cases where our networks tend to be more similar to one another. Some of the most relevant properties are that wider networks converge, networks with low generalization error converge to more similar solutions when trained with the same dataset \cite{morcos_insights_2018}, and that early layers, but not later layers, learn similar representations on different datasets \cite{barannikov_representation_2022}. Furthermore, it has been seen that if we have networks with a large number of layers, then even when training the same network with the same dataset but with different weight initialization, we can only ensure to preserve substantial (functional) similarities in the first and last layers of the network \cite{wang_towards_2018}.
 
 
 \subsubsection*{Model stitching \& Relative representation}
 So far, we have seen model similarity from a representational point of view, where we obtain the activation matrices for the two layers and then compare them either by their statistical or geometric properties. However, there is another approach when comparing two networks which we can call \emph{functional similarity}. The main difference between functional similarity and representational similarity is that in the latter, we focus on the shape and characteristics of the data embedding, while in the former, we want to compare the ``functional utility'' of these embeddings for each network, i.e., asses how well would the model $B$ achieve its task using the representations of network $A$ \cite{csiszarik_similarity_2021}.\\
 
+Therefore, for this task of assessing functional similarities between networks, there has been proposed model stitching using an additional trainable stitching layer between the desired layers \cite{csiszarik_similarity_2021, bansal_revisiting_2021, li_convergent_2016}. Hence, in these setups, we have two networks $f_A=\gamma_A \circ \varphi_A$, and $f_B=\gamma_B \circ \varphi_B$, decomposed into a \emph{representation map $\varphi_\bullet$} and a \emph{task map $\gamma_\bullet$}. As we can see in Figure \ref{fig:stich_lay}, we train our new layer $l$ on our stitched model $f_{A \stitch B}=\gamma_B \circ l \circ \varphi_A$ either on the same task and labels used for training $f_B$, or we could use pseudo-labels produced by the model $B$ (similar to the teacher network in knowledge distillation). 
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/bg/stich_lay.png} 
+    \caption{Model stitching using a stitching layer. Source: \cite{csiszarik_similarity_2021}}
+    \label{fig:stich_lay}
+\end{figure}
+
+Then the functional similarity can be measured as the relative accuracy obtained by $f_{A \stitch B}$ compared with $f_B$. If the two networks have high functional similarity, we will say that their representations are compatible, and we will be able to use both $\gamma_B \circ l$ and $\gamma_A$ interchangeably as task maps of network $A$. Therefore, we will be able to use into advantage the flexibility that we obtain of being able to make cross-domain and cross-architecture model stitching.\\
+
+Based on the fruitful applications that model stitching can give when we use it on networks with compatible representations, it has been proposed a training setup that increases the compatibility between networks \cite{gygli_towards_2020}. More explicitly, in this new setup, we incorporate an additional auxiliary task head so that we can add a regularization on the latent representation of both networks (on the corresponding layers) so that we obtain a higher functional similarity. The main auxiliary tasks are the prediction of transformation in the input (self-supervised) and discriminating common classes \cite{gygli_towards_2020}.\\
+
+However, all the previously mentioned methods have an additional overhead from training new components in order to increase the compatibility of the representations. Hence, we will present a technique called \emph{relative latent representations} which will give us the ability to do \emph{zero-shot} model stitching, i.e., we will add a transformation on the latent spaces that will increase the compatibility, but we will not require to train additional components. 
+
+ In order to construct this transformation, we will assume that it is easier to obtain a compatible representation if we have higher representation similarity between the latent representations of the stitched layers \footnote{There is evidence of cases where having high functional similarity does not imply high functional similarity \cite{csiszarik_similarity_2021}, i.e., we know that having high functional similarity it is not a necessary condition for high compatibility.}. Furthermore, there is evidence that some stochastic factors of our training, such as weight initialization, some hyperparameters, and data shuffling, will (most likely) result in \emph{$\epsilon$-similar representations} \cite{moschella_relative_2022} \footnote{The evidence is based on a few experimental results, so we can consider that this method takes this result almost as an additional assumption.}. Two representations $X,Y \subseteq \mathbb{R}^n$ are $\epsilon$-similar if there exist a bijection $T:X \to Y$ st exists $\alpha \in \mathbb{R}^*$ for which $d(T(x_1), T(x_2)) = \alpha \cdot d(x_1,x_2) + \epsilon$ for all $x_1,x_2 \in X$. Hence, these stochastic transformations will result in a relaxed version of an isometry up to a certain scale $\alpha$.\\
+
+ Therefore we will build a transformation $T_{rel}$ of our \emph{(absolute) latent space representations} $\varphi_\bullet(x)$ so that our new encodings are invariant to $\epsilon$-similarities. This way, we obtain higher representational similarity since we remove some known differences, as well as functional similarity because our task maps $\gamma_\bullet$\todo{add reasoning}.
+
+ Hence, let $\mathcal{X}$ be our input space, and $\mathcal{A}= \{a_1, ..., a_k\}$ a subset of $\mathcal{X}$ called set of \emph{anchors}. Then for any similarity function $sim$ we define the relative representation of a point $x\in S$  w.r.t. $\mathcal{A}$ as
+
+ \begin{definition}
+Let $\varphi:\mathcal{X} \to \mathcal{Z}$ be our encoder. Then, the \emph{relative representation} of $x \in 
+ \mathcal{X}$ w.r.t. $\mathcal{A}$ is
+\[
+r = (\text{sim}(\varphi(x), \varphi(a_1)), \text{sim}(\varphi(x), \varphi(a_2)), ..., \text{sim}(\varphi(x), \varphi(a_k))) \in \mathbb{R}^k\,.
+\]
+ \end{definition}
+
+
+\begin{remark}
+As we can see in Figure \ref{fig:relativeSche}, this construction resembles the representation of a vector in coordinates of an orthonormal basis using the corresponding projection to each vector of the basis. However, in this case, we do not require to use of an inner product as a similarity function, nor the anchors to be linearly independent (or orthogonal).
+\end{remark}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/bg/relativeSche.png} 
+    \caption{On the left, we have the anchors and input in the absolute representation, and on the right, we have the relative representation of the input. Source: \cite{moschella_relative_2022}}
+    \label{fig:relativeSche}
+\end{figure}
+
+Hence, if we use the cosine similarity, then this new latent space representation will be invariant to $0$-similarity transformations. Furthermore, it has been seen that not only can this representation increase the compatibility of the network under the aforementioned stochastic factor, but also it will increase the compatibility in the following two cases:
+
+\begin{itemize}
+    \item \textbf{Cross-domain model stitching:} we stitch two networks with the same architecture trained over two distinct datasets of the same semantic domain.
+    \item \textbf{Cross-architecture model stitching:} we stitch two networks with the same architecture trained over the same dataset.
+\end{itemize}
+
+
+\begin{figure}[ht!]
+     \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/bg/relativeTrainScheme.pdf}
+        \caption{Train w/ relative transformations.}
+         \label{fig:relTrainScheme}
+     \end{subfigure}\hfill
+      \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=0.9\textwidth]{figures/bg/relativeStitchScheme.pdf}
+        \caption{Model stitching}
+         \label{fig:relStitchScheme}
+     \end{subfigure}
+    \caption{Cross-domain model stitching training and testing}
+    \label{fig:crossDomainScheme}
+\end{figure}
+
+Lastly, we can see in Figure \ref{fig:crossDomainScheme} the standard training setup used in \cite{moschella_relative_2022} for the case of cross-domain zero-shot model stitching. Here, we will use two pretrained encoders $\varphi_A, \varphi_B$, and train the networks $\tilde{f}_{A}=\gamma_A \circ T_{rel}(\mathcal{A})  \circ \varphi_A$ and $\tilde{f}_{B}=\gamma_B \circ T_{rel}(\Gamma(\mathcal{A}))  \circ \varphi_B$ with both encoder weights frozen, using their corresponding domain-specific dataset. Note that in this case, where we have two distinct datasets, we will fix the anchors in one of the (in this case, model $A$) and use a partial correspondence mapping $\Gamma: \mathcal{P}(\mathcal{X}_A) \to \mathcal{P}(\mathcal{X}_B)$ to obtain the corresponding \emph{parallel anchors $\Gamma(\mathcal{A})$}.
 
 
 
 \section{Summary}
+In this chapter, we have first seen a brief introduction to Topological Data Analysis (TDA), where we have seen how we can use algebraic constructions such as Simplical Persistence Homology in order to asses some topological characteristics of the underlying manifold from which our dataset has been sampled from. Furthermore, in the specific case of $n$-dimensional simplicial homology, we have seen that the obtained topological features will indicate to us the number of $n$-dimensional holes.\\
 
-%\engExpl{It is nice to have this chapter conclude with a summary. For example, you can include a table that summarizes other people's ideas and benefits and drawbacks - so that later, you can compare your solution to each of them. This will also help you define the variables that you will use for your evaluation.}
+Secondly, we have seen that recently there has been an increased interest in applying TDA in Machine Learning, a new field that we can call Topological Machine Learning. One of the many ways that we can use our topological tools is to construct regularizers so that the network will obtain certain desired properties. Specifically, in this project, we will focus our attention on a topological regularization that will produce an increase in generalization capabilities by imposing a property called topological densification over our push-forward class-specific distributions \cite{hofer_densified_2021}.\\
+
+Lastly, we have seen different techniques in order to assess the similarity between two layers of two (possibly distinct) networks. Furthermore, we observed that if our networks have high functional similarity, then we can do model stitching without a severe performance drop. Hence, there are several techniques in order to increase this type of similarity and so making our latent representation more compatible. In this project, we will focus on one called relative latent representation, which lets us do zero-shot stitching, i.e., it does not require us to train any additional parameters in order to either make our networks more compatible or to stitch them together \cite{moschella_relative_2022}.  
+
 
 \end{document}
