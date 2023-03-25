@@ -2,7 +2,7 @@
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-from scipy.spatial.distance import pdist
+from torch.nn.functional import pdist
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -12,22 +12,6 @@ from warnings import warn
 from typing import List, Dict
 import matplotlib.pyplot as plt
 from mpl_toolkits import axes_grid1
-
-def minFrobDist_distM(points_A, points_B, metric='euclidean'):
-
-  dist_A = pdist(points_A, metric=metric)
-  dist_B = pdist(points_B, metric=metric)
-
-  cost = np.zeros((len(dist_A), len(dist_B)))
-  for i in range(len(dist_A)):
-    for j in range(len(dist_B)):
-      cost[i,j] = (dist_A[i]- dist_B[j])**2
-
-  row_ind, col_ind = linear_sum_assignment(cost)
-  minimum_dist = np.sqrt(cost[row_ind, col_ind].sum())
-  
-  return minimum_dist
-
 
 
 def add_colorbar(im, aspect=10, pad_fraction=0.5, **kwargs):
@@ -41,10 +25,7 @@ def add_colorbar(im, aspect=10, pad_fraction=0.5, **kwargs):
     return im.axes.figure.colorbar(im, cax=cax, **kwargs)
 
 
-
-class CKA:
-    # Modified from: https://github.com/AntixK/PyTorch-Model-Compare 
-    
+class SimLayers:
     def __init__(self,
                  model1: nn.Module,
                  model2: nn.Module,
@@ -152,6 +133,95 @@ class CKA:
                 self.model2_info['Layers'] += [name]
                 layer.register_forward_hook(partial(self._log_layer, "model2", name))
 
+
+    def compare(self,
+                dataloader1: DataLoader,
+                dataloader2: DataLoader = None) -> None:
+        """
+        Computes the feature similarity between the models on the
+        given datasets.
+        :param dataloader1: (DataLoader)
+        :param dataloader2: (DataLoader) If given, model 2 will run on this
+                            dataset. (default = None)
+        """
+
+
+    def export(self) -> Dict:
+        """
+        Exports the CKA data along with the respective model layer names.
+        :return:
+        """
+        return {
+            "model1_name": self.model1_info['Name'],
+            "model2_name": self.model2_info['Name'],
+            "Sim": self.sim_matrix,
+            "model1_layers": self.model1_info['Layers'],
+            "model2_layers": self.model2_info['Layers'],
+            "dataset1_name": self.model1_info['Dataset'],
+            "dataset2_name": self.model2_info['Dataset'],
+
+        }
+
+    def plot_results(self,
+                     save_path: str = None,
+                     title: str = None,
+                     ax_ = None,
+                     cmap="magma"):
+        
+        if ax_ is None:
+            fig, ax = plt.subplots()
+        else:
+            ax = ax_
+            
+        im = ax.imshow(self.sim_matrix, origin='lower', cmap=cmap)
+        
+        if ax_ is None:
+            
+            ax.set_xlabel(f"Layers {self.model2_info['Name']}", fontsize=15)
+            ax.set_ylabel(f"Layers {self.model1_info['Name']}", fontsize=15)
+
+            if title is not None:
+                ax.set_title(f"{title}", fontsize=18)
+            else:
+                ax.set_title(f"{self.model1_info['Name']} vs {self.model2_info['Name']}", fontsize=18)
+
+            add_colorbar(im)
+        
+            plt.tight_layout()
+
+            if save_path is not None:
+                plt.savefig(save_path, dpi=300)
+
+            plt.show()
+
+
+class CKA(SimLayers):
+    # Modified from: https://github.com/AntixK/PyTorch-Model-Compare 
+    
+    def __init__(self,
+                 model1: nn.Module,
+                 model2: nn.Module,
+                 model1_name: str = None,
+                 model2_name: str = None,
+                 model1_layers: List[str] = None,
+                 model2_layers: List[str] = None,
+                 device: str ='cpu'):
+        """
+
+        :param model1: (nn.Module) Neural Network 1
+        :param model2: (nn.Module) Neural Network 2
+        :param model1_name: (str) Name of model 1
+        :param model2_name: (str) Name of model 2
+        :param model1_layers: (List) List of layers to extract features from
+        :param model2_layers: (List) List of layers to extract features from
+        :param device: Device to run the model
+        """
+        super().__init__(model1, model2,
+                         model1_name, model2_name,
+                         model1_layers, model2_layers,
+                         device)
+       
+
     def _HSIC(self, K, L):
         """
         Computes the unbiased estimate of HSIC metric.
@@ -186,12 +256,12 @@ class CKA:
         N = len(self.model1_layers) if self.model1_layers is not None else len(list(self.model1.modules()))
         M = len(self.model2_layers) if self.model2_layers is not None else len(list(self.model2.modules()))
 
-        self.hsic_matrix = torch.zeros(N, M, 3)
+        self.sim_matrix = torch.zeros(N, M, 3)
 
         num_batches = min(len(dataloader1), len(dataloader1))
 
         for (x1, *_), (x2, *_) in tqdm(zip(dataloader1, dataloader2), desc="| Comparing features |", total=num_batches):
-
+            aux_L = {}
             self.model1_features = {}
             self.model2_features = {}
             _ = self.model1(x1.to(self.device))
@@ -201,65 +271,123 @@ class CKA:
                 X = feat1.flatten(1)
                 K = X @ X.t()
                 K.fill_diagonal_(0.0)
-                self.hsic_matrix[i, :, 0] += self._HSIC(K, K) / num_batches
+                self.sim_matrix[i, :, 0] += self._HSIC(K, K) / num_batches
 
                 for j, (name2, feat2) in enumerate(self.model2_features.items()):
-                    Y = feat2.flatten(1)
-                    L = Y @ Y.t()
-                    L.fill_diagonal_(0)
-                    assert K.shape == L.shape, f"Feature shape mistach! {K.shape}, {L.shape}"
+                    if name2 not in aux_L:
+                        Y = feat2.flatten(1)
+                        L = Y @ Y.t()
+                        L.fill_diagonal_(0)
+                        assert K.shape == L.shape, f"Feature shape mistach! {K.shape}, {L.shape}"
+                        aux_HSIC = self._HSIC(L, L)
+                        aux_L[name2] = (L, aux_HSIC)
 
-                    self.hsic_matrix[i, j, 1] += self._HSIC(K, L) / num_batches
-                    self.hsic_matrix[i, j, 2] += self._HSIC(L, L) / num_batches
+                    self.sim_matrix[i, j, 1] += self._HSIC(K, aux_L[name2][0]) / num_batches
+                    self.sim_matrix[i, j, 2] += aux_L[name2][1] / num_batches
 
-        self.hsic_matrix = self.hsic_matrix[:, :, 1] / (self.hsic_matrix[:, :, 0].sqrt() *
-                                                        self.hsic_matrix[:, :, 2].sqrt())
+        self.sim_matrix = self.sim_matrix[:, :, 1] / (self.sim_matrix[:, :, 0].sqrt() *
+                                                        self.sim_matrix[:, :, 2].sqrt())
 
-        # assert not torch.isnan(self.hsic_matrix).any(), "HSIC computation resulted in NANs"
+        # assert not torch.isnan(self.sim_matrix).any(), "HSIC computation resulted in NANs"
 
-    def export(self) -> Dict:
+
+class MinFrob(SimLayers):
+    # Modified from: https://github.com/AntixK/PyTorch-Model-Compare 
+    
+    def __init__(self,
+                 model1: nn.Module,
+                 model2: nn.Module,
+                 model1_name: str = None,
+                 model2_name: str = None,
+                 model1_layers: List[str] = None,
+                 model2_layers: List[str] = None,
+                 device: str ='cpu',
+                 metric=2):
         """
-        Exports the CKA data along with the respective model layer names.
-        :return:
+
+        :param model1: (nn.Module) Neural Network 1
+        :param model2: (nn.Module) Neural Network 2
+        :param model1_name: (str) Name of model 1
+        :param model2_name: (str) Name of model 2
+        :param model1_layers: (List) List of layers to extract features from
+        :param model2_layers: (List) List of layers to extract features from
+        :param device: Device to run the model
         """
-        return {
-            "model1_name": self.model1_info['Name'],
-            "model2_name": self.model2_info['Name'],
-            "CKA": self.hsic_matrix,
-            "model1_layers": self.model1_info['Layers'],
-            "model2_layers": self.model2_info['Layers'],
-            "dataset1_name": self.model1_info['Dataset'],
-            "dataset2_name": self.model2_info['Dataset'],
-
-        }
-
-    def plot_results(self,
-                     save_path: str = None,
-                     title: str = None,
-                     ax_ = None):
+        super().__init__(model1, model2,
+                         model1_name, model2_name,
+                         model1_layers, model2_layers,
+                         device)
         
-        if ax_ is None:
-            fig, ax = plt.subplots()
-        else:
-            ax = ax_
+        self.metric = metric
+       
+
+    
+    def minFrobDist_distM(self, unsort_distA, points_B):
+        unnorm_dist_A = pdist(points_A, p=self.metric)
+        unnorm_dist_B = pdist(points_B, p=self.metric)
+        dist_A, _ = torch.sort(unsort_distA)
+        dist_B, _ =torch.sort(unnorm_dist_B/torch.sqrt((unnorm_dist_B**2).sum()))
+
+        cost = (dist_A-dist_B)**2
+        minimum_dist = torch.sqrt(cost.sum())
+        
+        return minimum_dist.item()
+
+    def compare(self,
+                dataloader1: DataLoader,
+                dataloader2: DataLoader = None) -> None:
+        """
+        Computes the feature similarity between the models on the
+        given datasets.
+        :param dataloader1: (DataLoader)
+        :param dataloader2: (DataLoader) If given, model 2 will run on this
+                            dataset. (default = None)
+        """
+
+        if dataloader2 is None:
+            warn("Dataloader for Model 2 is not given. Using the same dataloader for both models.")
+            dataloader2 = dataloader1
+
+        self.model1_info['Dataset'] = dataloader1.dataset.__repr__().split('\n')[0]
+        self.model2_info['Dataset'] = dataloader2.dataset.__repr__().split('\n')[0]
+
+        N = len(self.model1_layers) if self.model1_layers is not None else len(list(self.model1.modules()))
+        M = len(self.model2_layers) if self.model2_layers is not None else len(list(self.model2.modules()))
+
+        self.sim_matrix = torch.zeros(N, M)
+
+        num_batches = min(len(dataloader1), len(dataloader1))
+        
+
+        for (x1, *_), (x2, *_) in tqdm(zip(dataloader1, dataloader2), desc="| Comparing features |", total=num_batches):
             
-        im = ax.imshow(self.hsic_matrix, origin='lower', cmap='magma')
-        
-        if ax_ is None:
+            dist_2 = {}
             
-            ax.set_xlabel(f"Layers {self.model2_info['Name']}", fontsize=15)
-            ax.set_ylabel(f"Layers {self.model1_info['Name']}", fontsize=15)
+            self.model1_features = {}
+            self.model2_features = {}
+            
+            _ = self.model1(x1.to(self.device))
+            _ = self.model2(x2.to(self.device))
 
-            if title is not None:
-                ax.set_title(f"{title}", fontsize=18)
-            else:
-                ax.set_title(f"{self.model1_info['Name']} vs {self.model2_info['Name']}", fontsize=18)
+            for i, (name1, feat1) in enumerate(self.model1_features.items()):
+                X = feat1.flatten(1)
+                unnorm_dist_A = pdist(X, p=self.metric)
+                dist_A = unnorm_dist_A/torch.sqrt((unnorm_dist_A**2).sum())
+                dist_A = torch.sort(dist_A)[0]
+                
+                for j, (name2, feat2) in enumerate(self.model2_features.items()):
+                   
+                    if name2 not in dist_2:
+                        Y = feat2.flatten(1)
+                        unnorm_dist_B = pdist(Y, p=self.metric)
+                        dist_B = unnorm_dist_B/torch.sqrt((unnorm_dist_B**2).sum())
+                        dist_2[name2] = torch.sort(dist_B)[0]
+                    
+                    cost = (dist_A - dist_2[name2])**2
+                    minimum_dist = torch.sqrt(cost.sum()).item()
+                    
+                    self.sim_matrix[i, j] += minimum_dist / num_batches
 
-            add_colorbar(im)
+
         
-            plt.tight_layout()
 
-            if save_path is not None:
-                plt.savefig(save_path, dpi=300)
-
-            plt.show()
