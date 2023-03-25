@@ -322,10 +322,10 @@ class MinFrob(SimLayers):
        
 
     
-    def minFrobDist_distM(self, unsort_distA, points_B):
+    def minFrobDist_distM(self, points_A, points_B):
         unnorm_dist_A = pdist(points_A, p=self.metric)
         unnorm_dist_B = pdist(points_B, p=self.metric)
-        dist_A, _ = torch.sort(unsort_distA)
+        dist_A, _ = torch.sort(unnorm_dist_A/torch.sqrt((unnorm_dist_A**2).sum()))
         dist_B, _ =torch.sort(unnorm_dist_B/torch.sqrt((unnorm_dist_B**2).sum()))
 
         cost = (dist_A-dist_B)**2
