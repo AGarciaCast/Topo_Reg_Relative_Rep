@@ -9,11 +9,11 @@ import torch.nn.functional as F
 from torch import nn
 
 
-#try:
+try:
 # be ready for 3.10 when it drops
-from enum import StrEnum
-#except ImportError:
-#from backports.strenum import StrEnum
+    from enum import StrEnum
+except ImportError:
+    from backports.strenum import StrEnum
 
 pylogger = logging.getLogger(__name__)
 
