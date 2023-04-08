@@ -1,71 +1,19 @@
-import abc
-import logging
 import math
-from enum import auto
-from typing import Dict, Optional
 
 import torch
 import torch.nn.functional as F
 from torch import nn
 
 
-try:
-# be ready for 3.10 when it drops
-    from enum import StrEnum
-except ImportError:
-    from backports.strenum import StrEnum
-
-pylogger = logging.getLogger(__name__)
-
-class NormalizationMode(StrEnum):
-    NONE = auto()
-    L2 = auto()
-
-class RelativeEmbeddingMethod(StrEnum):
-    BASIS_CHANGE = auto()
-    INNER = auto()
-
-
-class OutputNormalization(StrEnum):
-    NONE = auto()
-    L2 = auto()
-    BATCHNORM = auto()
-    INSTANCENORM = auto()
-    LAYERNORM = auto()
-
-
-class AttentionOutput(StrEnum):
-    NON_QUANTIZED_SIMILARITIES = auto()
-    SUBSPACE_OUTPUTS = auto()
-    ANCHORS_TARGETS = auto()
-    ORIGINAL_ANCHORS = auto()
-    ANCHORS = auto()
-    NORM_BATCH = auto()
-    ANCHORS_LATENT = auto()
-    OUTPUT = auto()
-    SIMILARITIES = auto()
-    UNTRASFORMED_ATTENDED = auto()
-
-
-class AbstractRelativeAttention(nn.Module, abc.ABC):
-    @property
-    @abc.abstractmethod
-    def output_dim(self) -> int:
-        raise NotImplementedError
-
-
-class RelativeAttention(AbstractRelativeAttention):
+class RelativeAttention(nn.Module):
     def __init__(
         self,
         n_anchors: int,
-        similarity_mode: RelativeEmbeddingMethod,
-        normalization_mode: Optional[NormalizationMode] = None,
-        output_normalization_mode: Optional[OutputNormalization] = None,
+        similarity_mode="inner",
+        normalization_mode="l2",
+        output_normalization_mode=None,
     ):
         """Relative attention block.
-
-        If values_mode = TRAINABLE we are invariant to batch-anchors rotations, if it is false we are equivariant
-        to batch-anchors rotations
 
         Args:
             n_anchors: number of anchors
@@ -74,91 +22,69 @@ class RelativeAttention(AbstractRelativeAttention):
             output_normalization_mode: normalization to apply to the relative transformation
         """
         super().__init__()
-        pylogger.info(f"Instantiating <{self.__class__.__qualname__}>")
 
         self.n_anchors = n_anchors
         self.similarity_mode = similarity_mode
+        self.normalization_mode = normalization_mode
+        self.output_normalization_mode = output_normalization_mode
 
-        # Parameter validation
-        self.normalization_mode = normalization_mode if normalization_mode is not None else NormalizationMode.NONE
-
-        self.output_normalization_mode = (
-            output_normalization_mode if output_normalization_mode is not None else OutputNormalization.NONE
-        )
-
-        if self.output_normalization_mode not in set(OutputNormalization):
-            raise ValueError(f"Unknown output normalization mode {self.output_normalization_mode}")
-
-        if self.similarity_mode == RelativeEmbeddingMethod.BASIS_CHANGE and (
-            self.n_anchors_sampling_per_class is not None and self.n_anchors_sampling_per_class > 1
-        ):
-            raise ValueError("The basis change is not deterministic with possibly repeated basis vectors")
-
-        # End Parameter validation
-
-        if self.output_normalization_mode == OutputNormalization.BATCHNORM:
+        if self.output_normalization_mode == "batchnorm":
             self.outnorm = nn.BatchNorm1d(num_features=self.output_dim)
-        elif self.output_normalization_mode == OutputNormalization.LAYERNORM:
+        elif self.output_normalization_mode == "layernorm":
             self.outnorm = nn.LayerNorm(normalized_shape=self.output_dim)
-        elif self.output_normalization_mode == OutputNormalization.INSTANCENORM:
+        elif self.output_normalization_mode == "instancenorm":
             self.outnorm = nn.InstanceNorm1d(num_features=self.output_dim, affine=True)
 
-    def encode(
-        self,
-        x: torch.Tensor,
-        anchors: torch.Tensor,
-    ):
+    def encode(self, x: torch.Tensor, anchors: torch.Tensor):
         original_anchors = anchors
         if x.shape[-1] != anchors.shape[-1]:
             raise ValueError(f"Inconsistent dimensions between batch and anchors: {x.shape}, {anchors.shape}")
 
 
         # Normalize latents
-        if self.normalization_mode == NormalizationMode.NONE:
+        if self.normalization_mode is None:
             pass
-        elif self.normalization_mode == NormalizationMode.L2:
+        elif self.normalization_mode == "l2":
             x = F.normalize(x, p=2, dim=-1)
             anchors = F.normalize(anchors, p=2, dim=-1)
         else:
             raise ValueError(f"Normalization mode not supported: {self.normalization_mode}")
 
         # Compute queries-keys similarities
-        if self.similarity_mode == RelativeEmbeddingMethod.INNER:
+        if self.similarity_mode == "inner":
             similarities = torch.einsum("bm, am -> ba", x, anchors)
-            if self.normalization_mode == NormalizationMode.NONE:
+            
+            if self.normalization_mode is None:
                 similarities = similarities / math.sqrt(x.shape[-1])
-        elif self.similarity_mode == RelativeEmbeddingMethod.BASIS_CHANGE:
+                
+        elif self.similarity_mode == "basis_change":
             similarities = torch.linalg.lstsq(anchors.T, x.T)[0].T
+            
         else:
             raise ValueError(f"Similarity mode not supported: {self.similarity_mode}")
        
 
         return {
-            AttentionOutput.SIMILARITIES: similarities,
-            AttentionOutput.ANCHORS: anchors,
-            AttentionOutput.ORIGINAL_ANCHORS: original_anchors,
-            AttentionOutput.NORM_BATCH: x,
+            "similarities": similarities,
+            "original_anchors": original_anchors,
+            "norm_anchors": anchors,
+            "norm_batch": x
         }
 
-    def decode(
-        self,
-        similarities,
-        **kwargs,
-    ):
-
-        output = similarities
+    def decode(self, similarities: torch.Tensor, **kwargs):
         
+        output = similarities
 
         # Normalize the output
-        if self.output_normalization_mode == OutputNormalization.NONE:
+        if self.output_normalization_mode is None:
             pass
-        elif self.output_normalization_mode == OutputNormalization.L2:
+        elif self.output_normalization_mode == "l2":
             output = F.normalize(output, p=2, dim=-1)
-        elif self.output_normalization_mode == OutputNormalization.BATCHNORM:
+        elif self.output_normalization_mode == "batchnorm":
             output = self.outnorm(output)
-        elif self.output_normalization_mode == OutputNormalization.LAYERNORM:
+        elif self.output_normalization_mode == "layernorm":
             output = self.outnorm(output)
-        elif self.output_normalization_mode == OutputNormalization.INSTANCENORM:
+        elif self.output_normalization_mode == "instancenorm":
             output = torch.einsum("lc -> cl", output)
             output = self.outnorm(output)
             output = torch.einsum("cl -> lc", output)
@@ -166,19 +92,14 @@ class RelativeAttention(AbstractRelativeAttention):
             assert False
 
         return {
-            AttentionOutput.OUTPUT: output,
-            AttentionOutput.UNTRASFORMED_ATTENDED: output,
-            AttentionOutput.SIMILARITIES: similarities,
-            AttentionOutput.ANCHORS_LATENT: kwargs[AttentionOutput.ANCHORS_LATENT],
-            AttentionOutput.NORM_BATCH: kwargs[AttentionOutput.NORM_BATCH],
+            "output": output,
+            "similarities": similarities,
+            "original_anchors": kwargs["original_anchors"],
+            "norm_anchors": kwargs["norm_anchors"],
+            "norm_batch": kwargs["norm_batch"]
         }
 
-    def forward(
-        self,
-        x: torch.Tensor,
-        anchors: torch.Tensor,
-        anchors_targets: Optional[torch.Tensor] = None,
-    ) -> Dict[AttentionOutput, torch.Tensor]:
+    def forward(self, x: torch.Tensor, anchors: torch.Tensor):
         """Forward pass.
 
         Args:
@@ -186,7 +107,7 @@ class RelativeAttention(AbstractRelativeAttention):
             anchors: [num_anchors, hidden_dim]
             anchors_targets: [num_anchors]
         """
-        encoding = self.encode(x=x, anchors=anchors, anchors_targets=anchors_targets)
+        encoding = self.encode(x=x, anchors=anchors)
         return self.decode(**encoding)
 
     @property
