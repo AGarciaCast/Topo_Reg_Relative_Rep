@@ -1,8 +1,11 @@
 
 import torch
-from torch import Tensor, nn
+from torch import nn
+from typing import Optional, List
 
-from relAttention import RelativeAttention
+from modules.relAttention import RelativeAttention
+from transformers import RobertaModel, AutoConfig
+
 
 class RobertaClassificationHead(nn.Module):
     """
@@ -10,7 +13,7 @@ class RobertaClassificationHead(nn.Module):
     Head for sentence-level classification tasks.
     """
 
-    def __init__(self, hidden_size, num_labels, hidden_dropout_prob=0):
+    def __init__(self, hidden_size, num_labels, hidden_dropout_prob=0.1):
         super().__init__()
         
         self.dense = nn.Linear(hidden_size, hidden_size)
@@ -26,171 +29,184 @@ class RobertaClassificationHead(nn.Module):
         x = self.out_proj(x)
         return x
 
-    
 
 class RelRoberta(nn.Module):
     def __init__(
         self,
-        input_size,
         num_labels,
         transformer_model,
         anchors,
+        hidden_size=768,
         similarity_mode="inner",
         normalization_mode="l2",
         output_normalization_mode=None,
-        hidden_dropout_prob=0
+        dropout_prob=0.1
     ) -> None:
         
         super().__init__()
 
-        self.input_size = input_size
-        self.latent_dim = anchors.shape[0]
+        self.latent_dim = hidden_size
         
-        self.encoder = transformer_model
+        configuration = AutoConfig.from_pretrained(transformer_model)
+        configuration.hidden_dropout_prob = dropout_prob
+        configuration.attention_probs_dropout_prob = dropout_prob
+            
+        self.encoder = RobertaModel.from_pretrained(
+                            pretrained_model_name_or_path = transformer_model, 
+                            config = configuration,
+                            add_pooling_layer=False
+                        )
+
         
         self.decoder = RobertaClassificationHead(
             hidden_size = self.latent_dim,
             num_labels=num_labels,
-            hidden_dropout_prob=hidden_dropout_prob
+            hidden_dropout_prob=dropout_prob
         )
         
-        
-        self.relative_attention=RelativeAttention(
-            n_anchors=self.latent_dim,
-            similarity_mode=similarity_mode,
-            normalization_mode=normalization_mode,
-            output_normalization_mode=output_normalization_mode
-        )
+        if anchors is not None:
+            self.relative_attention=RelativeAttention(
+                n_anchors=self.latent_dim,
+                similarity_mode=similarity_mode,
+                normalization_mode=normalization_mode,
+                output_normalization_mode=output_normalization_mode
+            )
 
-        self.anchors = anchors
-        
-        with torch.no_grad():
-            self.anchors_latent = self.embed(self.anchors)
+            self.anchors = anchors
+            
+            assert self.latent_dim == self.anchors.shape[0]
+            
+            with torch.no_grad():
+                self.anchors_latent = self.embed(self.anchors)
       
 
-    def embed(self, encoding):
-        """
-        Encodes the input by passing through the encoder network
-        and returns the latent codes.
-        :param input: (Tensor) Input tensor to encoder [N x H x W]
-        :return: (Tensor) List of latent codes
-        """
-        result = self.encoder(**encoding)["hidden_states"][-1]
+    def embed(self,
+              input_ids: Optional[torch.Tensor] = None,
+              attention_mask: Optional[torch.Tensor] = None,
+              token_type_ids: Optional[torch.Tensor] = None,
+              position_ids: Optional[torch.Tensor] = None,
+              head_mask: Optional[torch.Tensor] = None,
+              inputs_embeds: Optional[torch.Tensor] = None,
+              encoder_hidden_states: Optional[torch.Tensor] = None,
+              encoder_attention_mask: Optional[torch.Tensor] = None,
+              past_key_values: Optional[List[torch.FloatTensor]] = None,
+              use_cache: Optional[bool] = None,
+              output_attentions: Optional[bool] = None,
+              output_hidden_states: Optional[bool] = None,
+              return_dict: Optional[bool] = None):
+        
+        result = self.encoder(input_ids,
+                              attention_mask,
+                              token_type_ids,
+                              position_ids,
+                              head_mask,
+                              inputs_embeds,
+                              encoder_hidden_states,
+                              encoder_attention_mask,
+                              past_key_values,
+                              use_cache,
+                              output_attentions,
+                              output_hidden_states,
+                              return_dict)[0]
         return result
     
     
-    def encode(self, x): 
+    def encode(self, 
+               input_ids: Optional[torch.Tensor] = None,
+               attention_mask: Optional[torch.Tensor] = None,
+               token_type_ids: Optional[torch.Tensor] = None,
+               position_ids: Optional[torch.Tensor] = None,
+               head_mask: Optional[torch.Tensor] = None,
+               inputs_embeds: Optional[torch.Tensor] = None,
+               encoder_hidden_states: Optional[torch.Tensor] = None,
+               encoder_attention_mask: Optional[torch.Tensor] = None,
+               past_key_values: Optional[List[torch.FloatTensor]] = None,
+               use_cache: Optional[bool] = None,
+               output_attentions: Optional[bool] = None,
+               output_hidden_states: Optional[bool] = None,
+               return_dict: Optional[bool] = None): 
         
-        x_embedded = self.embed(x)
-
-        attention_encoding = self.relative_attention.encode(
-            x=x_embedded,
-            anchors=self.anchors_latent,
-        )
+        x_embedded = self.embed(input_ids,
+                                attention_mask,
+                                token_type_ids,
+                                position_ids,
+                                head_mask,
+                                inputs_embeds,
+                                encoder_hidden_states,
+                                encoder_attention_mask,
+                                past_key_values,
+                                use_cache,
+                                output_attentions,
+                                output_hidden_states,
+                                return_dict)
+        
+        attention_encoding = {}
+        
+        if self.anchors is not None:
+            attention_encoding = self.relative_attention.encode(
+                x=x_embedded,
+                anchors=self.anchors_latent,
+            )
+            
         return {
             **attention_encoding,
             "batch_latent": x_embedded,
         }
         
     
-    def decode(self, **kwargs):
-
-        """
-        Maps the given latent codes
-        onto the image space.
-        :param z: (Tensor) [B x D]
-        :return: (Tensor) [B x C x H x W]
-        """
-        attention_output = self.relative_attention.decode(**kwargs)
-        result = self.decoder(attention_output["output"])
+    def decode(self, batch_latent, **kwargs):
+        
+        attention_dict = {}
+        if self.anchors is not None:
+            attention_output = self.relative_attention.decode(**kwargs)
+            
+            input_dec = attention_output["output"]
+            attention_dict={
+                "similarities": attention_output["similarities"],
+                "original_anchors": attention_output["original_anchors"],
+                "norm_anchors": attention_output["norm_anchors"],
+                "batch_latent": attention_output["batch_latent"],
+                "norm_batch": attention_output["norm_batch"]
+            }
+            
+        else:
+            input_dec = batch_latent
+            
+        result = self.decoder(input_dec)
         return {
             "prediction": result,
-            "similarities": attention_output["similarities"],
-            "original_anchors": attention_output["original_anchors"],
-            "norm_anchors": attention_output["norm_anchors"],
-            "batch_latent": attention_output["batch_latent"],
-            "norm_batch": attention_output["norm_batch"]
+            **attention_dict
         }
     
-    def forward(self, x: torch.Tensor):
-        """Forward pass.
-
-        Args:
-            x: [batch_size, hidden_dim]
-            anchors: [num_anchors, hidden_dim]
-            anchors_targets: [num_anchors]
-        """
-        encoding = self.encode(x)
+    
+    def forward(self,
+                input_ids: Optional[torch.Tensor] = None,
+                attention_mask: Optional[torch.Tensor] = None,
+                token_type_ids: Optional[torch.Tensor] = None,
+                position_ids: Optional[torch.Tensor] = None,
+                head_mask: Optional[torch.Tensor] = None,
+                inputs_embeds: Optional[torch.Tensor] = None,
+                encoder_hidden_states: Optional[torch.Tensor] = None,
+                encoder_attention_mask: Optional[torch.Tensor] = None,
+                past_key_values: Optional[List[torch.FloatTensor]] = None,
+                use_cache: Optional[bool] = None,
+                output_attentions: Optional[bool] = None,
+                output_hidden_states: Optional[bool] = None,
+                return_dict: Optional[bool] = None): 
+        """Forward pass."""
+        
+        encoding = self.encode(input_ids,
+                               attention_mask,
+                               token_type_ids,
+                               position_ids,
+                               head_mask,
+                               inputs_embeds,
+                               encoder_hidden_states,
+                               encoder_attention_mask,
+                               past_key_values,
+                               use_cache,
+                               output_attentions,
+                               output_hidden_states,
+                               return_dict)
+        
         return self.decode(**encoding)
-
-
-
-class VanillaRelRoberta(nn.Module):
-    def __init__(
-        self,
-        input_size,
-        num_labels,
-        transformer_model,
-        hidden_size,
-        hidden_dropout_prob=0
-    ) -> None:
-        
-        super().__init__()
-
-        self.input_size = input_size
-        self.latent_dim = hidden_size
-        
-        self.encoder = transformer_model
-        
-        self.decoder = RobertaClassificationHead(
-            hidden_size = self.latent_dim,
-            num_labels=num_labels,
-            hidden_dropout_prob=hidden_dropout_prob
-        )
-        
-      
-
-    def embed(self, encoding):
-        """
-        Encodes the input by passing through the encoder network
-        and returns the latent codes.
-        :param input: (Tensor) Input tensor to encoder [N x H x W]
-        :return: (Tensor) List of latent codes
-        """
-        result = self.encoder(**encoding)["hidden_states"][-1]
-        return result
-    
-    
-    def encode(self, x): 
-        
-        x_embedded = self.embed(x)
-
-      
-        return {
-            "batch_latent": x_embedded,
-        }
-        
-    
-    def decode(self, input):
-
-        """
-        Maps the given latent codes
-        onto the image space.
-        :param z: (Tensor) [B x D]
-        :return: (Tensor) [B x C x H x W]
-        """
-        result = self.decoder(input)
-        return {
-            "prediction": result
-        }
-    
-    def forward(self, x: torch.Tensor):
-        """Forward pass.
-
-        Args:
-            x: [batch_size, hidden_dim]
-            anchors: [num_anchors, hidden_dim]
-            anchors_targets: [num_anchors]
-        """
-        encoding = self.encode(x)
-        return self.decode(encoding)
