@@ -71,7 +71,7 @@ class LitRelRoberta(pl.LightningModule):
     def __init__(self, 
                  num_labels,
                  transformer_model,
-                 anchors,
+                 anchor_dataloader,
                  hidden_size=768,
                  similarity_mode="inner",
                  normalization_mode="l2",
@@ -82,7 +82,8 @@ class LitRelRoberta(pl.LightningModule):
                  weight_decay=0.0,
                  lr_init=1e-3,
                  layer_decay=0.65,
-                 warmup_steps=10):
+                 warmup_steps=10,
+                 device="cpu"):
         super().__init__()
         
         # Saving hyperparameters of autoencoder
@@ -93,12 +94,13 @@ class LitRelRoberta(pl.LightningModule):
         # Creating encoder and decoder
         self.net = RelRoberta(num_labels,
                               transformer_model,
-                              anchors,
+                              anchor_dataloader,
                               hidden_size,
                               similarity_mode,
                               normalization_mode,
                               output_normalization_mode,
-                              dropout_prob)
+                              dropout_prob,
+                              device=device)
                 
         self.loss_module = nn.CrossEntropyLoss()
         

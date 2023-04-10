@@ -2,6 +2,7 @@
 import torch
 from torch import nn
 from typing import Optional, List
+from tqdm import tqdm
 
 from modules.relAttention import RelativeAttention
 from transformers import RobertaModel, AutoConfig
@@ -21,7 +22,6 @@ class RobertaClassificationHead(nn.Module):
         self.out_proj = nn.Linear(hidden_size, num_labels)
 
     def forward(self, features, **kwargs):
-        x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
         x = self.dropout(x)
         x = self.dense(x)
         x = torch.tanh(x)
@@ -35,12 +35,13 @@ class RelRoberta(nn.Module):
         self,
         num_labels,
         transformer_model,
-        anchors,
+        anchor_dataloader,
         hidden_size=768,
         similarity_mode="inner",
         normalization_mode="l2",
         output_normalization_mode=None,
-        dropout_prob=0.1
+        dropout_prob=0.1,
+        device="cpu"
     ) -> None:
         
         super().__init__()
@@ -55,7 +56,7 @@ class RelRoberta(nn.Module):
                             pretrained_model_name_or_path = transformer_model, 
                             config = configuration,
                             add_pooling_layer=False
-                        )
+                        ).to(device)
 
         
         self.decoder = RobertaClassificationHead(
@@ -64,7 +65,7 @@ class RelRoberta(nn.Module):
             hidden_dropout_prob=dropout_prob
         )
         
-        if anchors is not None:
+        if anchor_dataloader is not None:
             self.relative_attention=RelativeAttention(
                 n_anchors=self.latent_dim,
                 similarity_mode=similarity_mode,
@@ -72,12 +73,18 @@ class RelRoberta(nn.Module):
                 output_normalization_mode=output_normalization_mode
             )
 
-            self.anchors = anchors
-            
-            assert self.latent_dim == self.anchors.shape[0]
+            anchors = []
+            anchors_latent = []
             
             with torch.no_grad():
-                self.anchors_latent = self.embed(self.anchors)
+                for batch in tqdm(anchor_dataloader, desc="Computing latents anchors"):
+                    anchors.append(batch)
+                    batch.to(device)
+                    batch_latents = self.embed(**batch)
+                    anchors_latent.append(batch_latents)
+                                
+            self.anchors = torch.cat(anchors, dim=0)
+            self.anchors_latent = torch.cat(anchors_latent, dim=0)
       
 
     def embed(self,
@@ -108,7 +115,7 @@ class RelRoberta(nn.Module):
                               output_attentions,
                               output_hidden_states,
                               return_dict)[0]
-        return result
+        return result[:, 0, :]
     
     
     def encode(self, 
