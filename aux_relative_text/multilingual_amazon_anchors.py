@@ -73,4 +73,4 @@ class MultilingualAmazonAnchors(Dataset):
         }
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__qualname__}({self.split=}, n_instances={len(self)})"
+        return f"{self.__class__.__qualname__}(split={self.split}, n_instances={len(self)})"
