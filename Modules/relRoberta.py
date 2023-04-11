@@ -21,7 +21,7 @@ class RobertaClassificationHead(nn.Module):
         self.dropout = nn.Dropout(hidden_dropout_prob)
         self.out_proj = nn.Linear(hidden_size, num_labels)
 
-    def forward(self, features, **kwargs):
+    def forward(self, x, **kwargs):
         x = self.dropout(x)
         x = self.dense(x)
         x = torch.tanh(x)
@@ -64,7 +64,10 @@ class RelRoberta(nn.Module):
             num_labels=num_labels,
             hidden_dropout_prob=dropout_prob
         )
-        
+
+        self.anchors = None
+        self.anchors_latent = None
+
         if anchor_dataloader is not None:
             self.relative_attention=RelativeAttention(
                 n_anchors=self.latent_dim,

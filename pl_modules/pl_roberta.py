@@ -123,27 +123,28 @@ class LitRelRoberta(pl.LightningModule):
         return self.net(x)
     
     def configure_optimizers(self):
-        
-        optimizer = roberta_base_AdamW_LLRD(self.net,
-                                            lr_init=self.lr_init,
+        config = {"optimizer": roberta_base_AdamW_LLRD(self.net,
+                                            init_lr=self.lr_init,
                                             head_lr=self.lr_init,
                                             layer_decay=self.layer_decay,
                                             weight_decay=self.weight_decay
                                             )
+                  }
+
+        if self.warmup_steps is not None:
+          config["scheduler"] = get_cosine_schedule_with_warmup(
+                                      config["optimizer"],
+                                      num_warmup_steps=self.warmup_steps,
+                                      num_training_steps=self.epochs
+                                      )
         
-        scheduler = get_cosine_schedule_with_warmup(
-                                    optimizer,
-                                    num_warmup_steps=self.warmup_steps,
-                                    num_training_steps=self.epochs
-                                    )
         
-       
-        return {"optimizer": optimizer, "lr_scheduler": scheduler}
+        return config
     
     def training_step(self, batch, batch_idx):
         # "batch" is the output of the training data loader.
         tokens, labels = batch
-        preds = self.net(tokens)["prediction"]
+        preds = self.net(**tokens)["prediction"]
         loss = self.loss_module(preds, labels)
         acc = (preds.argmax(dim=-1) == labels).float().mean()
 
@@ -154,7 +155,7 @@ class LitRelRoberta(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         tokens, labels = batch
-        preds = self.net(tokens)["prediction"]
+        preds = self.net(**tokens)["prediction"]
         loss = self.loss_module(preds, labels)
         acc = (preds.argmax(dim=-1) == labels).float().mean()
 
@@ -164,7 +165,7 @@ class LitRelRoberta(pl.LightningModule):
 
     def test_step(self, batch, batch_idx):
         tokens, labels = batch
-        preds = self.net(tokens)["prediction"].argmax(dim=-1)
+        preds = self.net(**tokens)["prediction"].argmax(dim=-1)
         acc = (labels == preds).float().mean()
         # By default logs it per epoch (weighted average over batches), and returns it afterwards
         self.log("test_acc", acc)
