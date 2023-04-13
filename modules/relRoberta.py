@@ -3,31 +3,70 @@ import torch
 from torch import nn
 from typing import Optional, List
 from tqdm import tqdm
+import torch.nn.functional as F
 
 from modules.relAttention import RelativeAttention
 from transformers import RobertaModel, AutoConfig
 
 
+# +
+class Lambda(nn.Module):
+    def __init__(self, func):
+        super().__init__()
+        self.func = func
+
+    def forward(self, x):
+        return self.func(x)
+
 class RobertaClassificationHead(nn.Module):
     """
+    Modified from
     https://github.com/huggingface/transformers/blob/68287689f2f0d8b7063c400230b3766987abf18d/src/transformers/models/roberta/modeling_roberta.py#L1439
     Head for sentence-level classification tasks.
     """
 
     def __init__(self, hidden_size, num_labels, hidden_dropout_prob=0.1):
         super().__init__()
+        """
+        self.net = nn.Sequential(
+            nn.LayerNorm(normalized_shape=hidden_size),
+            nn.Linear(hidden_size, hidden_size),
+            nn.GELU(),
+            nn.Dropout(hidden_dropout_prob),
+            nn.Linear(hidden_size, hidden_size),
+            nn.GELU(),
+            nn.Dropout(hidden_dropout_prob),
+            nn.Linear(hidden_size, num_labels),
+            )
         
-        self.dense = nn.Linear(hidden_size, hidden_size)
-        self.dropout = nn.Dropout(hidden_dropout_prob)
-        self.out_proj = nn.Linear(hidden_size, num_labels)
+        """
+        self.net = nn.Sequential(
+        nn.LayerNorm(normalized_shape=hidden_size),
+        nn.Linear(in_features=hidden_size, out_features=hidden_size),
+        nn.SiLU(),
+        Lambda(lambda x: x.permute(1, 0)),
+        nn.InstanceNorm1d(num_features=hidden_size),
+        Lambda(lambda x: x.permute(1, 0)),
+        nn.Dropout(hidden_dropout_prob),
+        nn.Linear(in_features=hidden_size, out_features=hidden_size),
+        nn.SiLU(),
+        Lambda(lambda x: x.permute(1, 0)),
+        nn.InstanceNorm1d(num_features=hidden_size),
+        Lambda(lambda x: x.permute(1, 0)),
+        nn.Dropout(hidden_dropout_prob),
+        nn.Linear(
+            in_features=hidden_size, out_features=num_labels
+        )
+        )
+       
+       
 
     def forward(self, x, **kwargs):
-        x = self.dropout(x)
-        x = self.dense(x)
-        x = torch.tanh(x)
-        x = self.dropout(x)
-        x = self.out_proj(x)
+
+        x = self.net(x)
         return x
+# -
+
 
 
 class RelRoberta(nn.Module):
@@ -41,6 +80,7 @@ class RelRoberta(nn.Module):
         normalization_mode="l2",
         output_normalization_mode=None,
         dropout_prob=0.1,
+        freq_anchors=100,
         device="cpu"
     ) -> None:
         
@@ -51,12 +91,13 @@ class RelRoberta(nn.Module):
         configuration = AutoConfig.from_pretrained(transformer_model)
         configuration.hidden_dropout_prob = dropout_prob
         configuration.attention_probs_dropout_prob = dropout_prob
+        configuration.output_hidden_states=True
+        configuration.return_dict=True
             
         self.encoder = RobertaModel.from_pretrained(
                             pretrained_model_name_or_path = transformer_model, 
                             config = configuration,
-                            add_pooling_layer=False
-                        ).to(device)
+                        ).requires_grad_(False).eval()
 
         
         self.decoder = RobertaClassificationHead(
@@ -64,9 +105,8 @@ class RelRoberta(nn.Module):
             num_labels=num_labels,
             hidden_dropout_prob=dropout_prob
         )
-
-        self.anchors = None
-        self.anchors_latent = None
+        
+        self.device = device
 
         if anchor_dataloader is not None:
             self.relative_attention=RelativeAttention(
@@ -75,19 +115,11 @@ class RelRoberta(nn.Module):
                 normalization_mode=normalization_mode,
                 output_normalization_mode=output_normalization_mode
             )
-
-            anchors = []
-            anchors_latent = []
             
-            with torch.no_grad():
-                for batch in tqdm(anchor_dataloader, desc="Computing latents anchors"):
-                    anchors.append(batch)
-                    batch.to(device)
-                    batch_latents = self.embed(**batch)
-                    anchors_latent.append(batch_latents)
-                                
-            self.anchors = torch.cat(anchors, dim=0)
-            self.anchors_latent = torch.cat(anchors_latent, dim=0)
+            self.anchor_dataloader = anchor_dataloader
+            
+            self.freq_anchors = freq_anchors
+
       
 
     def embed(self,
@@ -117,7 +149,8 @@ class RelRoberta(nn.Module):
                               use_cache,
                               output_attentions,
                               output_hidden_states,
-                              return_dict)[0]
+                              return_dict)["hidden_states"][-1]
+        
         return result[:, 0, :]
     
     
@@ -134,7 +167,8 @@ class RelRoberta(nn.Module):
                use_cache: Optional[bool] = None,
                output_attentions: Optional[bool] = None,
                output_hidden_states: Optional[bool] = None,
-               return_dict: Optional[bool] = None): 
+               return_dict: Optional[bool] = None,
+               batch_idx=0): 
         
         x_embedded = self.embed(input_ids,
                                 attention_mask,
@@ -152,10 +186,21 @@ class RelRoberta(nn.Module):
         
         attention_encoding = {}
         
-        if self.anchors is not None:
+        if self.anchor_dataloader is not None:
+            
+            if batch_idx % self.freq_anchors == 0:
+                anchors_list = []
+                with torch.no_grad():
+                    for batch in self.anchor_dataloader:
+                        batch.to(self.device)
+                        batch_latents = self.embed(**batch)
+                        anchors_list.append(batch_latents)
+
+                self.anchors_latents = torch.cat(anchors_list, dim=0).to(self.device)
+                
             attention_encoding = self.relative_attention.encode(
                 x=x_embedded,
-                anchors=self.anchors_latent,
+                anchors=self.anchors_latents,
             )
             
         return {
@@ -167,7 +212,7 @@ class RelRoberta(nn.Module):
     def decode(self, batch_latent, **kwargs):
         
         attention_dict = {}
-        if self.anchors is not None:
+        if self.anchor_dataloader is not None:
             attention_output = self.relative_attention.decode(**kwargs)
             
             input_dec = attention_output["output"]
@@ -175,7 +220,7 @@ class RelRoberta(nn.Module):
                 "similarities": attention_output["similarities"],
                 "original_anchors": attention_output["original_anchors"],
                 "norm_anchors": attention_output["norm_anchors"],
-                "batch_latent": attention_output["batch_latent"],
+                "batch_latent": batch_latent,
                 "norm_batch": attention_output["norm_batch"]
             }
             
@@ -202,7 +247,8 @@ class RelRoberta(nn.Module):
                 use_cache: Optional[bool] = None,
                 output_attentions: Optional[bool] = None,
                 output_hidden_states: Optional[bool] = None,
-                return_dict: Optional[bool] = None): 
+                return_dict: Optional[bool] = None,
+                batch_idx=0): 
         """Forward pass."""
         
         encoding = self.encode(input_ids,
@@ -217,6 +263,7 @@ class RelRoberta(nn.Module):
                                use_cache,
                                output_attentions,
                                output_hidden_states,
-                               return_dict)
+                               return_dict,
+                               batch_idx)
         
         return self.decode(**encoding)
