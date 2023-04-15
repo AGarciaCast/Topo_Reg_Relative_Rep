@@ -1,0 +1,21 @@
+			fscore	fscore	mae	mae
+			mean	std	mean	std
+embed_type	enc_lang	dec_lang				
+absolute	en	en	0.919		0.08	
+absolute	en	es	0.322		0.548	
+absolute	en	fr	0.335		0.499	
+absolute	es	en	0.333		0.501	
+absolute	es	es	0.91		0.089	
+absolute	es	fr	0.349		0.496	
+absolute	fr	en	0.422		0.472	
+absolute	fr	es	0.458		0.53	
+absolute	fr	fr	0.87		0.13	
+relative	en	en	0.88		0.12	
+relative	en	es	0.782		0.216	
+relative	en	fr	0.806		0.194	
+relative	es	en	0.826		0.174	
+relative	es	es	0.903		0.096	
+relative	es	fr	0.815		0.183	
+relative	fr	en	0.792		0.208	
+relative	fr	es	0.779		0.221	
+relative	fr	fr	0.852		0.148	
