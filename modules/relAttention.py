@@ -10,8 +10,9 @@ class RelativeAttention(nn.Module):
         self,
         n_anchors: int,
         similarity_mode="inner",
-        normalization_mode="l2",
+        normalization_mode=None,
         output_normalization_mode=None,
+        in_features = None,
     ):
         """Relative attention block.
 
@@ -27,7 +28,11 @@ class RelativeAttention(nn.Module):
         self.similarity_mode = similarity_mode
         self.normalization_mode = normalization_mode
         self.output_normalization_mode = output_normalization_mode
-
+        
+        if normalization_mode is not None and normalization_mode == "batchnorm" and in_features is not None:
+            self.anchor_norm = nn.BatchNorm1d(num_features=in_features, affine=False)
+            self.x_norm = nn.BatchNorm1d(num_features=in_features, affine=False)
+        
         if self.output_normalization_mode == "batchnorm":
             self.outnorm = nn.BatchNorm1d(num_features=self.output_dim)
         elif self.output_normalization_mode == "layernorm":
@@ -39,16 +44,21 @@ class RelativeAttention(nn.Module):
         original_anchors = anchors
         if x.shape[-1] != anchors.shape[-1]:
             raise ValueError(f"Inconsistent dimensions between batch and anchors: {x.shape}, {anchors.shape}")
-
-
+        
+        
+       
         # Normalize latents
         if self.normalization_mode is None:
             pass
-        elif self.normalization_mode == "l2":
-            x = F.normalize(x, p=2, dim=-1)
-            anchors = F.normalize(anchors, p=2, dim=-1)
+        elif self.normalization_mode == "batchnorm":
+            x = self.anchor_norm(x)
+            anchors = self.anchor_norm(anchors)
         else:
             raise ValueError(f"Normalization mode not supported: {self.normalization_mode}")
+        
+        x = F.normalize(x, p=2, dim=-1)
+        anchors = F.normalize(anchors, p=2, dim=-1)
+
 
         # Compute queries-keys similarities
         if self.similarity_mode == "inner":
@@ -113,4 +123,4 @@ class RelativeAttention(nn.Module):
     @property
     def output_dim(self) -> int:
         return self.n_anchors
-      
+

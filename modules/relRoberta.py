@@ -27,9 +27,14 @@ class RobertaClassificationHead(nn.Module):
 
     def __init__(self, hidden_size, num_labels, hidden_dropout_prob=0.1):
         super().__init__()
-        """
+        
+        self.pooler = nn.Sequential(
+            nn.Linear(hidden_size, hidden_size),
+            nn.Tanh(),
+            nn.Dropout(hidden_dropout_prob)
+        )
+        
         self.net = nn.Sequential(
-            nn.LayerNorm(normalized_shape=hidden_size),
             nn.Linear(hidden_size, hidden_size),
             nn.GELU(),
             nn.Dropout(hidden_dropout_prob),
@@ -38,37 +43,15 @@ class RobertaClassificationHead(nn.Module):
             nn.Dropout(hidden_dropout_prob),
             nn.Linear(hidden_size, num_labels),
             )
-        
-        """
-        self.net = nn.Sequential(
-        nn.LayerNorm(normalized_shape=hidden_size),
-        nn.Linear(in_features=hidden_size, out_features=hidden_size),
-        nn.SiLU(),
-        Lambda(lambda x: x.permute(1, 0)),
-        nn.InstanceNorm1d(num_features=hidden_size),
-        Lambda(lambda x: x.permute(1, 0)),
-        nn.Dropout(hidden_dropout_prob),
-        nn.Linear(in_features=hidden_size, out_features=hidden_size),
-        nn.SiLU(),
-        Lambda(lambda x: x.permute(1, 0)),
-        nn.InstanceNorm1d(num_features=hidden_size),
-        Lambda(lambda x: x.permute(1, 0)),
-        nn.Dropout(hidden_dropout_prob),
-        nn.Linear(
-            in_features=hidden_size, out_features=num_labels
-        )
-        )
-       
        
 
     def forward(self, x, **kwargs):
-
+        x = self.pooler(x)
         x = self.net(x)
         return x
+
+
 # -
-
-
-
 class RelRoberta(nn.Module):
     def __init__(
         self,
@@ -77,11 +60,12 @@ class RelRoberta(nn.Module):
         anchor_dataloader,
         hidden_size=768,
         similarity_mode="inner",
-        normalization_mode="l2",
+        normalization_mode=None,
         output_normalization_mode=None,
         dropout_prob=0.1,
         freq_anchors=100,
-        device="cpu"
+        device="cpu",
+        fine_tune=False
     ) -> None:
         
         super().__init__()
@@ -97,7 +81,11 @@ class RelRoberta(nn.Module):
         self.encoder = RobertaModel.from_pretrained(
                             pretrained_model_name_or_path = transformer_model, 
                             config = configuration,
-                        ).requires_grad_(False).eval()
+                            add_pooling_layer=False)
+        
+        self.fine_tune = fine_tune
+        if fine_tune:
+            self.encoder = self.encoder.requires_grad_(False)
 
         
         self.decoder = RobertaClassificationHead(
@@ -107,17 +95,17 @@ class RelRoberta(nn.Module):
         )
         
         self.device = device
-
+        self.anchor_dataloader = anchor_dataloader
+        
         if anchor_dataloader is not None:
             self.relative_attention=RelativeAttention(
                 n_anchors=self.latent_dim,
                 similarity_mode=similarity_mode,
                 normalization_mode=normalization_mode,
-                output_normalization_mode=output_normalization_mode
+                output_normalization_mode=output_normalization_mode,
+                in_features=self.latent_dim
             )
-            
-            self.anchor_dataloader = anchor_dataloader
-            
+                        
             self.freq_anchors = freq_anchors
 
       
@@ -136,6 +124,9 @@ class RelRoberta(nn.Module):
               output_attentions: Optional[bool] = None,
               output_hidden_states: Optional[bool] = None,
               return_dict: Optional[bool] = None):
+        
+        if self.fine_tune:
+            self.encoder.eval()
         
         result = self.encoder(input_ids,
                               attention_mask,
