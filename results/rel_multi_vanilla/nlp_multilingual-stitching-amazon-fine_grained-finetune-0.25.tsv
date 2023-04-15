@@ -3,9 +3,19 @@
 embed_type	enc_lang	dec_lang				
 absolute	en	en	0.64		0.408	
 absolute	en	es	0.067		1.803	
+absolute	en	fr	0.006		2.775	
 absolute	es	en	0.233		1.196	
 absolute	es	es	0.623		0.43	
+absolute	es	fr	0.14		2.349	
+absolute	fr	en	0.151		1.016	
+absolute	fr	es	0.153		1.984	
+absolute	fr	fr	0.549		0.539	
 relative	en	en	0.625		0.431	
 relative	en	es	0.474		0.881	
+relative	en	fr	0.504		0.651	
 relative	es	en	0.527		0.605	
 relative	es	es	0.582		0.477	
+relative	es	fr	0.491		0.697	
+relative	fr	en	0.482		0.739	
+relative	fr	es	0.477		0.775	
+relative	fr	fr	0.553		0.551	
