@@ -361,8 +361,7 @@ if __name__ == '__main__':
     
     SEEDS = [0, 2, 3, 4]
     EPOCHS = 5 if fine_grained else 3
-    print(fine_grained)
-    exit()
+
     for seed in tqdm(SEEDS, leave=False, desc="seed"):
         for fine_tune in tqdm([True, False], leave=False, desc="fine_tune"):
             for embedding_type in tqdm(["absolute", "relative"], leave=False, desc="embedding_type"):
