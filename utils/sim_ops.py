@@ -329,7 +329,7 @@ class MinFrob(SimLayers):
         dist_B, _ =torch.sort(unnorm_dist_B/torch.sqrt((unnorm_dist_B**2).sum()))
 
         cost = (dist_A-dist_B)**2
-        minimum_dist = torch.sqrt(cost.sum())
+        minimum_dist = torch.sqrt(cost.sum())/torch.sqrt(dist_A.shape[0]*dist_A.shape[1])
         
         return minimum_dist.item()
 
