@@ -382,7 +382,7 @@ if __name__ == '__main__':
                 }
                 for embedding_type in ["absolute", "relative"]
             }
-            for seed in [1]
+            for seed in range(5)
         }
         for train_mode in tqdm(["finetune", "full"], leave=True, desc="mode")
     }
@@ -415,7 +415,7 @@ if __name__ == '__main__':
     }
 
     for mode in ["finetune", "full"]:
-        for seed in [1]:
+        for seed in range(5):
             for embed_type in ["absolute", "relative"]:
                 for enc_lang  in ALL_LANGS:
                     for dec_lang  in ALL_LANGS:
