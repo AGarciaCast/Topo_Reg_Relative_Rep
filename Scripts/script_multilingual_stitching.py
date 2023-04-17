@@ -10,6 +10,8 @@ sys.path.insert(0, parentdir)
 
 import argparse
 
+import time
+
 # Commented out IPython magic to ensure Python compatibility.
 import random
 from pathlib import Path
@@ -211,8 +213,10 @@ def train_network(lang, epochs, mode="relative", seed=24, fine_tune=False):
     val_loader = val_lang2dataloader[lang]
    
     trainer.fit(model, train_loader, val_loader)
-        
-    return model
+    model.to("cpu") 
+    del model
+    time.sleep(10)
+
 
 """# Results"""
 
@@ -359,7 +363,7 @@ if __name__ == '__main__':
                                         batch_size=48,
                                         )
     
-    SEEDS = [0, 2, 3, 4]
+    SEEDS = [0]
     EPOCHS = 5 if fine_grained else 3
 
     for seed in tqdm(SEEDS, leave=False, desc="seed"):
@@ -387,68 +391,3 @@ if __name__ == '__main__':
         for train_mode in tqdm(["finetune", "full"], leave=True, desc="mode")
     }
 
-    numeric_results = {
-        "finetune": {
-            "seed": [],
-            "embed_type": [],
-            "enc_lang": [],
-            "dec_lang": [],
-            "precision": [],
-            "recall": [],
-            "acc": [],
-            "fscore": [],
-            "mae": [],
-            "stitched": []
-        },
-        "full": {
-            "seed": [],
-            "embed_type": [],
-            "enc_lang": [],
-            "dec_lang": [],
-            "precision": [],
-            "recall": [],
-            "acc": [],
-            "fscore": [],
-            "mae": [],
-            "stitched": []
-        },
-    }
-
-    for mode in ["finetune", "full"]:
-        for seed in range(5):
-            for embed_type in ["absolute", "relative"]:
-                for enc_lang  in ALL_LANGS:
-                    for dec_lang  in ALL_LANGS:
-                        
-                        model = models[mode][seed][embed_type][enc_lang].net
-                        if embed_type == "relative":
-                            model.anchor_dataloader = anchors_lang2dataloader[enc_lang]
-                            
-                        if enc_lang != dec_lang:
-                            model_dec = models[mode][seed][embed_type][dec_lang].net
-                            model = StitchingModule(model, model_dec)
-                        
-                            
-                        # The data is paired with its encoder
-                        test_loader = test_lang2dataloader[enc_lang]
-                        title = f" {mode}_seed{seed}_{embed_type}_{enc_lang}_{dec_lang}"
-
-                        precision, recall, acc, fscore, mae = test_model(model, test_loader, title)
-                        numeric_results[mode]["embed_type"].append(embed_type)
-                        numeric_results[mode]["enc_lang"].append(enc_lang)
-                        numeric_results[mode]["dec_lang"].append(dec_lang)
-                        numeric_results[mode]["precision"].append(precision)
-                        numeric_results[mode]["recall"].append(recall)
-                        numeric_results[mode]["acc"].append(acc)
-                        numeric_results[mode]["fscore"].append(fscore)
-                        numeric_results[mode]["stitched"].append(enc_lang != dec_lang)
-                        numeric_results[mode]["mae"].append(mae)
-                        numeric_results[mode]["seed"].append(seed)
-
-    for mode in ["finetune", "full"]:
-        df = pd.DataFrame(numeric_results[mode])
-        df.to_csv(
-            RESULT_PATH / f"nlp_multilingual-stitching-amazon-{'fine_grained' if fine_grained else 'coarse_grained'}-{mode}-{train_perc}.tsv",
-            sep="\t",
-            index=False
-        )
