@@ -30,7 +30,7 @@ from sklearn.metrics import precision_recall_fscore_support, mean_absolute_error
 
 from functools import partial
 
-from aux_relative_text.multilingual_amazon_anchors import MultilingualAmazonAnchors
+from utils.multilingual_amazon_anchors import MultilingualAmazonAnchors
 from typing import *
 
 from modules.stitching_module import StitchingModule
