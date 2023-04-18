@@ -65,6 +65,9 @@ def process_df(fine_grained, mode, path, train_perc=0.25):
     full_in_domain = read_df(fine_grained=fine_grained, mode=mode, train_perc=train_perc, path=path)
     full_in_domain = full_in_domain.drop(columns=COLUMNS_TO_DROP)
     full_in_domain["fscore"] = full_in_domain["fscore"] * 100
+    full_in_domain["acc"] = full_in_domain["acc"] * 100
+    full_in_domain["mae"] = full_in_domain["mae"] * 100
+
 
 
     df = rearrange_embedtype_as_column(full_in_domain)
