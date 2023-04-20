@@ -17,7 +17,6 @@ class DynamicDatasetWrapper(torch.utils.data.Dataset):
         return self.wrappee[idx]
 
 
-
 class DictDataset(DynamicDatasetWrapper):
     def __init__(self, ds, data_key="content", target_key="class"):
         
@@ -49,7 +48,6 @@ class IntraLabelMultiDraw(DynamicDatasetWrapper):
 
     def __getitem__(self, idx):
         x, y = self.wrappee[idx]
-        assert isinstance(x, list)
 
         N = len(self.indices_by_label[y])
         I = torch.randint(N, (self.num_draws - 1,))
@@ -57,8 +55,8 @@ class IntraLabelMultiDraw(DynamicDatasetWrapper):
         x = [x]
 
         for i in I:
-            x_i, y_i = self.wrappee[i]
-            x += x_i
+            x_i, _ = self.wrappee[i]
+            x.append(x_i)
 
         return x, y
 
