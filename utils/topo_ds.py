@@ -62,3 +62,38 @@ class IntraLabelMultiDraw(DynamicDatasetWrapper):
 
     def __len__(self):
         return len(self.wrappee)
+ 
+
+class ClassAccumulationSampler():
+    def __init__(self, data, inbatch_size, accumulation=1, drop_last=True):
+        self.data = data
+        self.accumulation = accumulation 
+
+        self.indices = defaultdict(list)
+        for i, x in enumerate(data):
+            self.indices[x].append(i)
+        
+        self.samplers = {}
+        self.batches_idx = []
+        for k, v in self.indices.items():
+          
+          self.samplers[k] = DataLoader(v,
+                                        batch_size=inbatch_size,
+                                        drop_last=drop_last)
+          
+          self.batches_idx += [k]*len(self.samplers[k])
+          
+        
+    def __iter__(self):
+        random.shuffle(self.batches_idx)
+        batch = []
+        batch_iters = {k: iter(b) for k,b in self.samplers.items()}
+        for i, k in enumerate(self.batches_idx):
+          if i>0 and i%self.accumulation == 0:
+            yield batch
+            batch = []
+          
+          batch += next(batch_iters[k])
+    
+    def __len__(self) -> int:
+      return len(self.batches_idx)//self.accumulation
