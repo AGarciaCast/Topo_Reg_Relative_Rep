@@ -1,6 +1,8 @@
 
 import torch
 from collections import defaultdict
+from torch.utils.data import DataLoader
+import random
 
 class DynamicDatasetWrapper(torch.utils.data.Dataset):
     def __init__(self, wrappee):
@@ -17,7 +19,7 @@ class DynamicDatasetWrapper(torch.utils.data.Dataset):
         return self.wrappee[idx]
 
 
-class DictDataset(DynamicDatasetWrapper):
+class DictDataset(torch.utils.data.Dataset):
     def __init__(self, ds, data_key="content", target_key="class"):
         
         self.wrappee = ds
@@ -31,7 +33,7 @@ class DictDataset(DynamicDatasetWrapper):
     def __getitem__(self, idx):
         it = self.wrappee[idx]
         return it[self.data_key], it[self.target_key]
-    
+
 
 class IntraLabelMultiDraw(DynamicDatasetWrapper):
     def __init__(self, ds, num_draws):
@@ -62,7 +64,7 @@ class IntraLabelMultiDraw(DynamicDatasetWrapper):
 
     def __len__(self):
         return len(self.wrappee)
- 
+
 
 class ClassAccumulationSampler():
     def __init__(self, ds, inbatch_size, accumulation=1, drop_last=True):
@@ -94,7 +96,7 @@ class ClassAccumulationSampler():
             yield batch
             batch = []
           
-          batch += next(batch_iters[k])
+          batch += next(batch_iters[k]).tolist()
     
     def __len__(self) -> int:
       return len(self.batches_idx)//self.accumulation
