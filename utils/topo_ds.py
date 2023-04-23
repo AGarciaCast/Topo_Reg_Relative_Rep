@@ -1,7 +1,7 @@
 
 import torch
 from collections import defaultdict
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, RandomSampler, BatchSampler
 import random
 
 class DictDataset(torch.utils.data.Dataset):
@@ -51,6 +51,7 @@ class IntraLabelMultiDraw(torch.utils.data.Dataset):
         return len(self.wrappee)
 
 
+# +
 class ClassAccumulationSampler():
     def __init__(self, ds, inbatch_size, accumulation=1, drop_last=True, group_cls=True):
         self.ds = ds
@@ -108,3 +109,82 @@ class ClassAccumulationSampler():
 
     def __len__(self) -> int:
         return len(self.batches_idx)//self.accumulation
+    
+
+class DoubleClassAccumulationSampler():
+    def __init__(self, ds, batch_size, drop_last=True, main_random=False):
+        self.ds = ds
+        self.main_random = main_random
+        if main_random:
+            self.ds_loader = BatchSampler(RandomSampler(ds),
+                                          batch_size=batch_size,
+                                          drop_last=drop_last)
+        self.batch_size = batch_size
+
+        self.indices_by_label = defaultdict(list)
+        for i in range(len(ds)):
+            _, y = ds[i]
+            y = int(y)
+            self.indices_by_label[y].append(i)
+
+        self.samplers = {}
+        self.max_lab = 0
+        self.batches_idx = []
+        self.num_cls = len(self.indices_by_label.keys())
+        for k, v in self.indices_by_label.items():
+
+            self.samplers[k] = DataLoader(v,
+                                          batch_size=batch_size,
+                                          drop_last=drop_last)
+
+            self.batches_idx += [k]*len(self.samplers[k])
+
+            if len(self.samplers[k]) > self.max_lab:
+                self.max_lab = len(self.samplers[k]) 
+
+
+    def __iter__(self):
+
+        self.batches_idx = []
+        for i in range(self.max_lab):
+            aux_list = []
+            for k in self.samplers.keys():
+                if i < len(self.samplers[k]):
+                    aux_list.append(k)
+
+            self.batches_idx += aux_list
+        
+        if self.main_random:
+            random_sampler = iter(self.ds_loader)
+            
+        batch = []
+        batch_iters = {k: iter(b) for k,b in self.samplers.items()}
+        for i, k in enumerate(self.batches_idx):
+            if i>0 and i%self.num_cls == 0:
+                og_batch = batch.copy()
+                random.shuffle(batch)
+                for j in range(self.num_cls):
+                    if self.main_random:
+                        yield next(random_sampler)
+                    else:
+                        yield batch[j*self.batch_size:(j+1)*self.batch_size]
+                        
+                    yield og_batch[j*self.batch_size:(j+1)*self.batch_size]
+
+                batch = []
+
+            batch += next(batch_iters[k]).tolist()
+
+        if len(batch)==self.batch_size*self.num_cls:
+            og_batch = batch.copy()
+            random.shuffle(batch)
+            for j in range(self.num_cls):
+                if self.main_random:
+                    yield next(random_sampler)
+                else:
+                    yield batch[j*self.batch_size:(j+1)*self.batch_size]
+                    
+                yield og_batch[j*self.batch_size:(j+1)*self.batch_size]
+
+    def __len__(self) -> int:
+        return 2*self.num_cls*(len(self.batches_idx)//self.num_cls)

@@ -1,4 +1,5 @@
 ## PyTorch
+import torch
 import torch.nn as nn
 # PyTorch Lightning
 import pytorch_lightning as pl
@@ -15,8 +16,8 @@ class LitTopoRelRoberta(pl.LightningModule):
                  transformer_model,
                  anchor_dataloader,
                  train_load,
-                 topo_load,
-                 epochs_mix=1,
+                 topo_load=None,
+                 epochs_mix=None,
                  hidden_size=768,
                  similarity_mode="inner",
                  normalization_mode=None,
@@ -90,10 +91,10 @@ class LitTopoRelRoberta(pl.LightningModule):
         
         if self.scheduler_act:
             config["lr_scheduler"] = {
-            "scheduler": transformers.get_cosine_schedule_with_warmup(   
+            "scheduler": transformers.get_constant_schedule_with_warmup(   
                                                     optimizer = config["optimizer"],
                                                     num_warmup_steps=int(self.steps*0.1),
-                                                    num_training_steps=self.steps
+                                                    #num_training_steps=self.steps
                                                     ),
                 "interval": "step",
 
@@ -113,9 +114,12 @@ class LitTopoRelRoberta(pl.LightningModule):
 
         # Logs the accuracy per epoch to tensorboard (weighted average over batches)
         self.log("train_acc", acc, prog_bar=True)
-        self.log("train_loss", loss)
         self.log("train_mae", mae, prog_bar=True)
-        return loss  # Return tensor to call ".backward" on
+        if batch_idx%2==0:
+            self.log("train_loss", loss, prog_bar=True)
+            return loss  # Return tensor to call ".backward" on
+        else:
+            return torch.tensor([0.0], requires_grad=True)
 
     def validation_step(self, batch, batch_idx):
         tokens, labels = batch
@@ -139,11 +143,11 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.log("test_acc", acc)
 
     def train_dataloader(self):
-        if self.trainer.current_epoch < self.epochs_mix:
-            print("Using mix loader")
+        if self.epochs_mix is None:
+            return self.train_load
+        elif self.trainer.current_epoch < self.epochs_mix:
             return self.train_load
         else:
-            print("Using grouped loader")
             return self.topo_load
 
 
