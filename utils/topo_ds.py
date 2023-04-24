@@ -188,3 +188,5 @@ class DoubleClassAccumulationSampler():
 
     def __len__(self) -> int:
         return 2*self.num_cls*(len(self.batches_idx)//self.num_cls)
+
+
