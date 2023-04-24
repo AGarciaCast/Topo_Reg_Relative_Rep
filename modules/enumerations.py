@@ -1,4 +1,6 @@
-
+"""
+Extracted from https://openreview.net/attachment?id=SrC-nwieGJ&name=supplementary_material
+"""
 from enum import auto
 
 

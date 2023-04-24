@@ -1,3 +1,6 @@
+"""
+Modified from https://github.com/c-hofer/topologically_densified_distributions
+"""
 
 import torch
 from collections import defaultdict
@@ -51,7 +54,6 @@ class IntraLabelMultiDraw(torch.utils.data.Dataset):
         return len(self.wrappee)
 
 
-# +
 class ClassAccumulationSampler():
     def __init__(self, ds, inbatch_size, accumulation=1, drop_last=True, group_cls=True):
         self.ds = ds
