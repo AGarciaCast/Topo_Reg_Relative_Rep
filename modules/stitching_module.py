@@ -1,3 +1,6 @@
+"""
+Modified from https://openreview.net/attachment?id=SrC-nwieGJ&name=supplementary_material
+"""
 from typing import Dict
 
 import torch

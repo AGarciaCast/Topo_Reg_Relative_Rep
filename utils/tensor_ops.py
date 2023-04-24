@@ -1,3 +1,6 @@
+"""
+Extracted from https://openreview.net/attachment?id=SrC-nwieGJ&name=supplementary_material
+"""
 from typing import Any, Optional, Tuple
 
 import torch
