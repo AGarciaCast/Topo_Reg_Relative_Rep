@@ -1,4 +1,6 @@
-
+"""
+Inspired from https://openreview.net/attachment?id=SrC-nwieGJ&name=supplementary_material
+"""
 import torch
 from torch import nn
 from typing import Optional, List
