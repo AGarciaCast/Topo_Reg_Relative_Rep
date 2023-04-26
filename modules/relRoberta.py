@@ -21,11 +21,6 @@ class Lambda(nn.Module):
         return self.func(x)
 
 class RobertaClassificationHead(nn.Module):
-    """
-    Modified from
-    https://github.com/huggingface/transformers/blob/68287689f2f0d8b7063c400230b3766987abf18d/src/transformers/models/roberta/modeling_roberta.py#L1439
-    Head for sentence-level classification tasks.
-    """
 
     def __init__(self, hidden_size, num_labels, hidden_dropout_prob=0.1):
         super().__init__()
@@ -211,6 +206,7 @@ class RelRoberta(nn.Module):
             input_dec = attention_output["output"]
             attention_dict={
                 "similarities": attention_output["similarities"],
+                "norm_similarities": input_dec,
                 "original_anchors": attention_output["original_anchors"],
                 "norm_anchors": attention_output["norm_anchors"],
                 "batch_latent": batch_latent,

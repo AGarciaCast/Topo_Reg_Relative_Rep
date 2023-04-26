@@ -7,7 +7,13 @@ import torch.optim as optim
 from modules.relRoberta import RelRoberta
 import transformers
 from pl_modules.pl_roberta import roberta_base_AdamW_LLRD
+from utils.pershom import TopoRegLoss
 
+POS2RES = {
+    "pre": "batch_latent",
+    "post_no_norm": "similarities",
+    "post_norm": "norm_similarities"
+}
 
 class LitTopoRelRoberta(pl.LightningModule):
     
@@ -15,9 +21,7 @@ class LitTopoRelRoberta(pl.LightningModule):
                  num_labels,
                  transformer_model,
                  anchor_dataloader,
-                 train_load,
-                 topo_load=None,
-                 epochs_mix=None,
+                 topo_par=("pre", "L_1", 2), # "post_no_norm", "post_norm"
                  hidden_size=768,
                  similarity_mode="inner",
                  normalization_mode=None,
@@ -63,10 +67,9 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.weight_decay = weight_decay
         self.head_lr = head_lr
         self.encoder_lr = encoder_lr
-        
-        self.train_load = train_load
-        self.topo_load = topo_load
-        self.epochs_mix = epochs_mix
+        if topo_par is not None:
+            self.latent_pos = POS2RES[topo_par[0]]
+            self.reg_loss = TopoRegLoss(topo_par[1], topo_par[2])
         
         
     def forward(self, x):
@@ -106,20 +109,26 @@ class LitTopoRelRoberta(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # "batch" is the output of the training data loader.
         tokens, labels = batch
-        preds = self.net(batch_idx=batch_idx, **tokens)["prediction"]
-        loss = self.loss_module(preds, labels)
-        prediction = preds.argmax(dim=-1)
-        acc = (prediction == labels).float().mean()
-        mae = self.aux_loss(prediction.float(), labels.float())*100
-
-        # Logs the accuracy per epoch to tensorboard (weighted average over batches)
-        self.log("train_acc", acc, prog_bar=True)
-        self.log("train_mae", mae, prog_bar=True)
+        res = self.net(batch_idx=batch_idx, **tokens)
+       
         if batch_idx%2==0:
-            self.log("train_loss", loss, prog_bar=True)
-            return loss  # Return tensor to call ".backward" on
+            preds = res["prediction"]
+            loss = self.loss_module(preds, labels)
+            prediction = preds.argmax(dim=-1)
+            acc = (prediction == labels).float().mean()
+            mae = self.aux_loss(prediction.float(), labels.float())*100
+
+            # Logs the accuracy per epoch to tensorboard (weighted average over batches)
+            self.log("cls_loss", loss, prog_bar=True)
+            self.log("train_acc", acc, prog_bar=True)
+            self.log("train_mae", mae, prog_bar=True)
+            
         else:
-            return torch.tensor([0.0], requires_grad=True)
+            latent = res[self.latent_pos]
+            loss = self.reg_loss(latent)
+            self.log("reg_loss", loss, prog_bar=True)
+
+        return loss # Return tensor to call ".backward" on
 
     def validation_step(self, batch, batch_idx):
         tokens, labels = batch
@@ -142,12 +151,4 @@ class LitTopoRelRoberta(pl.LightningModule):
         # By default logs it per epoch (weighted average over batches), and returns it afterwards
         self.log("test_acc", acc)
 
-    def train_dataloader(self):
-        if self.epochs_mix is None:
-            return self.train_load
-        elif self.trainer.current_epoch < self.epochs_mix:
-            return self.train_load
-        else:
-            return self.topo_load
-
-
+   

@@ -3,7 +3,7 @@ Modified from https://github.com/c-hofer/topologically_densified_distributions
 """
 
 import torch
-
+from torch import nn
 from torchph.pershom import vr_persistence_l1, vr_persistence
 
 EPSILON = 0.000001
@@ -76,7 +76,7 @@ class VrPersistenceF_p:
         return vr_persistence(D, 0, 0)
 
 
-class VrPersistenceL_Inf:
+class VrPersistenceF_inf:
     def __call__(self, point_cloud):
         D = (point_cloud.unsqueeze(0) - point_cloud.unsqueeze(1))
         D = D.abs().max(dim=2)[0]
@@ -91,3 +91,34 @@ class VrPersistenceF_0:
         D = D.sum(2)
 
         return vr_persistence(D, 0, 0)
+
+class TopoRegLoss(nn.Module):
+    def __init__(self, top_scale, pers="L_1"):
+        pers = pers.split("_")
+        if pers[0]=="L":
+            if pers[1]=="1":
+                self.pers_fn = VrPersistenceL_1()
+            elif pers[1]=="2":
+                 self.pers_fn = VrPersistenceL_2()
+            elif pers[1]=="inf":
+                self.pers_fn = VrPersistenceL_inf()
+            else:
+                 self.pers_fn = VrPersistenceL_p(int(pers[1]))
+        else:
+            # TODO: better control of input
+            if pers[1]=="0":
+                self.pers_fn = VrPersistenceF_0()
+            elif pers[1]=="inf":
+                self.pers_fn = VrPersistenceF_inf()
+            else:
+                 self.pers_fn = VrPersistenceF_p(int(pers[1]))
+        
+        self.top_scale = top_scale
+                 
+    
+    def __call__(self, point_cloud):
+        z_sample = point_cloud.contiguous()
+        lt = self.pers_fn(z_sample)[0][0][:, 1]
+
+        loss = (lt-self.top_scale).abs().sum()
+        return loss
