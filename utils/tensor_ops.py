@@ -6,6 +6,17 @@ from typing import Any, Optional, Tuple
 import torch
 from torch import nn
 from torchvision import models
+import numpy as np
+
+def set_seed(seed):
+    """
+    Extracted from https://lightning.ai/docs/pytorch/latest/notebooks/course_UvA-DL/02-activation-functions.html
+    """
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():  # GPU operation have separate seed
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
 
 
 def stratified_gaussian_sampling(values: torch.Tensor, targets: torch.Tensor, samples_per_class: int) -> torch.Tensor:

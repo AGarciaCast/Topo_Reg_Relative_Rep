@@ -1,4 +1,5 @@
 
+import torch
 from torch import nn
 
 
@@ -56,3 +57,60 @@ class CNN(nn.Module):
             res.append(x.detach().reshape(x.shape[0], -1))
             
         return res
+
+
+
+class SimpleCNN13(nn.Module):
+    """
+    Extracted from https://github.com/c-hofer/topologically_densified_distributions/blob/master/core/models/simple_cnn.py
+    """
+    def __init__(self,
+                 num_classes: int):
+        super().__init__()
+       
+        self.feat_ext = nn.Sequential(
+            nn.Conv2d(3, 128, 3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(128, 128, 3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(128, 128, 3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(2, stride=2, padding=0),
+            nn.Dropout(0.5),
+            #
+            nn.Conv2d(128, 256, 3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(256, 256, 3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(256, 256, 3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1),
+            nn.MaxPool2d(2, stride=2, padding=0),
+            nn.Dropout(0.5),
+            #
+            nn.Conv2d(256, 512, 3, padding=0),
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(512, 256, 1, padding=0),
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(256, 128, 1, padding=0),
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(0.1),
+            nn.AvgPool2d(6, stride=2, padding=0),
+        )
+
+        self.cls = nn.Linear(128, num_classes)
+
+
+    def forward(self, x):
+        z = self.feat_ext(x)
+        z = torch.flatten(z, 1)
+        y_hat = self.cls(z)
+
+        return y_hat, z
