@@ -92,27 +92,33 @@ class VrPersistenceF_0:
 
         return vr_persistence(D, 0, 0)
 
+def pers2fn(pers):
+    pers = pers.split("_")
+    if pers[0]=="L":
+        if pers[1]=="1":
+            pers_fn = VrPersistenceL_1()
+        elif pers[1]=="2":
+            pers_fn = VrPersistenceL_2()
+        elif pers[1]=="inf":
+            pers_fn = VrPersistenceL_inf()
+        else:
+            pers_fn = VrPersistenceL_p(int(pers[1]))
+    else:
+        # TODO: better control of input
+        if pers[1]=="0":
+            pers_fn = VrPersistenceF_0()
+        elif pers[1]=="inf":
+            pers_fn = VrPersistenceF_inf()
+        else:
+            pers_fn = VrPersistenceF_p(int(pers[1]))
+    
+    return pers_fn
+
+
 class TopoRegLoss(nn.Module):
     def __init__(self, top_scale, pers="L_1"):
-        pers = pers.split("_")
-        if pers[0]=="L":
-            if pers[1]=="1":
-                self.pers_fn = VrPersistenceL_1()
-            elif pers[1]=="2":
-                 self.pers_fn = VrPersistenceL_2()
-            elif pers[1]=="inf":
-                self.pers_fn = VrPersistenceL_inf()
-            else:
-                 self.pers_fn = VrPersistenceL_p(int(pers[1]))
-        else:
-            # TODO: better control of input
-            if pers[1]=="0":
-                self.pers_fn = VrPersistenceF_0()
-            elif pers[1]=="inf":
-                self.pers_fn = VrPersistenceF_inf()
-            else:
-                 self.pers_fn = VrPersistenceF_p(int(pers[1]))
-        
+        super().__init__()
+        self.pers_fn = pers2fn(pers)
         self.top_scale = top_scale
                  
     

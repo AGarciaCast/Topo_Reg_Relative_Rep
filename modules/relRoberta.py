@@ -209,7 +209,6 @@ class RelRoberta(nn.Module):
                 "norm_similarities": input_dec,
                 "original_anchors": attention_output["original_anchors"],
                 "norm_anchors": attention_output["norm_anchors"],
-                "batch_latent": batch_latent,
                 "norm_batch": attention_output["norm_batch"]
             }
             
@@ -219,6 +218,7 @@ class RelRoberta(nn.Module):
         result = self.decoder(input_dec)
         return {
             "prediction": result,
+            "batch_latent": batch_latent,
             **attention_dict
         }
     

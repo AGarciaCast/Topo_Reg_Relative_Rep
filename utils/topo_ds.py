@@ -111,7 +111,7 @@ class ClassAccumulationSampler():
 
     def __len__(self) -> int:
         return len(self.batches_idx)//self.accumulation
-    
+
 
 class DoubleClassAccumulationSampler():
     def __init__(self, ds, batch_size, drop_last=True, main_random=False):

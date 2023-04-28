@@ -21,7 +21,10 @@ class LitTopoRelRoberta(pl.LightningModule):
                  num_labels,
                  transformer_model,
                  anchor_dataloader,
-                 topo_par=("pre", "L_1", 2), # "post_no_norm", "post_norm"
+                 epochs_mix=1,
+                 train_load=None,
+                 topo_load=None,
+                 topo_par=("pre", "L_1", 2, 0.1), # "post_no_norm", "post_norm"
                  hidden_size=768,
                  similarity_mode="inner",
                  normalization_mode=None,
@@ -57,6 +60,7 @@ class LitTopoRelRoberta(pl.LightningModule):
                               device=device,
                               fine_tune=fine_tune
                              )
+        
                 
         self.loss_module = nn.CrossEntropyLoss()
         self.aux_loss = nn.L1Loss()
@@ -67,13 +71,18 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.weight_decay = weight_decay
         self.head_lr = head_lr
         self.encoder_lr = encoder_lr
+        self.train_load = train_load
+        self.topo_load = topo_load
+        self.epochs_mix = epochs_mix
         if topo_par is not None:
             self.latent_pos = POS2RES[topo_par[0]]
-            self.reg_loss = TopoRegLoss(topo_par[1], topo_par[2])
+            if self.net.anchor_dataloader is None:
+                assert self.latent_pos == "batch_latent"
+            self.reg_loss = TopoRegLoss(topo_par[2], topo_par[1])
+            self.w_loss = topo_par[3]
         
         
     def forward(self, x):
-       
         return self.net(**x)["prediction"]
         
     def detailed_forward(self, x):
@@ -110,7 +119,7 @@ class LitTopoRelRoberta(pl.LightningModule):
         # "batch" is the output of the training data loader.
         tokens, labels = batch
         res = self.net(batch_idx=batch_idx, **tokens)
-       
+        
         if batch_idx%2==0:
             preds = res["prediction"]
             loss = self.loss_module(preds, labels)
@@ -124,8 +133,12 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.log("train_mae", mae, prog_bar=True)
             
         else:
-            latent = res[self.latent_pos]
-            loss = self.reg_loss(latent)
+            if self.current_epoch < self.epochs_mix:
+                loss = torch.tensor([0.0], requires_grad=True)
+            else:
+                latent = res[self.latent_pos]
+                loss = self.w_loss*self.reg_loss(latent)
+                
             self.log("reg_loss", loss, prog_bar=True)
 
         return loss # Return tensor to call ".backward" on
@@ -150,5 +163,13 @@ class LitTopoRelRoberta(pl.LightningModule):
         acc = (labels == preds).float().mean()
         # By default logs it per epoch (weighted average over batches), and returns it afterwards
         self.log("test_acc", acc)
+
+    def train_dataloader(self):
+        if self.epochs_mix is None:
+            return self.train_load
+        elif self.current_epoch < self.epochs_mix:
+            return self.train_load
+        else:
+            return self.topo_load
 
    
