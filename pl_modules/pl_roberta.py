@@ -142,7 +142,7 @@ class LitRelRoberta(pl.LightningModule):
             config["lr_scheduler"] = {
             "scheduler": transformers.get_constant_schedule_with_warmup(   
                                                     optimizer = config["optimizer"],
-                                                    num_warmup_steps=int(self.steps*0.1),
+                                                    num_warmup_steps=int(self.steps*0.1/self.trainer.max_epochs),
                                                     ),
                 "interval": "step",
 
@@ -167,6 +167,7 @@ class LitRelRoberta(pl.LightningModule):
         return loss  # Return tensor to call ".backward" on
 
     def validation_step(self, batch, batch_idx):
+        batch_idx = int(batch_idx>0)
         tokens, labels = batch
         preds = self.net(batch_idx=batch_idx, **tokens)["prediction"]
         loss = self.loss_module(preds, labels)
@@ -181,6 +182,7 @@ class LitRelRoberta(pl.LightningModule):
         self.log("val_loss", loss)
 
     def test_step(self, batch, batch_idx):
+        batch_idx = int(batch_idx>0)
         tokens, labels = batch
         preds = self.net(batch_idx=batch_idx, **tokens)["prediction"].argmax(dim=-1)
         acc = (labels == preds).float().mean()

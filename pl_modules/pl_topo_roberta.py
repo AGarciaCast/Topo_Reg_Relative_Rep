@@ -12,7 +12,7 @@ from utils.pershom import TopoRegLoss
 POS2RES = {
     "pre": "batch_latent",
     "post_no_norm": "similarities",
-    "post_norm": "norm_similarities"
+    "post": "norm_similarities"
 }
 
 class LitTopoRelRoberta(pl.LightningModule):
@@ -24,7 +24,7 @@ class LitTopoRelRoberta(pl.LightningModule):
                  epochs_mix=1,
                  train_load=None,
                  topo_load=None,
-                 topo_par=("pre", "L_1", 2, 0.1), # "post_no_norm", "post_norm"
+                 topo_par=("pre", "L_1", 2, 0.1, None), # "post_no_norm", "post_norm"
                  hidden_size=768,
                  similarity_mode="inner",
                  normalization_mode=None,
@@ -78,7 +78,7 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.latent_pos = POS2RES[topo_par[0]]
             if self.net.anchor_dataloader is None:
                 assert self.latent_pos == "batch_latent"
-            self.reg_loss = TopoRegLoss(topo_par[2], topo_par[1])
+            self.reg_loss = TopoRegLoss(topo_par[2], topo_par[1], topo_par[4])
             self.w_loss = topo_par[3]
         
         
@@ -103,10 +103,10 @@ class LitTopoRelRoberta(pl.LightningModule):
         
         if self.scheduler_act:
             config["lr_scheduler"] = {
-            "scheduler": transformers.get_constant_schedule_with_warmup(   
+            "scheduler": transformers.get_cosine_schedule_with_warmup(   
                                                     optimizer = config["optimizer"],
-                                                    num_warmup_steps=int(self.steps*0.1),
-                                                    #num_training_steps=self.steps
+                                                    num_warmup_steps=int(self.steps*0.1/self.trainer.max_epochs),
+                                                    num_training_steps=self.steps
                                                     ),
                 "interval": "step",
 
@@ -144,6 +144,7 @@ class LitTopoRelRoberta(pl.LightningModule):
         return loss # Return tensor to call ".backward" on
 
     def validation_step(self, batch, batch_idx):
+        batch_idx = int(batch_idx>0)
         tokens, labels = batch
         preds = self.net(batch_idx=batch_idx, **tokens)["prediction"]
         loss = self.loss_module(preds, labels)
@@ -158,6 +159,7 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.log("val_loss", loss)
 
     def test_step(self, batch, batch_idx):
+        batch_idx = int(batch_idx>0)
         tokens, labels = batch
         preds = self.net(batch_idx=batch_idx, **tokens)["prediction"].argmax(dim=-1)
         acc = (labels == preds).float().mean()
@@ -170,6 +172,8 @@ class LitTopoRelRoberta(pl.LightningModule):
         elif self.current_epoch < self.epochs_mix:
             return self.train_load
         else:
+            if self.current_epoch == self.epochs_mix:
+                self.net.freq_anchors = self.net.freq_anchors
             return self.topo_load
 
    
