@@ -129,6 +129,7 @@ class TopoRegLoss(nn.Module):
         lt = self.pers_fn(z_sample)[0][0][:, 1]
 
         # loss = (lt-self.top_scale).abs().sum()
+        # test
         
         if self.temp is None:
             aux = torch.max(lt)
