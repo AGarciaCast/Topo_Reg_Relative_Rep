@@ -120,7 +120,7 @@ class LitTopoRelRoberta(pl.LightningModule):
         tokens, labels = batch
         res = self.net(batch_idx=batch_idx, **tokens)
         
-        if batch_idx%2==0:
+        if self.current_epoch < self.epochs_mix or batch_idx%2==0:
             preds = res["prediction"]
             loss = self.loss_module(preds, labels)
             prediction = preds.argmax(dim=-1)
@@ -132,13 +132,18 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.log("train_acc", acc, prog_bar=True)
             self.log("train_mae", mae, prog_bar=True)
             
+            latent = res[self.latent_pos]
+            loss_r = self.w_loss*self.reg_loss(latent)
+            # loss = torch.tensor([0.0], requires_grad=True)    
+            self.log("reg_loss", loss_r, prog_bar=True)
+            
+            loss+=loss_r
+            
         else:
-            if self.current_epoch < self.epochs_mix:
-                loss = torch.tensor([0.0], requires_grad=True)
-            else:
-                latent = res[self.latent_pos]
-                loss = self.w_loss*self.reg_loss(latent)
-                
+          
+            latent = res[self.latent_pos]
+            loss = self.w_loss*self.reg_loss(latent)
+            # loss = torch.tensor([0.0], requires_grad=True)    
             self.log("reg_loss", loss, prog_bar=True)
 
         return loss # Return tensor to call ".backward" on
@@ -172,8 +177,6 @@ class LitTopoRelRoberta(pl.LightningModule):
         elif self.current_epoch < self.epochs_mix:
             return self.train_load
         else:
-            if self.current_epoch == self.epochs_mix:
-                self.net.freq_anchors = self.net.freq_anchors
             return self.topo_load
 
    
