@@ -74,6 +74,7 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.train_load = train_load
         self.topo_load = topo_load
         self.epochs_mix = epochs_mix
+        self.w_loss = None
         if topo_par is not None:
             self.latent_pos = POS2RES[topo_par[0]]
             if self.net.anchor_dataloader is None:
@@ -120,31 +121,31 @@ class LitTopoRelRoberta(pl.LightningModule):
         tokens, labels = batch
         res = self.net(batch_idx=batch_idx, **tokens)
         
-        if self.current_epoch < self.epochs_mix or batch_idx%2==0:
-            preds = res["prediction"]
-            loss = self.loss_module(preds, labels)
-            prediction = preds.argmax(dim=-1)
-            acc = (prediction == labels).float().mean()
-            mae = self.aux_loss(prediction.float(), labels.float())*100
+        #if self.current_epoch < self.epochs_mix or batch_idx%2==0:
+        preds = res["prediction"]
+        loss = self.loss_module(preds, labels)
+        prediction = preds.argmax(dim=-1)
+        acc = (prediction == labels).float().mean()
+        mae = self.aux_loss(prediction.float(), labels.float())*100
 
-            # Logs the accuracy per epoch to tensorboard (weighted average over batches)
-            self.log("cls_loss", loss, prog_bar=True)
-            self.log("train_acc", acc, prog_bar=True)
-            self.log("train_mae", mae, prog_bar=True)
-            
+        # Logs the accuracy per epoch to tensorboard (weighted average over batches)
+        self.log("cls_loss", loss, prog_bar=True)
+        self.log("train_acc", acc, prog_bar=True)
+        self.log("train_mae", mae, prog_bar=True)
+
+        if self.w_loss is not None and self.current_epoch >= self.epochs_mix:
             latent = res[self.latent_pos]
             loss_r = self.w_loss*self.reg_loss(latent)
-            # loss = torch.tensor([0.0], requires_grad=True)    
             self.log("reg_loss", loss_r, prog_bar=True)
-            
             loss+=loss_r
-            
+        """
         else:
           
             latent = res[self.latent_pos]
             loss = self.w_loss*self.reg_loss(latent)
             # loss = torch.tensor([0.0], requires_grad=True)    
             self.log("reg_loss", loss, prog_bar=True)
+        """
 
         return loss # Return tensor to call ".backward" on
 

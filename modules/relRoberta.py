@@ -20,27 +20,28 @@ class Lambda(nn.Module):
     def forward(self, x):
         return self.func(x)
 
+# +
 class RobertaClassificationHead(nn.Module):
 
-    """
+  
     def __init__(self, hidden_size, num_labels, hidden_dropout_prob=0.1):
         super().__init__()
         
+        """
         self.pooler = nn.Sequential(
             nn.Linear(hidden_size, hidden_size),
             nn.Tanh(),
             nn.Dropout(hidden_dropout_prob)
         )
+        """
         
         self.net = nn.Sequential(
-            
-            nn.Linear(hidden_size, hidden_size),
-            nn.GELU(),
-            nn.Dropout(hidden_dropout_prob),
-            nn.Linear(hidden_size, hidden_size),
-            nn.GELU(),
-            nn.Dropout(hidden_dropout_prob),
-            
+            #nn.Linear(hidden_size, hidden_size),
+            #nn.GELU(),
+            #nn.Dropout(hidden_dropout_prob),
+            #nn.Linear(hidden_size, hidden_size),
+            #nn.GELU(),
+            #nn.Dropout(hidden_dropout_prob),
             nn.Linear(hidden_size, num_labels),
             )
        
@@ -50,21 +51,8 @@ class RobertaClassificationHead(nn.Module):
         x = self.net(x)
         return x
         
-    """
-    def __init__(self, hidden_size, num_labels, hidden_dropout_prob=0.1):
-        super().__init__()
-        # self.dense = nn.Linear(hidden_size, hidden_size)
-        # self.dropout = nn.Dropout(hidden_dropout_prob)
-        self.out_proj = nn.Linear(hidden_size, num_labels)
 
-    def forward(self, x, **kwargs):
-        # x = self.dropout(x)
-        # x = self.dense(x)
-        # x = torch.tanh(x)
-        # x = self.dropout(x)
-        x = self.out_proj(x)
-        return x
-
+# -
 
 # -
 class RelRoberta(nn.Module):
