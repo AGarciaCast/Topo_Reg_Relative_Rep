@@ -20,7 +20,6 @@ class Lambda(nn.Module):
     def forward(self, x):
         return self.func(x)
 
-# +
 class RobertaClassificationHead(nn.Module):
 
   
@@ -50,9 +49,7 @@ class RobertaClassificationHead(nn.Module):
         # x = self.pooler(x)
         x = self.net(x)
         return x
-        
 
-# -
 
 # -
 class RelRoberta(nn.Module):

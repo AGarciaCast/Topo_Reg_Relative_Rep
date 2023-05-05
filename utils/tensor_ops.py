@@ -183,11 +183,24 @@ def infer_dimension(width: int, height: int, n_channels: int, model: nn.Module, 
         return fake_out
 
 
+# +
 def freeze(model: nn.Module) -> None:
     for param in model.parameters():
         param.requires_grad = False
         param.grad = None
 
+def freeze_except_batch(model: nn.Module) -> None:
+    for module in model.modules():
+    # print(module)
+    if isinstance(module, nn.BatchNorm2d):
+        if hasattr(module, 'weight'):
+            module.weight.requires_grad_(False)
+        if hasattr(module, 'bias'):
+            module.bias.requires_grad_(False)
+        module.eval()
+
+
+# -
 
 def get_resnet_model(resnet_size: int, use_pretrained: bool):
     if resnet_size == 50:

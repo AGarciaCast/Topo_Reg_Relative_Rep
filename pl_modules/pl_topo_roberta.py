@@ -9,11 +9,45 @@ import transformers
 from pl_modules.pl_roberta import roberta_base_AdamW_LLRD
 from utils.pershom import TopoRegLoss
 
+# +
 POS2RES = {
     "pre": "batch_latent",
     "post_no_norm": "similarities",
     "post": "norm_similarities"
 }
+
+
+def dfs_freeze(model):
+    for module in model.modules():
+        # print(module)
+        if isinstance(module, nn.BatchNorm1d) or isinstance(module, nn.LayerNorm):
+            
+            for param in module.parameters():
+                param.requires_grad = True
+            
+            module.train()
+            
+        elif isinstance(module, nn.Linear):
+            for param in module.parameters():
+                param.requires_grad = False
+                
+                
+def dfs_unfreeze(model):
+    for module in model.modules():
+        # print(module)
+        if isinstance(module, nn.BatchNorm1d) or isinstance(module, nn.LayerNorm):
+            
+            for param in module.parameters():
+                param.requires_grad = False
+            
+            module.eval()
+            
+        elif isinstance(module, nn.Linear):
+            for param in module.parameters():
+                param.requires_grad = True
+
+
+# -
 
 class LitTopoRelRoberta(pl.LightningModule):
     
@@ -39,6 +73,7 @@ class LitTopoRelRoberta(pl.LightningModule):
                  scheduler_act=True,
                  freq_anchors=100,
                  device="cpu",
+                 in_batchsize=16,
                  fine_tune=False):
         super().__init__()
         
@@ -60,13 +95,15 @@ class LitTopoRelRoberta(pl.LightningModule):
                               device=device,
                               fine_tune=fine_tune
                              )
-        
+                
                 
         self.loss_module = nn.CrossEntropyLoss()
         self.aux_loss = nn.L1Loss()
         
+        self.in_batchsize = in_batchsize
         self.scheduler_act = scheduler_act
         self.steps = steps
+        self.num_labels = num_labels
         self.layer_decay = layer_decay
         self.weight_decay = weight_decay
         self.head_lr = head_lr
@@ -121,7 +158,12 @@ class LitTopoRelRoberta(pl.LightningModule):
         tokens, labels = batch
         res = self.net(batch_idx=batch_idx, **tokens)
         
-        #if self.current_epoch < self.epochs_mix or batch_idx%2==0:
+        aux = batch_idx%(self.num_labels+1)
+        if aux==0:
+            dfs_freeze(self.net)
+        elif aux==1:
+            dfs_unfreeze(self.net)
+       
         preds = res["prediction"]
         loss = self.loss_module(preds, labels)
         prediction = preds.argmax(dim=-1)
@@ -134,18 +176,12 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.log("train_mae", mae, prog_bar=True)
 
         if self.w_loss is not None and self.current_epoch >= self.epochs_mix:
+            
             latent = res[self.latent_pos]
-            loss_r = self.w_loss*self.reg_loss(latent)
+            loss_r = self.reg_loss(latent)
+            loss_r = self.w_loss*loss_r
             self.log("reg_loss", loss_r, prog_bar=True)
             loss+=loss_r
-        """
-        else:
-          
-            latent = res[self.latent_pos]
-            loss = self.w_loss*self.reg_loss(latent)
-            # loss = torch.tensor([0.0], requires_grad=True)    
-            self.log("reg_loss", loss, prog_bar=True)
-        """
 
         return loss # Return tensor to call ".backward" on
 

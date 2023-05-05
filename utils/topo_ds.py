@@ -55,11 +55,17 @@ class IntraLabelMultiDraw(torch.utils.data.Dataset):
 
 
 class ClassAccumulationSampler():
-    def __init__(self, ds, inbatch_size, accumulation=1, drop_last=True, group_cls=True):
+    def __init__(self, ds, batch_size, accumulation=1, drop_last=True, group_cls=True, indv=False, main_random=False):
         self.ds = ds
+        self.main_random = main_random
+        if main_random:
+            self.ds_loader = BatchSampler(RandomSampler(ds),
+                                          batch_size=batch_size,
+                                          drop_last=drop_last)
         self.accumulation = accumulation 
         self.group_cls = group_cls
-        self.inbatch_size = inbatch_size
+        self.inbatch_size = batch_size
+        self.indv = indv
 
         self.indices_by_label = defaultdict(list)
         for i in range(len(ds)):
@@ -70,10 +76,11 @@ class ClassAccumulationSampler():
         self.samplers = {}
         self.max_lab = 0
         self.batches_idx = []
+        self.num_cls = len(self.indices_by_label.keys())
         for k, v in self.indices_by_label.items():
 
             self.samplers[k] = DataLoader(v,
-                                        batch_size=inbatch_size,
+                                        batch_size=batch_size,
                                         drop_last=drop_last)
 
             self.batches_idx += [k]*len(self.samplers[k])
@@ -81,7 +88,7 @@ class ClassAccumulationSampler():
             if len(self.samplers[k]) > self.max_lab:
                 self.max_lab = len(self.samplers[k]) 
 
-
+        self.num_batches = None
 
     def __iter__(self):
         if self.group_cls:
@@ -96,21 +103,41 @@ class ClassAccumulationSampler():
                 self.batches_idx += aux_list
         else:
             random.shuffle(self.batches_idx) 
-
+        
+        if self.main_random:
+            random_sampler = iter(self.ds_loader)
+        
         batch = []
         batch_iters = {k: iter(b) for k,b in self.samplers.items()}
+        aux = 0
         for i, k in enumerate(self.batches_idx):
             if i>0 and i%self.accumulation == 0:
-                yield batch
+                if self.main_random:
+                        yield next(random_sampler)
+                else:
+                    yield batch[aux*self.inbatch_size:(aux+1)*self.inbatch_size]
+                    
+                for j in range(self.accumulation):
+                    yield batch[j*self.inbatch_size:(j+1)*self.inbatch_size]
+                
+                aux =(aux+1)%self.num_cls
                 batch = []
 
             batch += next(batch_iters[k]).tolist()
 
         if len(batch)==self.inbatch_size*self.accumulation:
-            yield batch
+            if self.main_random:
+                yield next(random_sampler)
+            else:
+                yield batch[aux*self.inbatch_size:(aux+1)*self.inbatch_size]
+                
+            for j in range(self.accumulation):
+                yield batch[j*self.inbatch_size:(j+1)*self.inbatch_size]
 
     def __len__(self) -> int:
-        return len(self.batches_idx)//self.accumulation
+        if self.num_batches is None:
+            self.num_batches = sum(1 for _ in self.__iter__())
+        return self.num_batches
 
 
 class DoubleClassAccumulationSampler():
@@ -171,6 +198,7 @@ class DoubleClassAccumulationSampler():
                     else:
                         yield batch[j*self.batch_size:(j+1)*self.batch_size]
                         
+                for j in range(self.num_cls):
                     yield og_batch[j*self.batch_size:(j+1)*self.batch_size]
 
                 batch = []
@@ -186,6 +214,7 @@ class DoubleClassAccumulationSampler():
                 else:
                     yield batch[j*self.batch_size:(j+1)*self.batch_size]
                     
+            for j in range(self.num_cls):
                 yield og_batch[j*self.batch_size:(j+1)*self.batch_size]
 
     def __len__(self) -> int:
