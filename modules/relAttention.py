@@ -34,8 +34,8 @@ class RelativeAttention(nn.Module):
         self.output_normalization_mode = output_normalization_mode
         
         if normalization_mode is not None and normalization_mode == "batchnorm" and in_features is not None:
-            self.anchor_norm = nn.BatchNorm1d(num_features=in_features, affine=False)
-            self.x_norm = nn.BatchNorm1d(num_features=in_features, affine=False)
+            self.anchor_norm = nn.BatchNorm1d(num_features=in_features, affine=False, momentum=0.1)
+            self.x_norm = nn.BatchNorm1d(num_features=in_features, affine=False, momentum=0.1)
         
         if self.output_normalization_mode == "batchnorm":
             self.outnorm = nn.BatchNorm1d(num_features=self.output_dim)

@@ -158,11 +158,13 @@ class LitTopoRelRoberta(pl.LightningModule):
         tokens, labels = batch
         res = self.net(batch_idx=batch_idx, **tokens)
         
-        aux = batch_idx%(self.num_labels+1)
-        if aux==0:
-            dfs_freeze(self.net)
-        elif aux==1:
-            dfs_unfreeze(self.net)
+        if self.current_epoch >= self.epochs_mix:
+            aux = batch_idx%(self.num_labels+1)
+            if aux==0:
+                dfs_freeze(self.net)
+            elif aux==1:
+                dfs_unfreeze(self.net)
+        
        
         preds = res["prediction"]
         loss = self.loss_module(preds, labels)
@@ -207,7 +209,8 @@ class LitTopoRelRoberta(pl.LightningModule):
         acc = (labels == preds).float().mean()
         # By default logs it per epoch (weighted average over batches), and returns it afterwards
         self.log("test_acc", acc)
-
+    
+   
     def train_dataloader(self):
         if self.epochs_mix is None:
             return self.train_load
@@ -215,5 +218,6 @@ class LitTopoRelRoberta(pl.LightningModule):
             return self.train_load
         else:
             return self.topo_load
+        
 
    
