@@ -21,13 +21,13 @@ def dfs_freeze(model):
     for module in model.modules():
         # print(module)
         if isinstance(module, nn.BatchNorm1d) or isinstance(module, nn.LayerNorm):
-            
+            """
             for param in module.parameters():
                 param.requires_grad = True
-            
+            """
             module.train()
             
-        elif isinstance(module, nn.Linear):
+        if isinstance(module, nn.Linear) or isinstance(module, nn.LayerNorm):
             for param in module.parameters():
                 param.requires_grad = False
                 
@@ -36,13 +36,13 @@ def dfs_unfreeze(model):
     for module in model.modules():
         # print(module)
         if isinstance(module, nn.BatchNorm1d) or isinstance(module, nn.LayerNorm):
-            
+            """
             for param in module.parameters():
                 param.requires_grad = False
-            
+            """
             module.eval()
             
-        elif isinstance(module, nn.Linear):
+        if isinstance(module, nn.Linear) or isinstance(module, nn.LayerNorm):
             for param in module.parameters():
                 param.requires_grad = True
 
@@ -156,8 +156,6 @@ class LitTopoRelRoberta(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # "batch" is the output of the training data loader.
         tokens, labels = batch
-        res = self.net(batch_idx=batch_idx, **tokens)
-        
         if self.current_epoch >= self.epochs_mix:
             aux = batch_idx%(self.num_labels+1)
             if aux==0:
@@ -165,25 +163,29 @@ class LitTopoRelRoberta(pl.LightningModule):
             elif aux==1:
                 dfs_unfreeze(self.net)
         
-       
-        preds = res["prediction"]
-        loss = self.loss_module(preds, labels)
-        prediction = preds.argmax(dim=-1)
-        acc = (prediction == labels).float().mean()
-        mae = self.aux_loss(prediction.float(), labels.float())*100
+        res = self.net(batch_idx=batch_idx, **tokens)
+        
+        if aux>=1:
+            preds = res["prediction"]
+            loss = self.loss_module(preds, labels)
+            prediction = preds.argmax(dim=-1)
+            acc = (prediction == labels).float().mean()
+            mae = self.aux_loss(prediction.float(), labels.float())*100
 
-        # Logs the accuracy per epoch to tensorboard (weighted average over batches)
-        self.log("cls_loss", loss, prog_bar=True)
-        self.log("train_acc", acc, prog_bar=True)
-        self.log("train_mae", mae, prog_bar=True)
+            # Logs the accuracy per epoch to tensorboard (weighted average over batches)
+            self.log("cls_loss", loss, prog_bar=True)
+            self.log("train_acc", acc, prog_bar=True)
+            self.log("train_mae", mae, prog_bar=True)
 
-        if self.w_loss is not None and self.current_epoch >= self.epochs_mix:
-            
-            latent = res[self.latent_pos]
-            loss_r = self.reg_loss(latent)
-            loss_r = self.w_loss*loss_r
-            self.log("reg_loss", loss_r, prog_bar=True)
-            loss+=loss_r
+            if self.w_loss is not None and self.current_epoch >= self.epochs_mix:
+
+                latent = res[self.latent_pos]
+                loss_r = self.reg_loss(latent)
+                loss_r = self.w_loss*loss_r
+                self.log("reg_loss", loss_r, prog_bar=True)
+                loss+=loss_r
+        else:
+            loss = torch.tensor(0.0, requires_grad=True).to(self.device)
 
         return loss # Return tensor to call ".backward" on
 
@@ -218,6 +220,6 @@ class LitTopoRelRoberta(pl.LightningModule):
             return self.train_load
         else:
             return self.topo_load
-        
 
-   
+
+

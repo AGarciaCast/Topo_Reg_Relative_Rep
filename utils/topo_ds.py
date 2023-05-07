@@ -113,7 +113,7 @@ class ClassAccumulationSampler():
         for i, k in enumerate(self.batches_idx):
             if i>0 and i%self.accumulation == 0:
                 if self.main_random:
-                        yield next(random_sampler)
+                    yield next(random_sampler)
                 else:
                     yield batch[aux*self.inbatch_size:(aux+1)*self.inbatch_size]
                     
@@ -149,7 +149,7 @@ class DoubleClassAccumulationSampler():
                                           batch_size=batch_size,
                                           drop_last=drop_last)
         self.batch_size = batch_size
-
+        self.num_batches = None
         self.indices_by_label = defaultdict(list)
         for i in range(len(ds)):
             _, y = ds[i]
@@ -218,6 +218,8 @@ class DoubleClassAccumulationSampler():
                 yield og_batch[j*self.batch_size:(j+1)*self.batch_size]
 
     def __len__(self) -> int:
-        return 2*self.num_cls*(len(self.batches_idx)//self.num_cls)
+        if self.num_batches is None:
+            self.num_batches = sum(1 for _ in self.__iter__())
+        return self.num_batches
 
 
