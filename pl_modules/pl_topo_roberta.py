@@ -8,6 +8,7 @@ from modules.relRoberta import RelRoberta
 import transformers
 from pl_modules.pl_roberta import roberta_base_AdamW_LLRD
 from utils.pershom import TopoRegLoss
+import numpy as np
 
 # +
 POS2RES = {
@@ -15,6 +16,21 @@ POS2RES = {
     "post_no_norm": "similarities",
     "post": "norm_similarities"
 }
+
+
+def frange_cycle_linear(start, stop, scale, n_epoch, n_cycle=4, ratio=0.5):
+    L = np.ones(n_epoch)*scale
+    period = n_epoch/n_cycle
+    step = (stop-start)/(period*ratio) # linear schedule
+
+    for c in range(n_cycle):
+
+        v , i = start , 0
+        while v <= stop and (int(i+c*period) < n_epoch):
+            L[int(i+c*period)] = v*scale
+            v += step
+            i += 1
+    return L   
 
 
 def dfs_freeze(model):
@@ -66,6 +82,7 @@ class LitTopoRelRoberta(pl.LightningModule):
                  dropout_prob=0.1,
                  seed=42,
                  steps=20,
+                 epochs=40,
                  weight_decay=0.0,
                  head_lr=1e-3,
                  encoder_lr=3.6e-6,
@@ -111,13 +128,13 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.train_load = train_load
         self.topo_load = topo_load
         self.epochs_mix = epochs_mix
-        self.w_loss = None
+        self.reg_loss = None
         if topo_par is not None:
             self.latent_pos = POS2RES[topo_par[0]]
             if self.net.anchor_dataloader is None:
                 assert self.latent_pos == "batch_latent"
             self.reg_loss = TopoRegLoss(topo_par[2], topo_par[1], topo_par[4])
-            self.w_loss = topo_par[3]
+            self.w_loss= topo_par[3]
         
         
     def forward(self, x):
@@ -131,6 +148,8 @@ class LitTopoRelRoberta(pl.LightningModule):
         return self.net(x)
     
     def configure_optimizers(self):
+        
+        
         config = {"optimizer": roberta_base_AdamW_LLRD(self.net,
                                             encoder_lr=self.encoder_lr,
                                             head_lr=self.head_lr,
@@ -149,6 +168,9 @@ class LitTopoRelRoberta(pl.LightningModule):
                 "interval": "step",
 
             }
+            
+            if self.reg_loss is not None:
+                self.w_loss = iter(frange_cycle_linear(0, 1, self.w_loss, self.steps, 4))
         
         
         return  config
@@ -177,11 +199,11 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.log("train_acc", acc, prog_bar=True)
             self.log("train_mae", mae, prog_bar=True)
 
-            if self.w_loss is not None and self.current_epoch >= self.epochs_mix:
+            if self.reg_loss is not None and self.current_epoch >= self.epochs_mix:
 
                 latent = res[self.latent_pos]
                 loss_r = self.reg_loss(latent)
-                loss_r = self.w_loss*loss_r
+                loss_r = next(self.w_loss)*loss_r
                 self.log("reg_loss", loss_r, prog_bar=True)
                 loss+=loss_r
         else:
