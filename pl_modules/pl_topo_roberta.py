@@ -17,7 +17,6 @@ POS2RES = {
     "post": "norm_similarities"
 }
 
-
 def frange_cycle_linear(start, stop, scale, n_epoch, n_cycle=4, ratio=0.5):
     L = np.ones(n_epoch)*scale
     period = n_epoch/n_cycle
@@ -170,7 +169,7 @@ class LitTopoRelRoberta(pl.LightningModule):
             }
             
             if self.reg_loss is not None:
-                self.w_loss = iter(frange_cycle_linear(0, 1, self.w_loss, self.steps, 4))
+                self.w_loss = iter(frange_cycle_linear(0, 1, self.w_loss, self.steps, n_cycle=4, ratio=0.75))
         
         
         return  config
