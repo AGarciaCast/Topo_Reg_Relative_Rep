@@ -116,27 +116,24 @@ def pers2fn(pers):
 
 
 class TopoRegLoss(nn.Module):
-    def __init__(self, top_scale, pers="L_1", temp=None):
+    def __init__(self, top_scale, pers="L_1", loss_type="L_1"):
         super().__init__()
         self.pers_fn = pers2fn(pers)
         self.top_scale = top_scale
         self.relu = nn.ReLU()
-        self.temp = temp
+        self.loss_type = loss_type
                  
     
     def __call__(self, point_cloud):
         z_sample = point_cloud.contiguous()
         lt = self.pers_fn(z_sample)[0][0][:, 1]
-
-        #loss = (lt-self.top_scale).abs().sum()
-       
-        """
-        if self.temp is None:
-            aux = torch.max(lt)
+        
+        aux = lt - self.top_scale
+        if self.loss_type == "L_1":
+            loss = aux.abs().sum()
+        elif self.loss_type == "L_2":
+            loss = (aux**2).sum()
         else:
-            aux = torch.logsumexp(lt*self.temp, 0)/self.temp
-            
-        loss = self.relu(aux-self.top_scale)
-        """
-        loss = self.relu(lt-self.top_scale).sum()
+            loss = self.relu(aux).sum()
+  
         return loss

@@ -50,7 +50,7 @@ def plot_topo(relative, pre_topo, pre_topo_max, post_topo, post_topo_max, title,
 
 def compare_topo_models(model1, model2, device,
             dataloader1: DataLoader,
-            save_path, pers_fn, title="", plot_topo=False, relative=True,
+            save_path, pers_fn, title="", plot=False, relative=True,
             dataloader2: DataLoader = None):
     """
     Computes the feature similarity between the models on the
@@ -85,13 +85,15 @@ def compare_topo_models(model1, model2, device,
     
     pre_topo = defaultdict(list)
     pre_topo_max = defaultdict(list)
+    post_topo = None
+    post_topo_max = None
     if relative:
         post_topo = defaultdict(list)
         post_topo_max = defaultdict(list)
 
     num_batches = min(len(dataloader1), len(dataloader1))
-    sim_pre = np.zeros([0.0, 0.0, 0.0])
-    sim_post = np.zeros([0.0, 0.0, 0.0])
+    sim_pre = np.zeros(3)
+    sim_post = np.zeros(3)
     
     with torch.no_grad():
         batch_idx = 0
@@ -146,7 +148,8 @@ def compare_topo_models(model1, model2, device,
             
     print(f"Pre mean model1 {np.mean(pre_topo['model1'])}. Pre max mean model1 {np.mean(pre_topo_max['model1'])}")
     print(f"Pre mean model2 {np.mean(pre_topo['model2'])}. Pre max mean model2 {np.mean(pre_topo_max['model2'])}")
-    plot_topo(relative, pre_topo, pre_topo_max, post_topo, post_topo_max, title, save_path)
+    if plot:
+        plot_topo(relative, pre_topo, pre_topo_max, post_topo, post_topo_max, title, save_path)
     
     if relative:
         print(f"Post mean model1 {np.mean(post_topo['model1'])}. Post max mean model1 {np.mean(post_topo_max['model2'])}")

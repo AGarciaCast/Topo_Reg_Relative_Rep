@@ -73,7 +73,7 @@ class LitTopoRelRoberta(pl.LightningModule):
                  epochs_mix=1,
                  train_load=None,
                  topo_load=None,
-                 topo_par=("pre", "L_1", 2, 0.1, None), # "post_no_norm", "post_norm"
+                 topo_par=("pre", "L_1", 8, 0.1, "L_1"), # "post_no_norm", "post"
                  hidden_size=768,
                  similarity_mode="inner",
                  normalization_mode=None,
@@ -132,7 +132,10 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.latent_pos = POS2RES[topo_par[0]]
             if self.net.anchor_dataloader is None:
                 assert self.latent_pos == "batch_latent"
-            self.reg_loss = TopoRegLoss(topo_par[2], topo_par[1], topo_par[4])
+            self.reg_loss = TopoRegLoss(top_scale=topo_par[2],
+                                        pers=topo_par[1],
+                                        loss_type=topo_par[4]
+                                       )
             self.w_loss= topo_par[3]
         
         
