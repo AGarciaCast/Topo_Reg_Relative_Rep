@@ -133,7 +133,9 @@ class TopoRegLoss(nn.Module):
             loss = aux.abs().sum()
         elif self.loss_type == "L_2":
             loss = (aux**2).sum()
-        else:
+        elif self.loss_type == "relu":
             loss = self.relu(aux).sum()
+        else:
+            loss = torch.tensor(0.0, requires_grad=True)
   
         return loss

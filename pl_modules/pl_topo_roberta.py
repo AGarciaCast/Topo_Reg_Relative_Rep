@@ -172,7 +172,8 @@ class LitTopoRelRoberta(pl.LightningModule):
             }
             
             if self.reg_loss is not None:
-                self.w_loss = iter(frange_cycle_linear(0, 1, self.w_loss, self.steps, n_cycle=4, ratio=0.75))
+                pass
+                #self.w_loss = iter(frange_cycle_linear(0, 1, self.w_loss, self.steps, n_cycle=4, ratio=0.75))
         
         
         return  config
@@ -205,7 +206,7 @@ class LitTopoRelRoberta(pl.LightningModule):
 
                 latent = res[self.latent_pos]
                 loss_r = self.reg_loss(latent)
-                loss_r = next(self.w_loss)*loss_r
+                loss_r = self.w_loss*loss_r
                 self.log("reg_loss", loss_r, prog_bar=True)
                 loss+=loss_r
         else:
