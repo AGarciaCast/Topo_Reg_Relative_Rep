@@ -70,9 +70,6 @@ class LitTopoRelRoberta(pl.LightningModule):
                  num_labels,
                  transformer_model,
                  anchor_dataloader,
-                 epochs_mix=1,
-                 train_load=None,
-                 topo_load=None,
                  topo_par=("pre", "L_1", 8, 0.1, "L_1"), # "post_no_norm", "post"
                  hidden_size=768,
                  similarity_mode="inner",
@@ -89,8 +86,9 @@ class LitTopoRelRoberta(pl.LightningModule):
                  scheduler_act=True,
                  freq_anchors=100,
                  device="cpu",
-                 in_batchsize=16,
-                 fine_tune=False):
+                 fine_tune=False,
+                 linear=False
+                ):
         super().__init__()
         
         # Saving hyperparameters of autoencoder
@@ -109,14 +107,14 @@ class LitTopoRelRoberta(pl.LightningModule):
                               dropout_prob=dropout_prob,
                               freq_anchors=freq_anchors,
                               device=device,
-                              fine_tune=fine_tune
+                              fine_tune=fine_tune,
+                              linear=linear
                              )
                 
                 
         self.loss_module = nn.CrossEntropyLoss()
         self.aux_loss = nn.L1Loss()
         
-        self.in_batchsize = in_batchsize
         self.scheduler_act = scheduler_act
         self.steps = steps
         self.num_labels = num_labels
@@ -124,9 +122,6 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.weight_decay = weight_decay
         self.head_lr = head_lr
         self.encoder_lr = encoder_lr
-        self.train_load = train_load
-        self.topo_load = topo_load
-        self.epochs_mix = epochs_mix
         self.reg_loss = None
         if topo_par is not None:
             self.latent_pos = POS2RES[topo_par[0]]
@@ -172,8 +167,7 @@ class LitTopoRelRoberta(pl.LightningModule):
             }
             
             if self.reg_loss is not None:
-                pass
-                #self.w_loss = iter(frange_cycle_linear(0, 1, self.w_loss, self.steps, n_cycle=4, ratio=0.75))
+                self.w_loss = iter(frange_cycle_linear(0, 1, self.w_loss, self.steps, n_cycle=4, ratio=0.75))
         
         
         return  config
@@ -181,12 +175,12 @@ class LitTopoRelRoberta(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # "batch" is the output of the training data loader.
         tokens, labels = batch
-        if self.current_epoch >= self.epochs_mix:
-            aux = batch_idx%(self.num_labels+1)
-            if aux==0:
-                dfs_freeze(self.net)
-            elif aux==1:
-                dfs_unfreeze(self.net)
+      
+        aux = batch_idx%(self.num_labels+1)
+        if aux==0:
+            dfs_freeze(self.net)
+        elif aux==1:
+            dfs_unfreeze(self.net)
         
         res = self.net(batch_idx=batch_idx, **tokens)
         
@@ -202,11 +196,11 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.log("train_acc", acc, prog_bar=True)
             self.log("train_mae", mae, prog_bar=True)
 
-            if self.reg_loss is not None and self.current_epoch >= self.epochs_mix:
+            if self.reg_loss is not None:
 
                 latent = res[self.latent_pos]
                 loss_r = self.reg_loss(latent)
-                loss_r = self.w_loss*loss_r
+                loss_r = next(self.w_loss)*loss_r
                 self.log("reg_loss", loss_r, prog_bar=True)
                 loss+=loss_r
         else:
@@ -236,15 +230,6 @@ class LitTopoRelRoberta(pl.LightningModule):
         acc = (labels == preds).float().mean()
         # By default logs it per epoch (weighted average over batches), and returns it afterwards
         self.log("test_acc", acc)
-    
-   
-    def train_dataloader(self):
-        if self.epochs_mix is None:
-            return self.train_load
-        elif self.current_epoch < self.epochs_mix:
-            return self.train_load
-        else:
-            return self.topo_load
 
 
 

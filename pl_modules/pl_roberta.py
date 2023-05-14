@@ -85,13 +85,16 @@ class LitRelRoberta(pl.LightningModule):
                  scheduler_act=True,
                  freq_anchors=100,
                  device="cpu",
-                 fine_tune=False):
+                 fine_tune=False,
+                 linear=False
+                ):
         super().__init__()
         
         # Saving hyperparameters of autoencoder
         self.save_hyperparameters() 
         
         pl.seed_everything(seed)
+        self.linear = linear
 
         # Creating encoder and decoder
         self.net = RelRoberta(num_labels=num_labels,
@@ -104,7 +107,8 @@ class LitRelRoberta(pl.LightningModule):
                               dropout_prob=dropout_prob,
                               freq_anchors=freq_anchors,
                               device=device,
-                              fine_tune=fine_tune
+                              fine_tune=fine_tune,
+                              linear=linear
                              )
                 
         self.loss_module = nn.CrossEntropyLoss()
@@ -139,14 +143,26 @@ class LitRelRoberta(pl.LightningModule):
                   }
         
         if self.scheduler_act:
-            config["lr_scheduler"] = {
-            "scheduler": transformers.get_constant_schedule_with_warmup(   
-                                                    optimizer = config["optimizer"],
-                                                    num_warmup_steps=int(self.steps*0.1/self.trainer.max_epochs),
-                                                    ),
-                "interval": "step",
+            if self.linear:
+                config["lr_scheduler"] = {
+                    "scheduler": transformers.get_cosine_schedule_with_warmup(   
+                                                            optimizer = config["optimizer"],
+                                                            num_warmup_steps=int(self.steps*0.1/self.trainer.max_epochs),
+                                                            num_training_steps=self.steps
+                                                            ),
+                        "interval": "step",
 
-            }
+                }
+                
+            else:
+                config["lr_scheduler"] = {
+                    "scheduler": transformers.get_constant_schedule_with_warmup(   
+                                                            optimizer = config["optimizer"],
+                                                            num_warmup_steps=int(self.steps*0.1/self.trainer.max_epochs),
+                                                            ),
+                        "interval": "step",
+
+                }
         
         
         return  config

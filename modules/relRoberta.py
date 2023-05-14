@@ -21,32 +21,36 @@ class Lambda(nn.Module):
         return self.func(x)
 
 class RobertaClassificationHead(nn.Module):
-
-  
-    def __init__(self, hidden_size, num_labels, hidden_dropout_prob=0.1):
+    def __init__(self, hidden_size, num_labels, linear=False, hidden_dropout_prob=0.1):
         super().__init__()
-        
-        """
-        self.pooler = nn.Sequential(
-            nn.Linear(hidden_size, hidden_size),
-            nn.Tanh(),
-            nn.Dropout(hidden_dropout_prob)
-        )
-       """
-        
-        self.net = nn.Sequential(
-            #nn.Linear(hidden_size, hidden_size),
-            #nn.GELU(),
-            #nn.Dropout(hidden_dropout_prob),
-            #nn.Linear(hidden_size, hidden_size),
-            #nn.GELU(),
-            #nn.Dropout(hidden_dropout_prob),
-            nn.Linear(hidden_size, num_labels),
+        self.linear = linear
+        if not linear:
+            self.pooler = nn.Sequential(
+                nn.Linear(hidden_size, hidden_size),
+                nn.Tanh(),
+                nn.Dropout(hidden_dropout_prob)
             )
-       
+
+            self.net = nn.Sequential(
+                nn.Linear(hidden_size, hidden_size),
+                nn.GELU(),
+                nn.Dropout(hidden_dropout_prob),
+                nn.Linear(hidden_size, hidden_size),
+                nn.GELU(),
+                nn.Dropout(hidden_dropout_prob),
+                nn.Linear(hidden_size, num_labels)
+            )
+
+        else:
+            self.net = nn.Sequential(
+                nn.Linear(hidden_size, num_labels),
+                )
+
 
     def forward(self, x, **kwargs):
-        #x = self.pooler(x)
+        if not self.linear:
+            x = self.pooler(x)
+                
         x = self.net(x)
         return x
 
@@ -65,7 +69,8 @@ class RelRoberta(nn.Module):
         dropout_prob=0.1,
         freq_anchors=100,
         device="cpu",
-        fine_tune=False
+        fine_tune=False,
+        linear=False
     ) -> None:
         
         super().__init__()
@@ -91,6 +96,7 @@ class RelRoberta(nn.Module):
         self.decoder = RobertaClassificationHead(
             hidden_size = self.latent_dim,
             num_labels=num_labels,
+            linear=linear,
             hidden_dropout_prob=dropout_prob
         )
         

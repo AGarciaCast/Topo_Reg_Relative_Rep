@@ -10,9 +10,20 @@ import matplotlib.pyplot as plt
 import seaborn as sns 
 from collections import defaultdict
 
+# +
+import os
+import sys
+import inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
+from utils.pershom import pers2fn
 
 
-def plot_topo(relative, pre_topo, pre_topo_max, post_topo, post_topo_max, title, save_path):
+# -
+
+def plot_topo_2(relative, pre_topo, pre_topo_max, post_topo, post_topo_max, title, save_path):
     fig, ax = plt.subplots(2, 2, figsize=(15, 5))
     if relative:
         sns.kdeplot(post_topo["model1"], linewidth=2, fill=True, label="Post-rel", ax=ax[0,0])
@@ -50,7 +61,7 @@ def plot_topo(relative, pre_topo, pre_topo_max, post_topo, post_topo_max, title,
 
 def compare_topo_models(model1, model2, device,
             dataloader1: DataLoader,
-            save_path, pers_fn, title="", plot=False, relative=True,
+            save_path,  pers="L_2", title="", plot=False, relative=True,
             dataloader2: DataLoader = None):
     """
     Computes the feature similarity between the models on the
@@ -59,6 +70,7 @@ def compare_topo_models(model1, model2, device,
     :param dataloader2: (DataLoader) If given, model 2 will run on this
                         dataset. (default = None)
     """
+    pers_fn = pers2fn(pers)
     
     def HSIC(K, L):
         """
@@ -149,7 +161,7 @@ def compare_topo_models(model1, model2, device,
     print(f"Pre mean model1 {np.mean(pre_topo['model1'])}. Pre max mean model1 {np.mean(pre_topo_max['model1'])}")
     print(f"Pre mean model2 {np.mean(pre_topo['model2'])}. Pre max mean model2 {np.mean(pre_topo_max['model2'])}")
     if plot:
-        plot_topo(relative, pre_topo, pre_topo_max, post_topo, post_topo_max, title, save_path)
+        plot_topo_2(relative, pre_topo, pre_topo_max, post_topo, post_topo_max, title, save_path)
     
     if relative:
         print(f"Post mean model1 {np.mean(post_topo['model1'])}. Post max mean model1 {np.mean(post_topo_max['model2'])}")
@@ -159,3 +171,70 @@ def compare_topo_models(model1, model2, device,
         return sim_pre, sim_post
     else:
         return sim_pre
+
+
+def topo_model(model, device, dataloader, save_path, title="", pers="L_2", plot_topo=False, relative=True):
+    model.to(device)
+    model.eval()
+    pers_fn = pers2fn(pers)
+    
+    pre_topo = []
+    pre_topo_max = []
+    if relative:
+        post_topo = []
+        post_topo_max = []
+        
+    with torch.no_grad():
+        batch_idx = 0
+        for batch in tqdm(dataloader, position=0, leave=True, desc="Computing"):
+            batch.to(device)
+            res = model(batch_idx=batch_idx, **batch)
+            aux = pers_fn(res["batch_latent"].contiguous())[0][0][:, 1].tolist()
+            pre_topo += aux
+            pre_topo_max.append(np.max(aux))
+            if relative:
+                aux = pers_fn(res["norm_similarities"].contiguous())[0][0][:, 1].tolist()
+                post_topo += aux
+                post_topo_max.append(np.max(aux))
+            
+            batch_idx = 1
+    
+    pre_mean = np.round(np.mean(pre_topo), 2)
+    pre_max_mean = np.round(np.mean(pre_topo_max), 2)
+    extra_tit = f"Pre mean {pre_mean}"
+    extra_tit_max = f"Pre max mean {pre_max_mean}"
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+    if relative:
+        post_mean = np.round(np.mean(post_topo), 2)
+        post_max_mean = np.round(np.mean(post_topo_max), 2)
+        extra_tit += f". Post mean {post_mean}"
+        extra_tit_max += f". Post max mean {post_max_mean}"
+        sns.kdeplot(post_topo, linewidth=2, fill=True, label="Post-rel", ax=ax1)
+        
+    sns.kdeplot(pre_topo, linewidth=2, fill=True, label="Pre-rel", ax=ax1)
+    ax1.set_title(f"All death times ({extra_tit})")
+    
+    if relative:
+        sns.kdeplot(post_topo_max, linewidth=2, fill=True, label="Post-rel", ax=ax2)
+        
+    sns.kdeplot(pre_topo_max, linewidth=2, fill=True, label="Pre-rel", ax=ax2)
+    ax2.set_title(f"Max death times ({extra_tit_max})")
+
+    if relative:
+        plt.legend()
+        
+    ax1.grid()
+    ax2.grid()
+    fig.suptitle(title)
+    plt.tight_layout()
+    fig.savefig(save_path)
+    if plot_topo:
+        plt.show()
+    
+    plt.close()
+
+    if relative:
+        return pre_topo, pre_topo_max, post_topo, post_topo_max
+    else:
+        return pre_topo, pre_topo_max
