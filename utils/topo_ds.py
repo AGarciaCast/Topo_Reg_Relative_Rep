@@ -112,11 +112,12 @@ class ClassAccumulationSampler():
         aux = 0
         for i, k in enumerate(self.batches_idx):
             if i>0 and i%self.accumulation == 0:
-                if self.main_random:
-                    yield next(random_sampler)
-                else:
-                    yield batch[aux*self.inbatch_size:(aux+1)*self.inbatch_size]
-                    
+                if self.indv:
+                    if self.main_random:
+                        yield next(random_sampler)
+                    else:
+                        yield batch[aux*self.inbatch_size:(aux+1)*self.inbatch_size]
+
                 for j in range(self.accumulation):
                     yield batch[j*self.inbatch_size:(j+1)*self.inbatch_size]
                 
@@ -126,10 +127,11 @@ class ClassAccumulationSampler():
             batch += next(batch_iters[k]).tolist()
 
         if len(batch)==self.inbatch_size*self.accumulation:
-            if self.main_random:
-                yield next(random_sampler)
-            else:
-                yield batch[aux*self.inbatch_size:(aux+1)*self.inbatch_size]
+            if self.indv:
+                if self.main_random:
+                    yield next(random_sampler)
+                else:
+                    yield batch[aux*self.inbatch_size:(aux+1)*self.inbatch_size]
                 
             for j in range(self.accumulation):
                 yield batch[j*self.inbatch_size:(j+1)*self.inbatch_size]

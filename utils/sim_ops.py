@@ -258,7 +258,7 @@ class CKA(SimLayers):
 
         self.sim_matrix = torch.zeros(N, M, 3)
 
-        num_batches = min(len(dataloader1), len(dataloader1))
+        num_batches = min(len(dataloader1), len(dataloader2))
 
         for (x1, *_), (x2, *_) in tqdm(zip(dataloader1, dataloader2), desc="| Comparing features |", total=num_batches):
             aux_L = {}
@@ -356,7 +356,7 @@ class MinFrob(SimLayers):
 
         self.sim_matrix = torch.zeros(N, M)
 
-        num_batches = min(len(dataloader1), len(dataloader1))
+        num_batches = min(len(dataloader1), len(dataloader2))
         
 
         for (x1, *_), (x2, *_) in tqdm(zip(dataloader1, dataloader2), desc="| Comparing features |", total=num_batches):
@@ -389,5 +389,5 @@ class MinFrob(SimLayers):
                     self.sim_matrix[i, j] += minimum_dist / num_batches
 
 
-        
+
 

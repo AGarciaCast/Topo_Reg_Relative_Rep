@@ -4,7 +4,7 @@ Modified from https://openreview.net/attachment?id=SrC-nwieGJ&name=supplementary
 import pandas as pd
 import numpy as np
 
-COLUMNS_TO_DROP = ["precision", "recall"]
+COLUMNS_TO_DROP = ["precision", "recall", "CKA_pre", "CKA_post"]
 MEAN_STD_FORMAT = r"${:.2f} \pm {:.2f}$"
 
 def read_df(fine_grained, mode, train_perc, path):
