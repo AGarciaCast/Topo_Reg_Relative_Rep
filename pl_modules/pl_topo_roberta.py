@@ -87,7 +87,7 @@ class LitTopoRelRoberta(pl.LightningModule):
                  freq_anchors=100,
                  device="cpu",
                  fine_tune=False,
-                 linear=False
+                 linear=True
                 ):
         super().__init__()
         
