@@ -7,10 +7,15 @@ import numpy as np
 COLUMNS_TO_DROP = ["precision", "recall", "CKA_pre", "CKA_post"]
 MEAN_STD_FORMAT = r"${:.2f} \pm {:.2f}$"
 
-def read_df(fine_grained, mode, train_perc, path):
-
+def read_df(fine_grained, mode, train_perc, best, path):
+    aux = f"nlp_multilingual-stitching-amazon-{'fine_grained' if fine_grained else 'coarse_grained'}-{mode}-{train_perc}"
+    
+    if best:
+        aux+="-best"
+    aux += ".tsv"
+    
     full_df = pd.read_csv(
-        path / f"nlp_multilingual-stitching-amazon-{'fine_grained' if fine_grained else 'coarse_grained'}-{mode}-{train_perc}.tsv",
+        path / aux,
         sep="\t"
     )
     return full_df
@@ -63,14 +68,13 @@ def to_latex(df):
     )
 
 
-def process_df(fine_grained, mode, path, train_perc=0.25):
+def process_df(fine_grained, mode, path, train_perc=0.25, best=False):
 
-    full_in_domain = read_df(fine_grained=fine_grained, mode=mode, train_perc=train_perc, path=path)
+    full_in_domain = read_df(fine_grained=fine_grained, mode=mode, train_perc=train_perc, best=best, path=path)
     full_in_domain = full_in_domain.drop(columns=COLUMNS_TO_DROP)
     full_in_domain["fscore"] = full_in_domain["fscore"] * 100
     full_in_domain["acc"] = full_in_domain["acc"] * 100
     full_in_domain["mae"] = full_in_domain["mae"] * 100
-
 
 
     df = rearrange_embedtype_as_column(full_in_domain)
