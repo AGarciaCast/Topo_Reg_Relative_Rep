@@ -124,9 +124,9 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.encoder_lr = encoder_lr
         self.reg_loss = None
         if topo_par is not None:
-            self.latent_pos = POS2RES[topo_par[0]]
+            self.latent_pos = topo_par[0]
             if self.net.anchor_dataloader is None:
-                assert self.latent_pos == "batch_latent"
+                assert self.latent_pos == "pre"
             self.reg_loss = TopoRegLoss(top_scale=topo_par[2],
                                         pers=topo_par[1],
                                         loss_type=topo_par[4]
@@ -197,9 +197,25 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.log("train_mae", mae, prog_bar=True)
 
             if self.reg_loss is not None:
-
-                latent = res[self.latent_pos]
-                loss_r = self.reg_loss(latent)
+                if self.latent_pos=="pre" or self.latent_pos=="both":
+                    latent_pre = res[POS2RES["pre"]]
+                    loss_r_pre = self.reg_loss(latent_pre)
+                if self.latent_pos=="post" or self.latent_pos=="both":
+                    latent_post = res[POS2RES["post"]]
+                    loss_r_post = self.reg_loss(latent_post)
+                
+                if self.latent_pos=="pre":
+                    loss_r = loss_r_pre
+                elif self.latent_pos=="post":
+                    loss_r = loss_r_post
+                elif self.latent_pos=="post_no_normor":
+                    latent= res[POS2RES["post_no_normor"]]
+                    loss_r = self.reg_loss(latent)
+                else:
+                    loss_r = 0.25*loss_r_pre + 0.75*loss_r_post
+                    self.log("reg_pre", loss_r_pre, prog_bar=True)
+                    self.log("reg_post", loss_r_post, prog_bar=True)
+                    
                 loss_r = next(self.w_loss)*loss_r
                 self.log("reg_loss", loss_r, prog_bar=True)
                 loss+=loss_r
