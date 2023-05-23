@@ -212,7 +212,7 @@ class LitTopoRelRoberta(pl.LightningModule):
                     latent= res[POS2RES["post_no_normor"]]
                     loss_r = self.reg_loss(latent)
                 else:
-                    loss_r = 0.25*loss_r_pre + 0.75*loss_r_post
+                    loss_r = 0.1*loss_r_pre + 0.9*loss_r_post
                     self.log("reg_pre", loss_r_pre, prog_bar=True)
                     self.log("reg_post", loss_r_post, prog_bar=True)
                     
