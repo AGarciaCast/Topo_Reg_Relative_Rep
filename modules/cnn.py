@@ -12,11 +12,14 @@ class CNN(nn.Module):
                  linear_hidden_dims: list,
                  act_fn : object = nn.GELU):
         """
-        Inputs: 
-            - num_input_channels : Number of input channels of the image. For CIFAR, this parameter is 3
-            - base_channel_size : Number of channels we use in the first convolutional layers. Deeper layers might use a duplicate of it.
-            - latent_dim : Dimensionality of latent representation z
-            - act_fn : Activation function used throughout the encoder network
+        Initializes the CNN module.
+        
+        Inputs:
+            - num_input_channels: Number of input channels of the image. For CIFAR, this parameter is 3.
+            - base_channel_size: Number of channels used in the first convolutional layers. Deeper layers might use a duplicate of it.
+            - num_labs: Number of output labels.
+            - linear_hidden_dims: List of sizes for the hidden linear layers.
+            - act_fn: Activation function used throughout the CNN network. Default is nn.GELU.
         """
         super().__init__()
         c_hid = base_channel_size
@@ -45,12 +48,30 @@ class CNN(nn.Module):
     
     
     def forward(self, x):
+        """
+        Forward pass of the CNN module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - Output tensor after passing through the CNN module.
+        """
         for blk in self.net:
             x = blk(x)
             
         return x
     
     def detailed_forward(self, x):
+        """
+        Detailed forward pass of the CNN module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - List of intermediate tensors at each step of the forward pass.
+        """
         res = [x]
         for blk in self.net:
             x = blk(x)
@@ -62,10 +83,18 @@ class CNN(nn.Module):
 
 class SimpleCNN13(nn.Module):
     """
-    Extracted from https://github.com/c-hofer/topologically_densified_distributions/blob/master/core/models/simple_cnn.py
+    Simple CNN model with 13 convolutional layers.
+    
+    Reference: https://github.com/c-hofer/topologically_densified_distributions/blob/master/core/models/simple_cnn.py
     """
     def __init__(self,
                  num_classes: int):
+        """
+        Initializes the SimpleCNN13 module.
+        
+        Inputs:
+            - num_classes: Number of output classes.
+        """
         super().__init__()
        
         self.feat_ext = nn.Sequential(
@@ -109,6 +138,16 @@ class SimpleCNN13(nn.Module):
 
 
     def forward(self, x):
+        """
+        Forward pass of the SimpleCNN13 module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - Tuple containing the predicted class scores and the intermediate feature representation.
+        """
+        
         z = self.feat_ext(x)
         z = torch.flatten(z, 1)
         y_hat = self.cls(z)

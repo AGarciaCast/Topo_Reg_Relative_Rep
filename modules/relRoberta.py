@@ -11,17 +11,18 @@ from modules.relAttention import RelativeAttention
 from transformers import RobertaModel, AutoConfig
 
 
-#
-class Lambda(nn.Module):
-    def __init__(self, func):
-        super().__init__()
-        self.func = func
-
-    def forward(self, x):
-        return self.func(x)
 
 class RobertaClassificationHead(nn.Module):
     def __init__(self, hidden_size, num_labels, linear=False, hidden_dropout_prob=0.1):
+        """
+        Roberta classification head module.
+
+        Args:
+            hidden_size: Size of the hidden layer.
+            num_labels: Number of output labels.
+            linear: Whether to use a linear layer for classification or a fully-connected network.
+            hidden_dropout_prob: Dropout probability for the hidden layers.
+        """
         super().__init__()
         self.linear = linear
         if not linear:
@@ -48,6 +49,16 @@ class RobertaClassificationHead(nn.Module):
 
 
     def forward(self, x, **kwargs):
+        """
+        Forward pass of the RobertaClassificationHead module.
+
+        Args:
+            x: Input tensor.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            Output tensor.
+        """
         if not self.linear:
             x = self.pooler(x)
                 
@@ -64,7 +75,7 @@ class RelRoberta(nn.Module):
         anchor_dataloader,
         hidden_size=768,
         similarity_mode="inner",
-        normalization_mode=None,
+        normalization_mode="batchnorm",
         output_normalization_mode=None,
         dropout_prob=0.1,
         freq_anchors=100,
@@ -72,7 +83,23 @@ class RelRoberta(nn.Module):
         fine_tune=False,
         linear=False
     ) -> None:
-        
+        """
+        Relative attention-based RoBERTa model for classification tasks.
+
+        Args:
+            num_labels: Number of output labels.
+            transformer_model: Pretrained RoBERTa model name or path.
+            anchor_dataloader: DataLoader for anchor samples.
+            hidden_size: Size of the hidden layer (default: 768).
+            similarity_mode: Mode for computing similarities (default: "inner").
+            normalization_mode: Normalization mode for anchors and batch (default: "batchnorm").
+            output_normalization_mode: Normalization mode for the relative transformation (default: None).
+            dropout_prob: Dropout probability for the hidden layers (default: 0.1).
+            freq_anchors: Frequency of updating anchor samples (default: 100).
+            device: Device to use (default: "cpu").
+            fine_tune: Whether to fine-tune the encoder (default: False).
+            linear: Whether to use a linear layer for classification or a fully-connected network (default: False).
+        """
         super().__init__()
 
         self.latent_dim = hidden_size
@@ -130,6 +157,28 @@ class RelRoberta(nn.Module):
               output_attentions: Optional[bool] = None,
               output_hidden_states: Optional[bool] = None,
               return_dict: Optional[bool] = None):
+        """
+        Extracts the hidden states from RoBERTa model.
+
+        Args:
+            input_ids: Input token IDs.
+            attention_mask: Attention mask.
+            token_type_ids: Token type IDs.
+            position_ids: Positional IDs.
+            head_mask: Head mask.
+            inputs_embeds: Embedded inputs.
+            encoder_hidden_states: Encoder hidden states.
+            encoder_attention_mask: Encoder attention mask.
+            past_key_values: Past key values.
+            use_cache: Whether to use cache.
+            output_attentions: Whether to output attentions.
+            output_hidden_states: Whether to output hidden states.
+            return_dict: Whether to return a dictionary.
+
+        Returns:
+            The extracted hidden states.
+        """
+        
         
         if self.fine_tune:
             self.encoder.eval()
@@ -166,6 +215,28 @@ class RelRoberta(nn.Module):
                output_hidden_states: Optional[bool] = None,
                return_dict: Optional[bool] = None,
                batch_idx=0): 
+        """
+        Encodes the input tokens and computes attention encoding.
+
+        Args:
+            input_ids: Input token IDs.
+            attention_mask: Attention mask.
+            token_type_ids: Token type IDs.
+            position_ids: Positional IDs.
+            head_mask: Head mask.
+            inputs_embeds: Embedded inputs.
+            encoder_hidden_states: Encoder hidden states.
+            encoder_attention_mask: Encoder attention mask.
+            past_key_values: Past key values.
+            use_cache: Whether to use cache.
+            output_attentions: Whether to output attentions.
+            output_hidden_states: Whether to output hidden states.
+            return_dict: Whether to return a dictionary.
+            batch_idx: Batch index.
+
+        Returns:
+           Dictionary containing the batch latent representation, similarities, original anchors, normalized anchors, and normalized batch.
+        """
         
         x_embedded = self.embed(input_ids,
                                 attention_mask,
@@ -207,6 +278,16 @@ class RelRoberta(nn.Module):
         
     
     def decode(self, batch_latent, **kwargs):
+        """
+        Decodes the batch relative latent representation and computes the prediction.
+
+        Args:
+            batch_latent: Batch latent representation.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            Dictionary containing the prediction, the batch latent representation, similarities, normalized similarities,  original anchors, normalized anchors, and normalized batch.
+        """
         
         attention_dict = {}
         if self.anchor_dataloader is not None:
@@ -247,7 +328,28 @@ class RelRoberta(nn.Module):
                 output_hidden_states: Optional[bool] = None,
                 return_dict: Optional[bool] = None,
                 batch_idx=0): 
-        """Forward pass."""
+        """
+        Forward pass of the RelRoberta model.
+
+        Args:
+            input_ids: Input token IDs.
+            attention_mask: Attention mask.
+            token_type_ids: Token type IDs.
+            position_ids: Positional IDs.
+            head_mask: Head mask.
+            inputs_embeds: Embedded inputs.
+            encoder_hidden_states: Encoder hidden states.
+            encoder_attention_mask: Encoder attention mask.
+            past_key_values: Past key values.
+            use_cache: Whether to use cache.
+            output_attentions: Whether to output attentions.
+            output_hidden_states: Whether to output hidden states.
+            return_dict: Whether to return a dictionary.
+            batch_idx: Batch index.
+
+        Returns:
+            Dictionary containing the prediction, the batch latent representation, similarities, normalized similarities,  original anchors, normalized anchors, and normalized batch.
+        """
         
         encoding = self.encode(input_ids,
                                attention_mask,

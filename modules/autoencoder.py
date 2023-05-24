@@ -11,11 +11,14 @@ class Encoder(nn.Module):
                  linear_hidden_dims: list, 
                  act_fn : object = nn.GELU):
         """
-        Inputs: 
-            - num_input_channels : Number of input channels of the image. For CIFAR, this parameter is 3
-            - base_channel_size : Number of channels we use in the first convolutional layers. Deeper layers might use a duplicate of it.
-            - latent_dim : Dimensionality of latent representation z
-            - act_fn : Activation function used throughout the encoder network
+        Initializes the Encoder module.
+        
+        Inputs:
+            - num_input_channels: Number of input channels of the image. For CIFAR, this parameter is 3.
+            - base_channel_size: Number of channels used in the first convolutional layers. Deeper layers might use a duplicate of it.
+            - latent_dim: Dimensionality of the latent representation z.
+            - linear_hidden_dims: List of sizes for the hidden linear layers.
+            - act_fn: Activation function used throughout the encoder network. Default is nn.GELU.
         """
         super().__init__()
         c_hid = base_channel_size
@@ -45,12 +48,32 @@ class Encoder(nn.Module):
     
     
     def forward(self, x):
+        """
+        Forward pass of the Encoder module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - Output tensor after passing through the Encoder module.
+        """
+        
         for blk in self.net:
             x = blk(x)
             
         return x
     
     def detailed_forward(self, x):
+        """
+        Detailed forward pass of the Encoder module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - List of intermediate tensors at each step of the forward pass.
+        """
+        
         res = [x]
         for blk in self.net:
             x = blk(x)
@@ -68,11 +91,14 @@ class Decoder(nn.Module):
                  linear_hidden_dims : list,
                  act_fn : object = nn.GELU):
         """
-        Inputs: 
-            - num_input_channels : Number of channels of the image to reconstruct. For CIFAR, this parameter is 3
-            - base_channel_size : Number of channels we use in the last convolutional layers. Early layers might use a duplicate of it.
-            - latent_dim : Dimensionality of latent representation z
-            - act_fn : Activation function used throughout the decoder network
+        Initializes the Decoder module.
+        
+        Inputs:
+            - num_input_channels: Number of channels of the image to reconstruct. For CIFAR, this parameter is 3.
+            - base_channel_size: Number of channels used in the last convolutional layers. Early layers might use a duplicate of it.
+            - latent_dim: Dimensionality of the latent representation z.
+            - linear_hidden_dims: List of sizes for the hidden linear layers.
+            - act_fn: Activation function used throughout the decoder network. Default is nn.GELU.
         """
         super().__init__()
         c_hid = base_channel_size
@@ -98,14 +124,18 @@ class Decoder(nn.Module):
             nn.ConvTranspose2d(c_hid, num_input_channels, kernel_size=3, output_padding=1, padding=3, stride=2), # 16x16 => 28x28
             nn.Tanh() # The input images is scaled between -1 and 1, hence the output has to be bounded as well
         ])
-    
+
     def forward(self, x):
-        x = self.linear(x)
-        x = x.reshape(x.shape[0], -1, 4, 4)
-        x = self.net(x)
-        return x
-    
-    def forward(self, x):
+        """
+        Forward pass of the Decoder module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - Output tensor after passing through the Decoder module.
+        """
+        
         for blk in self.linear:
             x = blk(x)
         
@@ -117,6 +147,16 @@ class Decoder(nn.Module):
         return x
     
     def detailed_forward(self, x):
+        """
+        Detailed forward pass of the Decoder module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - List of intermediate tensors at each step of the forward pass.
+        """
+        
         res = []
         
         for blk in self.linear:
@@ -143,6 +183,17 @@ class Autoencoder(nn.Module):
                  decoder_class : object = Decoder,
                  num_input_channels: int = 3, 
                  ):
+        """
+        Initializes the Autoencoder module.
+        
+        Inputs:
+            - base_channel_size: Number of channels used in the encoder and decoder modules.
+            - latent_dim: Dimensionality of the latent representation z.
+            - linear_hidden_dims: List of sizes for the hidden linear layers in the encoder and decoder.
+            - encoder_class: Encoder class to use for the Autoencoder. Default is Encoder.
+            - decoder_class: Decoder class to use for the Autoencoder. Default is Decoder.
+            - num_input_channels: Number of input channels of the image. For CIFAR, this parameter is 3.
+        """
         super().__init__()
         
         # Creating encoder and decoder
@@ -150,6 +201,16 @@ class Autoencoder(nn.Module):
         self.decoder = decoder_class(num_input_channels, base_channel_size, latent_dim, linear_hidden_dims[::-1])
     
     def forward(self, x):
+        """
+        Forward pass of the Autoencoder module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - Reconstructed input tensor.
+        """
+        
         z = self.encoder(x)
         x_hat = self.decoder(z)
         
@@ -157,8 +218,15 @@ class Autoencoder(nn.Module):
         
     def detailed_forward(self, x):
         """
-        The forward function takes in an image and returns the reconstructed image
+        Detailed forward pass of the Autoencoder module.
+        
+        Inputs:
+            - x: Input tensor.
+        
+        Returns:
+            - List of intermediate tensors from the encoder and the reconstructed input tensor.
         """
+        
         z = self.encoder.detailed_forward(x)
         x_hat = self.decoder.detailed_forward(z[-1])
         return z + x_hat

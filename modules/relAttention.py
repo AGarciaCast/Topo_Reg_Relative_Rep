@@ -18,13 +18,15 @@ class RelativeAttention(nn.Module):
         output_normalization_mode=None,
         in_features = None,
     ):
-        """Relative attention block.
+        """
+        Relative attention block.
 
         Args:
-            n_anchors: number of anchors
-            similarity_mode: how to compute similarities: inner, basis_change
-            normalization_mode: normalization to apply to the anchors and batch before computing the transformation
-            output_normalization_mode: normalization to apply to the relative transformation
+            n_anchors: Number of anchors.
+            similarity_mode: How to compute similarities: inner, basis_change.
+            normalization_mode: Normalization to apply to the anchors and batch before computing the transformation.
+            output_normalization_mode: Normalization to apply to the relative transformation.
+            in_features: Number of input features for normalization (if normalization_mode is batchnorm).
         """
         super().__init__()
 
@@ -45,6 +47,17 @@ class RelativeAttention(nn.Module):
             self.outnorm = nn.InstanceNorm1d(num_features=self.output_dim, affine=True)
 
     def encode(self, x: torch.Tensor, anchors: torch.Tensor):
+        """
+        Encode the input tensor and anchors to compute the queries-keys similarities.
+
+        Args:
+            x: Input tensor of shape [batch_size, hidden_dim].
+            anchors: Anchors tensor of shape [num_anchors, hidden_dim].
+
+        Returns:
+            Dictionary containing the encoded information including similarities, original anchors, normalized anchors, and normalized batch.
+        """
+        
         original_anchors = anchors
         if x.shape[-1] != anchors.shape[-1]:
             raise ValueError(f"Inconsistent dimensions between batch and anchors: {x.shape}, {anchors.shape}")
@@ -86,6 +99,15 @@ class RelativeAttention(nn.Module):
         }
 
     def decode(self, similarities: torch.Tensor, **kwargs):
+        """
+        Decode the similarities and normalize the output.
+
+        Args:
+            similarities: Similarities tensor.
+
+        Returns:
+            Dictionary containing the decoded information including the output, similarities, original anchors, normalized anchors, and normalized batch.
+        """
         
         output = similarities
 
@@ -114,17 +136,26 @@ class RelativeAttention(nn.Module):
         }
 
     def forward(self, x: torch.Tensor, anchors: torch.Tensor):
-        """Forward pass.
+        """
+        Forward pass of the RelativeAttention module.
 
         Args:
-            x: [batch_size, hidden_dim]
-            anchors: [num_anchors, hidden_dim]
-            anchors_targets: [num_anchors]
+            x: Input tensor of shape [batch_size, hidden_dim].
+            anchors: Anchors tensor of shape [num_anchors, hidden_dim].
+
+        Returns:
+            Dictionary containing the decoded information including the output, similarities, original anchors, normalized anchors, and normalized batch.
         """
         encoding = self.encode(x=x, anchors=anchors)
         return self.decode(**encoding)
 
     @property
     def output_dim(self) -> int:
+        """
+        Returns the output dimension of the RelativeAttention module.
+
+        Returns:
+            Output dimension.
+        """
         return self.n_anchors
 

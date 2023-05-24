@@ -8,6 +8,7 @@ from modules.relRoberta import RelRoberta
 import transformers
 from pl_modules.pl_roberta import roberta_base_AdamW_LLRD
 from utils.pershom import TopoRegLoss
+from utils.tensor_ops import dfs_freeze, dfs_unfreeze
 import numpy as np
 
 # +
@@ -18,6 +19,24 @@ POS2RES = {
 }
 
 def frange_cycle_linear(start, stop, scale, n_epoch, n_cycle=4, ratio=0.5):
+    """
+    Generates a cyclical learning rate schedule with linearly increasing values.
+
+    Args:
+        start (float): Starting value of the learning rate.
+        stop (float): Ending value of the learning rate.
+        scale (float): Scaling factor for the learning rate.
+        n_epoch (int): Total number of epochs.
+        n_cycle (int, optional): Number of cycles. Defaults to 4.
+        ratio (float, optional): Ratio of the increasing phase within each cycle. Defaults to 0.5.
+
+    Returns:
+        np.ndarray: Array of learning rate values with linearly increasing sections.
+
+    Note:
+        This function is based on the cyclical learning rate implementation from the following source:
+        https://github.com/haofuml/cyclical_annealing/tree/master
+    """
     L = np.ones(n_epoch)*scale
     period = n_epoch/n_cycle
     step = (stop-start)/(period*ratio) # linear schedule
@@ -32,36 +51,6 @@ def frange_cycle_linear(start, stop, scale, n_epoch, n_cycle=4, ratio=0.5):
     return L   
 
 
-def dfs_freeze(model):
-    for module in model.modules():
-        # print(module)
-        if isinstance(module, nn.BatchNorm1d) or isinstance(module, nn.LayerNorm):
-            """
-            for param in module.parameters():
-                param.requires_grad = True
-            """
-            module.train()
-            
-        if isinstance(module, nn.Linear) or isinstance(module, nn.LayerNorm):
-            for param in module.parameters():
-                param.requires_grad = False
-                
-                
-def dfs_unfreeze(model):
-    for module in model.modules():
-        # print(module)
-        if isinstance(module, nn.BatchNorm1d) or isinstance(module, nn.LayerNorm):
-            """
-            for param in module.parameters():
-                param.requires_grad = False
-            """
-            module.eval()
-            
-        if isinstance(module, nn.Linear) or isinstance(module, nn.LayerNorm):
-            for param in module.parameters():
-                param.requires_grad = True
-
-
 # -
 
 class LitTopoRelRoberta(pl.LightningModule):
@@ -70,10 +59,10 @@ class LitTopoRelRoberta(pl.LightningModule):
                  num_labels,
                  transformer_model,
                  anchor_dataloader,
-                 topo_par=("pre", "L_1", 8, 0.1, "L_1"), # "post_no_norm", "post"
+                 topo_par=("pre", "L_2", 8, 0.1, "L_1"), # "post_no_norm", "post"
                  hidden_size=768,
                  similarity_mode="inner",
-                 normalization_mode=None,
+                 normalization_mode="batchnorm",
                  output_normalization_mode=None,
                  dropout_prob=0.1,
                  seed=42,
@@ -89,6 +78,32 @@ class LitTopoRelRoberta(pl.LightningModule):
                  fine_tune=False,
                  linear=True
                 ):
+        """
+        Lightning module for RelRoberta using Hoffer's Topological regularization.
+
+        Args:
+            num_labels (int): Number of labels.
+            transformer_model: Transformer model for Relative RoBERTa.
+            anchor_dataloader: Dataloader for anchor points.
+            topo_par (tuple): Topological regularization parameters. Defaults to ("pre", "L_2", 8, 0.1, "L_1").
+            hidden_size (int): Hidden size of the model. Defaults to 768.
+            similarity_mode (str): Similarity mode for Relative RoBERTa. Defaults to "inner".
+            normalization_mode: Normalization mode for Relative RoBERTa. Defaults to "batchnorm".
+            output_normalization_mode: Output normalization mode for Relative RoBERTa. Defaults to None.
+            dropout_prob (float): Dropout probability. Defaults to 0.1.
+            seed (int): Random seed. Defaults to 42.
+            steps (int): Number of steps. Defaults to 20.
+            epochs (int): Number of epochs. Defaults to 40.
+            weight_decay (float): Weight decay. Defaults to 0.0.
+            head_lr (float): Learning rate for the model's head. Defaults to 1e-3.
+            encoder_lr (float): Learning rate for the model's encoder. Defaults to 3.6e-6.
+            layer_decay (float): Layer decay rate. Defaults to 0.65.
+            scheduler_act (bool): Whether to activate the learning rate scheduler. Defaults to True.
+            freq_anchors (int): Frequency of anchor updates. Defaults to 100.
+            device (str): Device to use (e.g., "cpu", "cuda"). Defaults to "cpu".
+            fine_tune (bool): Whether to fine-tune the model. Defaults to False.
+            linear (bool): Whether to use linear classification head. Defaults to True.
+        """
         super().__init__()
         
         # Saving hyperparameters of autoencoder
@@ -135,17 +150,39 @@ class LitTopoRelRoberta(pl.LightningModule):
         
         
     def forward(self, x):
+        """
+        Performs forward pass of the model.
+
+        Args:
+            x (dict): Input data dictionary.
+
+        Returns:
+            torch.Tensor: Predicted output tensor.
+        """
+        
         return self.net(**x)["prediction"]
         
     def detailed_forward(self, x):
         """
-        The forward function takes in an image and returns a list of all the activations
+        Performs detailed forward pass of the model.
+
+        Args:
+            x (torch.Tensor): Input tensor.
+
+        Returns:
+            dict: Dictionary containing the prediction, the batch latent representation, similarities, normalized similarities,  original anchors, normalized anchors, and normalized batch.
+
         """
         
         return self.net(x)
     
     def configure_optimizers(self):
-        
+        """
+        Configures the optimizers, learning rate and weight schedulers for training.
+
+        Returns:
+            dict: Dictionary containing the optimizer and optional learning rate scheduler.
+        """
         
         config = {"optimizer": roberta_base_AdamW_LLRD(self.net,
                                             encoder_lr=self.encoder_lr,
@@ -173,6 +210,17 @@ class LitTopoRelRoberta(pl.LightningModule):
         return  config
     
     def training_step(self, batch, batch_idx):
+        """
+        Performs a single training step.
+
+        Args:
+            batch (tuple): Input batch data.
+            batch_idx (int): Batch index.
+
+        Returns:
+            torch.Tensor: Training loss.
+        """
+        
         # "batch" is the output of the training data loader.
         tokens, labels = batch
       
@@ -225,6 +273,14 @@ class LitTopoRelRoberta(pl.LightningModule):
         return loss # Return tensor to call ".backward" on
 
     def validation_step(self, batch, batch_idx):
+        """
+        Performs a single validation step.
+
+        Args:
+            batch (tuple): Input batch data.
+            batch_idx (int): Batch index.
+        """
+        
         batch_idx = int(batch_idx>0)
         tokens, labels = batch
         preds = self.net(batch_idx=batch_idx, **tokens)["prediction"]
@@ -240,6 +296,14 @@ class LitTopoRelRoberta(pl.LightningModule):
         self.log("val_loss", loss)
 
     def test_step(self, batch, batch_idx):
+        """
+        Performs a single test step.
+
+        Args:
+            batch (tuple): Input batch data.
+            batch_idx (int): Batch index.
+        """
+        
         batch_idx = int(batch_idx>0)
         tokens, labels = batch
         preds = self.net(batch_idx=batch_idx, **tokens)["prediction"].argmax(dim=-1)
