@@ -142,7 +142,18 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.latent_pos = topo_par[0]
             if self.net.anchor_dataloader is None:
                 assert self.latent_pos == "pre"
-            self.reg_loss = TopoRegLoss(top_scale=topo_par[2],
+            if self.latent_pos == "both":
+                self.reg_loss = (TopoRegLoss(top_scale=topo_par[2],
+                                            pers="L_2",
+                                            loss_type=topo_par[4]
+                                           ),
+                                 TopoRegLoss(top_scale=topo_par[2],
+                                            pers=topo_par[1],
+                                            loss_type=topo_par[4]
+                                           )
+                                )
+            else:
+                self.reg_loss = TopoRegLoss(top_scale=topo_par[2],
                                         pers=topo_par[1],
                                         loss_type=topo_par[4]
                                        )
@@ -247,11 +258,20 @@ class LitTopoRelRoberta(pl.LightningModule):
             if self.reg_loss is not None:
                 if self.latent_pos=="pre" or self.latent_pos=="both":
                     latent_pre = res[POS2RES["pre"]]
-                    loss_r_pre = self.reg_loss(latent_pre)
+                    
+                    if self.latent_pos=="both":
+                        loss_r_pre = self.reg_loss[0](latent_pre)
+                    else:
+                        loss_r_pre = self.reg_loss(latent_pre)
+                        
                 if self.latent_pos=="post" or self.latent_pos=="both":
                     latent_post = res[POS2RES["post"]]
-                    loss_r_post = self.reg_loss(latent_post)
-                
+                    
+                    if self.latent_pos=="both":  
+                        loss_r_post = self.reg_loss[1](latent_post)
+                    else:
+                        loss_r_post = self.reg_loss(latent_post)
+                        
                 if self.latent_pos=="pre":
                     loss_r = loss_r_pre
                 elif self.latent_pos=="post":
