@@ -91,7 +91,13 @@ def compare_topo_models(model1, model2, device,
     :param dataloader2: (DataLoader) If given, model 2 will run on this
                         dataset. (default = None)
     """
-    pers_fn = pers2fn(pers)
+    if type(pers) is tuple:
+        pers_fn = pers2fn(pers[0])
+        pers_fn_2 = pers2fn(pers[1])
+    else:
+        pers_fn = pers2fn(pers)
+        if relative:
+            pers_fn_2 = pers2fn(pers)
     
     if dataloader2 is None:
         warn("Dataloader for Model 2 is not given. Using the same dataloader for both models.")
@@ -133,12 +139,12 @@ def compare_topo_models(model1, model2, device,
             
             if relative:
                 X = res1["norm_similarities"]
-                aux = pers_fn(X.contiguous())[0][0][:, 1].tolist()
+                aux = pers_fn_2(X.contiguous())[0][0][:, 1].tolist()
                 post_topo["model1"] += aux
                 post_topo_max["model1"].append(np.max(aux))
                 
                 Y = res2["norm_similarities"]
-                aux = pers_fn(Y.contiguous())[0][0][:, 1].tolist()
+                aux = pers_fn_2(Y.contiguous())[0][0][:, 1].tolist()
                 post_topo["model2"] += aux
                 post_topo_max["model2"].append(np.max(aux))
                 
@@ -334,7 +340,14 @@ def compare_Frob_models(model1, model2, device,
 def topo_model(model, device, dataloader, save_path, title="", pers="L_2", plot_topo=False, relative=True):
     model.to(device)
     model.eval()
-    pers_fn = pers2fn(pers)
+    
+    if type(pers) is tuple:
+        pers_fn = pers2fn(pers[0])
+        pers_fn_2 = pers2fn(pers[1])
+    else:
+        pers_fn = pers2fn(pers)
+        if relative:
+            pers_fn_2 = pers2fn(pers)
     
     pre_topo = []
     pre_topo_max = []
@@ -351,7 +364,7 @@ def topo_model(model, device, dataloader, save_path, title="", pers="L_2", plot_
             pre_topo += aux
             pre_topo_max.append(np.max(aux))
             if relative:
-                aux = pers_fn(res["norm_similarities"].contiguous())[0][0][:, 1].tolist()
+                aux = pers_fn_2(res["norm_similarities"].contiguous())[0][0][:, 1].tolist()
                 post_topo += aux
                 post_topo_max.append(np.max(aux))
             
