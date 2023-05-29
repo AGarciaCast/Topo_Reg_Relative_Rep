@@ -143,7 +143,18 @@ class LitTopoRelRoberta(pl.LightningModule):
             if self.net.anchor_dataloader is None:
                 assert self.latent_pos == "pre"
             if self.latent_pos == "both":
-                self.reg_loss = (TopoRegLoss(top_scale=3,
+                if type(topo_par[1]) is tuple:
+                    self.reg_loss = (TopoRegLoss(top_scale=topo_par[1][0],
+                                                pers="L_2",
+                                                loss_type=topo_par[4]
+                                            ),
+                                    TopoRegLoss(top_scale=topo_par[2],
+                                                pers=topo_par[1][1],
+                                                loss_type=topo_par[4]
+                                            )
+                                    )
+                else:
+                    self.reg_loss = (TopoRegLoss(top_scale=topo_par[1],
                                             pers="L_2",
                                             loss_type=topo_par[4]
                                            ),
