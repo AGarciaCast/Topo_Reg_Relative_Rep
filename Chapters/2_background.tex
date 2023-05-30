@@ -7,7 +7,7 @@
 
 \section{Mathematical backgound}
 \label{sec:tda}
-In this section, we will introduce the basic mathematic notions needed to understand the methods proposed in \cite{hofer_densified_2021, moschella_relative_2022} as well as the ones described in Chapter \ref{ch:methods}.  For that, I will mainly follow \cite{edelsbrunner_computational_2010} \todo{add the rest} as a reference.
+In this section, we will introduce the basic mathematic notions needed to understand the methods proposed in \cite{hofer_densified_2021, moschella_relative_2022} as well as the ones described in Chapter \ref{ch:methods}.  For that, I will mainly follow \cite{edelsbrunner_computational_2010}.
 
 \subsection{Simplicial complex}
 As we discussed in the introduction, we would want to analyze the characteristics of the underlying manifold from which our dataset has been sampled. Therefore, our objective will be to give some structure to our dataset from which we can assess the aforementioned topological properties.
@@ -230,7 +230,7 @@ Let $K$ be a simplicial complex and $A \subset \abs{K}$ a subset. Then $A$ is an
 \end{proposition}
 
 \begin{definition}
-A \emph{triangulation} of a topological space $X$ is a pair $(K, h)$ where $K$ is a simplicial complex and $h: X \to \abs{K}$ is a homeomorphism ($h $ continuous, bijective and $h^{-1}$ continuous).
+A \emph{triangulation} of a topological space $X$ is a pair $(K, h)$ where $K$ is a simplicial complex and $h: X \to \abs{K}$ is a homeomorphism (i.e., $h $ continuous, bijective and $h^{-1}$ continuous).
 \end{definition}
 We will say that a topological space is \emph{triangulable} if it admits triangulation.\\
 
@@ -295,7 +295,7 @@ From the computational point of view, we find ourselves with the problem that we
 The \v{C}ech complex is defined from the intersection of a collection of disks (closed balls). The idea underlying this construction is that of the nerve of a collection, which is introduced below.
 
 \begin{definition}
-Let $F$ be a finite collection of sets. The \emph{nerve} of F is defined as the abstract simplicial complex
+Let $F$ be a finite collection of sets. The \emph{nerve} of $F$ is defined as the abstract simplicial complex
 \[
 {\rm Nrv}\ F= \left\{ X \subseteq F \mid \bigcap_{x\in X} x \neq \emptyset \right\}\,.
 \]
@@ -332,10 +332,10 @@ Furthermore, in general, the \v{C}ech complex of a set of points $X \subset \mat
 
 \begin{definition}
 Let $X \subset \mathbb{R}^d$ be a finite set of points. We call \emph{Vietoris-Rips} complex of $X$ of radius $r$ to the abstract simplicial complex 
-\begin{gather*}
-\text{VR}(X, r) = \{\sigma \subseteq  X \mid \textrm{diam } \sigma \leq r\} =\\
-\left\{ \{x_0, ..., x_n\} \subseteq  X \mid d(x_i, x_j) \leq r\ \forall i,j\right\} 
-\end{gather*}
+\begin{align*}
+\text{VR}(X, r) =& \{\sigma \subseteq  X \mid \textrm{diam } \sigma \leq r\}\\
+=&\left\{ \{x_0, ..., x_n\} \subseteq  X \mid d(x_i, x_j) \leq r\ \forall i,j\right\}\,. 
+\end{align*}
 If the set $X$ is understood from the context, then we can note it as $\text{VR}(r)$.
 \end{definition}
 
@@ -364,10 +364,10 @@ Let $X \subset \mathbb{R}^d$ be a finite set of points and let $r \geq 0$. Then,
 \end{lemma}
 
 
-Another important property regarding VR complexes is their ability to encode $\epsilon$-connectivity. We will talk more in detail about $\epsilon$-connectivity and how it will be a crucial property for constructing our topological regularization. 
+Another important property regarding VR complexes is their ability to encode $\epsilon$-connectivity. In Section \ref{sec:topoML}, we will talk more in detail about $\epsilon$-connectivity and how it will be a crucial property for constructing our topological regularization. 
 
 \begin{definition}[\cite{robins_resolutions_2000}]
-We say that a metric space $X$ is \emph{$\epsilon$-disconnected} if there exist two subsets $U$ and $V$ with $U\cup V = X$, and $d(U,V)\equiv \inf_{x\in U, y\in V}d(x,y) > \epsilon$.
+We say that a metric space $X$ is \emph{$\epsilon$-disconnected} if there exist two subsets $U$ and $V$ with $U\cup V = X$, and $d(U,V)\equiv \inf_{x\in U,\, y\in V}d(x,y) > \epsilon$.
 \end{definition}
 Hence if the space is not $\epsilon$-disconnected, we will say that $X$ is $\epsilon$-connected. Moreover, a subset $A \subset X$ is an \emph{$\epsilon$-component} if $A$ is $\epsilon$-connected and $d(A, {X \setminus A}) > \epsilon$. Hence, for any given $\epsilon$, we can decompose our dataset $X$ in disjoint $\epsilon$-components.
 
@@ -381,7 +381,7 @@ Therefore, for any set $X$, if we can form an \emph{$\epsilon$-chain} between an
 
 \begin{proposition}
 \label{prop:connected}
-For any distance $d$ on $X$, and $\epsilon \geq 0$, the partition corresponding to the connected components of $VR(\epsilon)$, denoted as $\pi_0(VR(\epsilon))$, coincides with the $\epsilon$-components of $X$.
+For any distance $d$ on $X$, and $\epsilon \geq 0$, the partition corresponding to the connected components of $\text{\rm VR}(\epsilon)$, denoted as $\pi_0(\text{\rm VR}(\epsilon))$, coincides with the $\epsilon$-components of $X$.
 \end{proposition}
 
 This can be easily seen since two points $u,v$ (vertices) are in the same connected component of a simplicial complex $K$ if there exists a sequence of vertices $u=x_0,..., x_n=v$ such as $\{x_i, x_{i+1}\} \in K$. So, we can see that in the case that $K$ is a Vietoris-Rips complex of radius $\epsilon$, then $\{x_i, x_{i+1}\} \in K$ iff $d(x_i, x_{i+1})\leq\epsilon$, i.e, there exist an $\epsilon$-chain between $u$ and $v$. 
@@ -410,7 +410,7 @@ We will call Witness complex the Dowker complex of $(R_\epsilon, L, X)$ where
 \begin{definition}[Nested family of witness complexes \cite{silva_topological_2004}]
 Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, $L = \{l_0, ..., l_n\} \subseteq X$ be a set of landmark points, and $\epsilon>0$. Then the $k$-simplex $\sigma = \{u_1, ..., u_k\}$ with $u_i \in L$ belongs to the \emph{Witness complex} $\text{W}_\epsilon(X, L)$ iff all its faces belong to $\text{W}_\epsilon(X, L)$ and there is a witness $x \in X$, such that:
 \[
-\max(d(u_i, x) : u_i \in \{u_1, ..., u_k\}) \leq \epsilon\,.
+\max \{d(u_i, x) \mid u_i \in \{u_1, ..., u_k\}\} \leq \epsilon\,.
 \]
 \end{definition}
 
@@ -418,7 +418,7 @@ Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/bg/witnessCons.png} 
-    \caption{Witness complex for a set  dataset of 11 points using a subset of 5 landmarks points and radius $r$. Adapted from: \cite{medbouhi_towards_2022}}
+    \caption{Witness complex for a set  dataset of 11 points using a subset of 5 landmarks points and radius $\epsilon$. Adapted from: \cite{medbouhi_towards_2022}}
 \label{fig:witnessCons}
 \end{figure}
 
@@ -426,9 +426,9 @@ Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, 
 A remarkable result about witness complexes is Dowker's Theorem, which states that exchanging the role of the witnesses and landmarks doesn't change the topology of the complex \cite{dowker_homology_1952}. This result is exploited in \cite{schonenberger_witness_2022} to enforce the topological regularization of a Topological Autoencoder (further explained in Section \ref{sec:topoML}) only using the data points of the batches instead of the whole dataset.
 
 \begin{proposition}[\cite{silva_topological_2004}]
-The family of complexes $\text{W}_\epsilon(X, L)$ is closely related to the family $\text{VR}(L, \epsilon)$. Specifically, there are inclusions:
+The family of complexes $\text{\rm W}_\epsilon(X, L)$ is closely related to the family $\text{\rm VR}(L, \epsilon)$. Specifically, there are inclusions:
 \[
-\text{W}_\epsilon(X, L) \subseteq \text{VR}(L, 2\epsilon) \subseteq \text{W}_{2\epsilon}(X, L)\,.
+\text{\rm W}_\epsilon(X, L) \subseteq \text{\rm VR}(L, 2\epsilon) \subseteq \text{\rm W}_{2\epsilon}(X, L)\,.
 \]
 \end{proposition}
 
@@ -726,8 +726,6 @@ We say that a $p$-chain $c$ is a \emph{$p$-cycle} if
 or, equivalently, if $c \in \text{ker }\partial$.
 \end{definition}
 
-Because $\partial$ commutes with addition $+$, 
-
 \begin{exmp}
 We will see that geometrically, the $p$-cycles represent cycles in the simplicial complex. These, in turn, can be holes of dimension $p$. In the figure \ref{fig:1-ciclo} the $1$-cycle $[4,5] + [4,6] + [5,6]$ is shown in red, which is a hole. While blue represents the $1$-cycle $[6,7] + [6,8] + [7,8]$, which is not a hole.
 
@@ -867,7 +865,7 @@ We will see that our topological regularization will exploit the ability to stud
 \begin{itemize}
 \item $\beta_0(K)$ tells us the number of connected components.
 \item $\beta_1(K)$ tells us the number of tunnels.
-\item $\beta_2(K)$ indicates the number of cavities.
+\item $\beta_2(K)$ tells us the number of cavities.
 \end{itemize}
 
 In conclusion, the $p$-homology groups will represent $p$-dimensional holes in topological spaces.
@@ -1014,7 +1012,7 @@ This lemma guarantees us that the persistence diagram encodes all information ab
 
 
 \section{Related work}
-Once we have reviewed the required mathematical background, we will study some related work. First, we will focus on the relevant literature regarding \glsxtrfull{TopoML} and see how we can use the \glsxtrfull{TDA} toolkit to create a regularization technique for our \glsxtrshort{NN}. Secondly, we will focus on Representation Learning literature, where we will discuss how much we know about the latent space produced by our networks and how we can utilize that knowledge in our favor.
+Once we have reviewed the required mathematical background, we will study some related work. First, we will focus on the relevant literature regarding TopoM and see how we can use the TDA toolkit to create a regularization technique for our NN. Secondly, we will focus on Representation Learning literature, where we will discuss how much we know about the latent space produced by our networks and how we can utilize that knowledge in our favor.
 
 \subsection{Topological Machine Learning}
 \label{sec:topoML}
@@ -1023,7 +1021,7 @@ We have seen in Section \ref{sec:tda} that Persistent Homology is a great tool t
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.75\textwidth]{figures/bg/pipelineTDA.png} 
+\includegraphics[width=\textwidth]{figures/bg/pipelineTDA.png} 
 \caption{Standard TDA pipeline. Adapted from: \cite{berwald_mathematics_2019}}
 \label{fig:tdaPipe}
 \end{figure}
@@ -1056,9 +1054,9 @@ Therefore, there are multiple ways to be able to handle these multisets as input
     
 \end{itemize}
 
-If we focus on \glsxtrfull{DL}, we can see some novel work that proposes to put the focus on the network instead of preprocessing the persistent diagram, as we have seen before. Currently, the two main approaches are creating layers that learn to embed the persistent diagram or utilizing a more complex network architecture that enables the use of multisets as input \cite{hensel_survey_2021}.\\
+If we focus on DL, we can see some novel work that proposes to put the focus on the network instead of preprocessing the persistent diagram, as we have seen before. Currently, the two main approaches are creating layers that learn to embed the persistent diagram or utilizing a more complex network architecture that enables the use of multisets as input \cite{hensel_survey_2021}.\\
 
-However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, We will present an interesting use of \glsxtrshort{TDA} to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a \glsxtrshort{DL} context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples'' (see Figure \ref{fig:trojanTrain}).
+However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, We will present an interesting use of TDA to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a DL context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples'' (see Figure \ref{fig:trojanTrain}).
 
 \begin{figure}[ht!]
      \centering
@@ -1086,7 +1084,7 @@ However, in this project, we will not focus our attention on using the persisten
 
 Therefore, it has been shown that if we analyze the persistent homology of the neuron connectivity graph, we can extend the Hebbian learning rule of \textit{``fire together, wire together''} to higher-level connections (now the wiring is not only for adjacent nodes but also for path-connected nodes). Hence, as we can see in Figure \ref{fig:withTrojan}, a trojaned input on a trojaned network will generate a highly persistent cycle, which will connect the shallow and deep layers, short-cutting the proper classification. The reason we showcase this study is to remark on the fact that with some creativity and ingenuity, you can utilize persistent homology in more ways than to study the geometric characteristics of your dataset.\\
 
-As briefly explained in the Introduction, we are going to focus on the application of \glsxtrshort{TDA} to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space (see Figure \ref{fig:topoAuto}). By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use a simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.  
+As briefly explained in the Introduction, we are going to focus on the application of TDA to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space (see Figure \ref{fig:topoAuto}). By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use a simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.  
 
 
 \begin{figure}[ht!]
@@ -1117,7 +1115,7 @@ The type of topological regularization that we will study in this project belong
 
 Let $(\mathcal{X}, P)$ be our input space with probability measure $P$, $\mathcal{Y} = [K] =\{1, ...,K\}$ the target space, and our network decomposed as $\gamma \circ \varphi: \mathcal{X}  \to \mathcal{Y}$, where $\varphi: \mathcal{X}  \to \mathcal{Z}$ is a feature extractor and $\gamma: \mathcal{Z}  \to \mathcal{Y}$ is the classification head. Moreover, since we are dealing with a classification task, we will define the function $c: \text{supp}(P) \to \mathcal{Y}$ that assigns to input its true label. Note that we can restrict the domain of this function to the support of $P$ without loss of generality due to the assumption of the manifold thesis \cite{fefferman_testing_2016}.
 
-Therefore, if our training set $S=\{x_1, ..., x_n\}$, is generated by $n$ i.i.d samples $S \sim P$, and the subset $S_{x\mid k} = \{x \in S \mid c(x)=k\}$ is its restriction to the class $k$, then
+Therefore, if our training set $S=\{x_1, ..., x_n\}$, is generated by $n$ i.i.d draws from $X \sim P$, and the subset $S_{x\mid k} = \{x \in S \mid c(x)=k\}$ is its restriction to the class $k$, then
 
 \[
 \Omega_{cw\text{-}CR}= \sum_{k} \sum_{i\neq j} \left(c_{i,j}^{(k)}\right)^2\,, \text{ and }
@@ -1248,7 +1246,7 @@ We can see in Figure \ref{fig:attrac} a representation of the mass attraction th
 \subsection{Representation Comparison \& Model Stitching}
 \label{sec:repLearn}
 
-In multiple areas in \glsxtrshort{ML}, there has been a great interest in obtaining a function that is capable to extract the most relevant features of our inputs. We can see that the field that tackles all these interests, called Representation Learning, had existed before the use of DL. For instance, in Computer Vision, multiple algorithms are based on the fact that we can extract these relevant features and descriptors, such as SWIFT descriptors. These "classical" feature extractors were hand-made in the sense that they had to be designed specifically for the domain they will be used for (e.g., using Haar features for face detection). However, nowadays, we have a new paradigm in representation learning since DL networks can be seen as a complex feature extractor composed of a task-specific map. Nevertheless, even if we can see that this new approach can obtain state-of-the-art results, we still do not know much about the limits of the properties of these feature extractors. Some reasonable questions that we could have are: \textit{How unique are the learned features of our model? How do we compare the latent spaces of two different networks in order to assess their similarity? What do we refer to when we say that two layers act similarly?} \todo{add citations}
+In multiple areas in \glsxtrshort{ML}, there has been a great interest in obtaining a function that is capable of extracting the most relevant features of our inputs. We can see that the field that tackles all these interests, called Representation Learning, had existed before the use of DL. For instance, in Computer Vision, multiple algorithms are based on the fact that we can extract these relevant features and descriptors, such as SIFT descriptors \cite{gonzalez_digital_2002}. These "classical" feature extractors were hand-made in the sense that they had to be designed specifically for the domain they will be used for (e.g., using Haar features for face detection \cite{viola_rapid_2001}). However, nowadays, we have a new paradigm in representation learning since DL networks can be seen as a complex feature extractor composed of a task-specific map \cite{moschella_relative_2022}. Nevertheless, even if we can see that this new approach can obtain state-of-the-art results, we still do not know much about the limits of the properties of these feature extractors. Some reasonable questions that we could have are: \textit{How unique are the learned features of our model? How do we compare the latent spaces of two different networks in order to assess their similarity? What do we refer to when we say that two layers act similarly?}
 
 In this subsection, we will try to explain some of the most relevant methods used to try to answer these questions, as well as some of the possible benefits that can give us knowing this information about our networks.\\
 
@@ -1274,6 +1272,13 @@ A common practice when comparing layers of different networks is to compare the 
         \bar{\rho}_{CCA} = \frac{\sum_{i=1}^{d_1}\rho_i}{d_1}\,.
     \]
 
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=0.8\textwidth]{figures/bg/ccaScheme.jpg} 
+        \caption{CCA analysis example. Source: \cite{wang_finding_2020}}
+        \label{fig:ccaScheme}
+    \end{figure}    
+
     However, it has been seen that these metrics are sensitive to perturbations when the condition number of $X$ or $Y$ is large \cite{kornblith_similarity_2019}. Therefore, we have the following two variations that try to increase the robustness:
     \begin{itemize}
         \item \textbf{SVCCA:} a simple way to avoid these perturbations is to restrict the number of singular values used when computing the metric.
@@ -1285,7 +1290,7 @@ A common practice when comparing layers of different networks is to compare the 
         where $\mathbf{h}_i = (\mathbf{u}^{(i)})^T\Sigma_{X, X}^{-1/2}X $ and $\mathbf{x}_j$ is the $j^{\text{th}}$ row of $X$. These weights, $\alpha_i$, are based on the hypothesis that CCA vectors that account for a larger proportion of the original outputs are likely to be more important to the underlying representation. \cite{morcos_insights_2018}.
     \end{itemize}
 
-    \item \textbf{CKA}: this method proposes that instead of comparing directly the covariance of the (projected) activations, as done in CCA, we could first compute the similarity matrices of the activations in each representation separately and then compare this similarity matrices \cite{kornblith_similarity_2019}. Hence, if we use the standard inner product, then our similarity metric between the layers $L_1$ and $L_2$ will be $\langle \text{vec}(X^T X), \text{vec}(Y^T Y) \rangle$. Furthermore, we will see that we can generalize this metric to any inner product in a reproducing kernel Hilbert Space (RKHS). For that, we will first review the following property of the Frobenious norm: let $A \in \mathbb{R}^{n \times m}$, then
+    \item \textbf{CKA}: this method proposes that instead of comparing the covariance of the (projected) activations directly, as done in CCA, we could first compute the similarity matrices of the activations in each representation separately and then compare this similarity matrices \cite{kornblith_similarity_2019}. Hence, if we use the standard inner product, then our similarity metric between the layers $L_1$ and $L_2$ will be $\langle \text{vec}(X^T X), \text{vec}(Y^T Y) \rangle$. Furthermore, we will see that we can generalize this metric to any inner product in a reproducing kernel Hilbert Space (RKHS). For that, we will first review the following property of the Frobenious norm: let $A \in \mathbb{R}^{n \times m}$, then
     \[
     \norm{A}_F = \sqrt{\sum_{i=1}^n\sum_{j=1}^m A_{ij}^2} = \sqrt{\text{tr}(A^TA)}\,.
     \]
@@ -1293,7 +1298,7 @@ A common practice when comparing layers of different networks is to compare the 
     \begin{align*}
     \norm{Y X^T}_F^2 &= \text{tr}(X Y^T Y X^T) \\
     &= \text{tr}(X^T X Y^T Y) &&(\text{tr}(AB) = \text{tr}(BA))\\
-    &= \langle \text{vec}(X^TX), \text{vec}(Y^TY) \rangle && (X^TX, Y^TY \text{symmetric matrices})
+    &= \langle \text{vec}(X^TX), \text{vec}(Y^TY) \rangle && (X^TX, Y^TY \text{symmetric})
     \end{align*}
     
     So if we further assume that the rows of $X$ and $Y$ are centered, then this last result states that the similarity between the similarity matrices of the activations of each layer is equal to the squared Frobenious norm of the covariance matrix between the activation matrices, i.e., $\norm{\Sigma_{X, Y}}_F^2$.\\
@@ -1311,7 +1316,7 @@ A common practice when comparing layers of different networks is to compare the 
     However, in order to make HSIC invariant to isotropic scaling, we will normalize it. This normalized index is known as centered kernel alignment \cite{kornblith_similarity_2019}:
     \begin{equation}
     \label{eq:CKA}
-    \text{CKA}(K, L) = \frac{\text{HSIC}(K,L)}{\sqrt{\text{HSIC}(K,L) \cdot \text{HSIC}(K,L)}}\,.    
+    \text{CKA}(K, L) = \frac{\text{HSIC}(K,L)}{\sqrt{\text{HSIC}(K,K) \cdot \text{HSIC}(L,L)}}\,.    
     \end{equation}
 
 
@@ -1347,7 +1352,7 @@ However, all the previously mentioned methods have an additional overhead from t
 
  In order to construct this transformation, we will assume that it is easier to obtain a compatible representation if we have higher representation similarity between the latent representations of the stitched layers \footnote{There is evidence of cases where having high functional similarity does not imply high functional similarity \cite{csiszarik_similarity_2021}, i.e., we know that having high functional similarity it is not a necessary condition for high compatibility.}. Furthermore, there is evidence that some stochastic factors of our training, such as weight initialization, some hyperparameters, and data shuffling, will (most likely) result in \emph{$\epsilon$-similar representations} \cite{moschella_relative_2022} \footnote{The evidence is based on a few experimental results, so we can consider that this method takes this result almost as an additional assumption.}. Two representations $X,Y \subseteq \mathbb{R}^n$ are $\epsilon$-similar if there exist a bijection $T:X \to Y$ st exists $\alpha \in \mathbb{R}^*$ for which $d(T(x_1), T(x_2)) = \alpha \cdot d(x_1,x_2) + \epsilon$ for all $x_1,x_2 \in X$. Hence, these stochastic transformations will result in a relaxed version of an isometry up to a certain scale $\alpha$.\\
 
- Therefore we will build a transformation $T_{rel}$ of our \emph{(absolute) latent space representations} $\varphi_\bullet(x)$ so that our new encodings are invariant to $\epsilon$-similarities. This way, we obtain higher representational similarity since we remove some known differences, as well as functional similarity because our task maps $\gamma_\bullet$\todo{add reasoning}.
+ Therefore we will build a transformation $T_{rel}$ of our \emph{(absolute) latent space representations} $\varphi_\bullet(x)$ so that our new encodings are invariant to $\epsilon$-similarities. This way, we obtain higher representational similarity since we remove some known differences, as well as functional similarity because our task maps $\gamma_\bullet$.
 
  Hence, let $\mathcal{X}$ be our input space, and $\mathcal{A}= \{a_1, ..., a_k\}$ a subset of $\mathcal{X}$ called set of \emph{anchors}. Then for any similarity function $sim$ we define the relative representation of a point $x\in S$  w.r.t. $\mathcal{A}$ as
 
@@ -1399,6 +1404,8 @@ Hence, if we use the cosine similarity, then this new latent space representatio
 
 Lastly, we can see in Figure \ref{fig:crossDomainScheme} the standard training setup used in \cite{moschella_relative_2022} for the case of cross-domain zero-shot model stitching. Here, we will use two pretrained encoders $\varphi_A, \varphi_B$, and train the networks $\tilde{f}_{A}=\gamma_A \circ T_{rel}(\mathcal{A})  \circ \varphi_A$ and $\tilde{f}_{B}=\gamma_B \circ T_{rel}(\Gamma(\mathcal{A}))  \circ \varphi_B$ with both encoder weights frozen, using their corresponding domain-specific dataset. Note that in this case, where we have two distinct datasets, we will fix the anchors in one of the (in this case, model $A$) and use a partial correspondence mapping $\Gamma: \mathcal{P}(\mathcal{X}_A) \to \mathcal{P}(\mathcal{X}_B)$ to obtain the corresponding \emph{parallel anchors $\Gamma(\mathcal{A})$}.
 
+A use case of this cross-domain model stitching procedure could be a situation where you have several devices, each one in a specific language. Hence, with only one trained classification head (e.g., the one trained on the English corpus), you could have good performance when stitching this classification head with the language-specific encoders. This can be really helpful from a computational perspective in scenarios where you would need to have a frequent updates of your models since you would only need to do it for one of them.
+
 
 
 \section{Summary}
@@ -1407,6 +1414,7 @@ In this chapter, we have first seen a brief introduction to Topological Data Ana
 Secondly, we have seen that recently there has been an increased interest in applying TDA in Machine Learning, a new field that we can call Topological Machine Learning. One of the many ways that we can use our topological tools is to construct regularizers so that the network will obtain certain desired properties. Specifically, in this project, we will focus our attention on a topological regularization that will produce an increase in generalization capabilities by imposing a property called topological densification over our push-forward class-specific distributions \cite{hofer_densified_2021}.\\
 
 Lastly, we have seen different techniques in order to assess the similarity between two layers of two (possibly distinct) networks. Furthermore, we observed that if our networks have high functional similarity, then we can do model stitching without a severe performance drop. Hence, there are several techniques in order to increase this type of similarity and so making our latent representation more compatible. In this project, we will focus on one called relative latent representation, which lets us do zero-shot stitching, i.e., it does not require us to train any additional parameters in order to either make our networks more compatible or to stitch them together \cite{moschella_relative_2022}.  
+
 
 
 \end{document}

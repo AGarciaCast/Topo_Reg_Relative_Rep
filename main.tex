@@ -48,7 +48,7 @@
 % To optimize for digital output (this changes the color palette add the option: digitaloutput
 % To use \ifnomenclature add the option nomenclature
 % To use bibtex or biblatex - include one of these as an option
-\documentclass[nomenclature, english, bibtex]{kththesis}
+\documentclass[english, bibtex]{kththesis}
 %\documentclass[swedish, biblatex]{kththesis}
 % if pdflatex \usepackage[utf8]{inputenc}
 
@@ -189,10 +189,10 @@
 \subfile{Chapters/3_methods}
 
 \cleardoublepage
-\subfile{Chapters/4_development}
+\subfile{Chapters/4_results}
 
 \cleardoublepage
-\subfile{Chapters/5_results}
+\subfile{Chapters/5_conclusion}
 
 
 \noindent\rule{\textwidth}{0.4mm}
@@ -212,155 +212,9 @@
 \fi
 
 \warningExpl{If you do not have an appendix, do not include the \textbackslash cleardoublepage command below; otherwise, the last page number in the metadata will be one too large.}
-\cleardoublepage
-\appendix
-\renewcommand{\chaptermark}[1]{\markboth{Appendix \thechapter\relax:\thinspace\relax#1}{}}
-\chapter{Supporting materials}
-\label{sec:supportingMaterial}
-\generalExpl{Here is a place to add supporting material that can help others build upon your work. You can include files as attachments to the PDF file or indirectly via URLs. Alternatively, consider adding supporting material uploaded as separate files in DiVA.}
-
-% Attach the BibTeX for your references to make it easy for a reader to find and use them
-The BibTeX references used in this thesis are attached. \attachfile[description={references.bib}]{references.bib}
-
-% Attach source code file(s) or add a URL to the github or other repository
-Some source code relevant to this project can be found at \url{https://github.com/gqmaguirejr/E-learning} and \url{https://github.com/gqmaguirejr/Canvas-tools}.
-
-Your reader can access the attached (embedded) files using a PDF tool such as Adobe Acrobat Reader using the paperclip icon in the left menu, as shown in \Cref{fig:PDFreaderPaperclipExample} or by right-clicking on the push-pin icon in the PDF file and then using the menu to save the embedded file as shown in \Cref{fig:PDFreaderPushpinExample}.
-
-An argument for including supporting material in the PDF file is that it will be available to anyone who has a copy of the PDF file. As a result, they do not have to look elsewhere for this material. This comes at the cost of a larger PDF file. However, the embedded files are encoded into a compressed stream within the PDF file; thus, reducing the number of additional bytes. For example, the references.bib file that was used in this example is \SI{10617}{\byte} in size but only occupies \SI{4261}{\byte} in the PDF file.
-
-\warningExpl{DiVA is limited to $\approx$\SI{1}{\giga\byte} for each supporting file. If you have very large amounts of supporting material, you will probably want to use one of the data repositories. For additional help about this, contact KTH Library via 
-\href{mailto:researchdata@kth.se}{researchdata@kth.se}.
-}
-
-\begin{figure}[!ht]
-  \begin{center}
-    \includegraphics[width=0.50\textwidth]{README_notes/pdf-viewer-attached-files.png}
-  \end{center}
-  \caption{Adobe Acrobat Reader using the paperclip icon for the attached references.bib file}
-  \label{fig:PDFreaderPaperclipExample}
-\end{figure}
-\FloatBarrier
-
-\begin{figure}[!ht]
-  \begin{center}
-    \includegraphics[width=0.99\textwidth]{README_notes/Bib-save-embedded-example.png}
-  \end{center}
-  \caption{Adobe Acrobat Reader after right-clicking on the push-pin icon for the attached references.bib file}
-  \label{fig:PDFreaderPushpinExample}
-\end{figure}
-\FloatBarrier
-\cleardoublepage
-
-\chapter{Something Extra}
-\sweExpl{svensk: Extra Material som Bilaga}
-
-\section{Just for testing KTH colors}
-\ifdigitaloutput
-    \textbf{You have selected to optimize for digital output}
-\else
-    \textbf{You have selected to optimize for print output}
-\fi
-\begin{itemize}[noitemsep]
-    \item Primary color
-    \begin{itemize}
-    \item \textcolor{kth-blue}{kth-blue \ifdigitaloutput
-    actually Deep sea
-    \fi} {\color{kth-blue} \rule{0.3\linewidth}{1mm} }\\
-
-    \item \textcolor{kth-blue80}{kth-blue80} {\color{kth-blue80} \rule{0.3\linewidth}{1mm} }\\
-\end{itemize}
-
-\item  Secondary colors
-\begin{itemize}[noitemsep]
-    \item \textcolor{kth-lightblue}{kth-lightblue \ifdigitaloutput
-    actually Stratosphere
-    \fi} {\color{kth-lightblue} \rule{0.3\linewidth}{1mm} }\\
-
-    \item \textcolor{kth-lightred}{kth-lightred \ifdigitaloutput
-    actually Fluorescence\fi} {\color{kth-lightred} \rule{0.3\linewidth}{1mm} }\\
-
-    \item \textcolor{kth-lightred80}{kth-lightred80} {\color{kth-lightred80} \rule{0.3\linewidth}{1mm} }\\
-
-    \item \textcolor{kth-lightgreen}{kth-lightgreen \ifdigitaloutput
-    actually Front-lawn\fi} {\color{kth-lightgreen} \rule{0.3\linewidth}{1mm} }\\
-
-    \item \textcolor{kth-coolgray}{kth-coolgray \ifdigitaloutput
-    actually Office\fi} {\color{kth-coolgray} \rule{0.3\linewidth}{1mm} }\\
-
-    \item \textcolor{kth-coolgray80}{kth-coolgray80} {\color{kth-coolgray80} \rule{0.3\linewidth}{1mm} }
-\end{itemize}
-\end{itemize}
-
-\textcolor{black}{black} {\color{black} \rule{\linewidth}{1mm} }
-
-% Include an example of using nomenclature
-\ifnomenclature
-\cleardoublepage
-\chapter{Main equations}
-\label{ch:NomenclatureExamples}
-This appendix gives some examples of equations that are used throughout this thesis.
-\section{A simple example}
-The following example is adapted from Figure 1 of the documentation for the package nomencl (\url{https://ctan.org/pkg/nomencl}).
-\begin{equation}\label{eq:mainEq}
-a=\frac{N}{A}
-\end{equation}
-\nomenclature{$a$}{The number of angels per unit area\nomrefeq}%       %% include the equation number in the list
-\nomenclature{$N$}{The number of angels per needle point\nomrefpage}%  %% include the page number in the list
-\nomenclature{$A$}{The area of the needle point}%
-The equation $\sigma = m a$%
-\nomenclature{$\sigma$}{The total mass of angels per unit area\nomrefeqpage}%
-\nomenclature{$m$}{The mass of one angel}
-follows easily from \Cref{eq:mainEq}.
-
-\section{An even simpler example}
-The formula for the diameter of a circle is shown in \Cref{eq:secondEq} area of a circle is shown in \cref{eq:thirdEq}.
-\begin{equation}\label{eq:secondEq}
-D_{circle}=2\pi r
-\end{equation}
-\nomenclature{$D_{circle}$}{The diameter of a circle\nomrefeqpage}%
-\nomenclature{$r$}{The radius of a circle\nomrefeqpage}%
-
-\begin{equation}\label{eq:thirdEq}
-A_{circle}=\pi r^2
-\end{equation}
-\nomenclature{$A_{circle}$}{The area of a circle\nomrefeqpage}%
-
-Some more text that refers to \eqref{eq:thirdEq}.
-\fi  %% end of nomenclature example
 
 \cleardoublepage
-% Information for authors
-%\include{README_author}
-\subfile{README_author}
-
-\cleardoublepage
-% information about the template for everyone
-\input{README_notes/README_notes}
-
-\begin{comment}
-% information for examiners
-\ifxeorlua
-\cleardoublepage
-\input{README_notes/README_examiner_notes}
-\fi
-\end{comment}
-
-\begin{comment}
-% Information for administrators
-\ifxeorlua
-\cleardoublepage
-\input{README_notes/README_for_administrators.tex}
-\fi
-\end{comment}
-
-\begin{comment}
-% Information for Course coordinators
-\ifxeorlua
-\cleardoublepage
-\input{README_notes/README_for_course_coordinators}
-\fi
-\end{comment}
+\subfile{Chapters/appendix}
 
 %% The following label is necessary for computing the last page number of the body of the report to include in the "For DIVA" information
 \label{pg:lastPageofMainmatter}
@@ -368,10 +222,6 @@ Some more text that refers to \eqref{eq:thirdEq}.
 \cleardoublepage
 \clearpage\thispagestyle{empty}\mbox{} % empty page with backcover on the other side
 \kthbackcover
-
-% REMEMBER TO UNCOMMENT!!!!!!!!!!!!
-\begin{comment}
-
 \fancyhead{}  % Do not use header on this extra page or pages
 \section*{€€€€ For DIVA €€€€}
 \lstset{numbers=none} %% remove any list line numbering
@@ -400,7 +250,5 @@ commentstyle=\color{black}, backgroundcolor=\color{white}]{lib/acronyms-for-pdfl
 }
 {}
 \fi
-
-\end{comment}
 
 \end{document}
