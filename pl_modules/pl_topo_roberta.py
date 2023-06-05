@@ -142,27 +142,26 @@ class LitTopoRelRoberta(pl.LightningModule):
             self.latent_pos = topo_par[0]
             if self.net.anchor_dataloader is None:
                 assert self.latent_pos == "pre"
+                
             if self.latent_pos == "both":
-                if type(topo_par[1]) is tuple:
-                    self.reg_loss = (TopoRegLoss(top_scale=topo_par[1][0],
-                                                pers="L_2",
-                                                loss_type=topo_par[4]
-                                            ),
-                                    TopoRegLoss(top_scale=topo_par[2],
-                                                pers=topo_par[1][1],
-                                                loss_type=topo_par[4]
-                                            )
-                                    )
+                
+                if type(topo_par[2]) is tuple:
+                    top_scale_pre = topo_par[2][0]
+                    top_scale_post = topo_par[2][1]
                 else:
-                    self.reg_loss = (TopoRegLoss(top_scale=topo_par[1],
-                                            pers="L_2",
-                                            loss_type=topo_par[4]
-                                           ),
-                                 TopoRegLoss(top_scale=topo_par[2],
-                                            pers=topo_par[1],
-                                            loss_type=topo_par[4]
-                                           )
-                                )
+                    top_scale_pre = topo_par[2]
+                    top_scale_post = topo_par[2] 
+                    
+                self.reg_loss = (TopoRegLoss(top_scale=top_scale_pre,
+                                        pers="L_2",
+                                        loss_type=topo_par[4]
+                                       ),
+                             TopoRegLoss(top_scale=top_scale_post,
+                                        pers=topo_par[1],
+                                        loss_type=topo_par[4]
+                                       )
+                            )
+                
             else:
                 self.reg_loss = TopoRegLoss(top_scale=topo_par[2],
                                         pers=topo_par[1],
