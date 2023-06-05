@@ -1,0 +1,45 @@
+<mxfile host="app.diagrams.net" modified="2023-06-02T11:14:33.035Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36" etag="18U31lp-qvQx3sWNuiYR" version="21.1.8" type="device">
+  <diagram name="Página-1" id="fRxYpWFWI3TABBfFrbz9">
+    <mxGraphModel dx="1434" dy="739" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-6" value="$$\varphi_A$$" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;size=20;" parent="1" vertex="1">
+          <mxGeometry x="130" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-7" value="$$\gamma_B$$" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="150" y="290" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-11" value="$$\hat{T}_{rel}(\mathcal{A})$$" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="150" y="340" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-12" value="Test set A" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffffff;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="130" y="450" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-14" value="$$\varphi_B$$" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="320" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-15" value="$$\gamma_A$$" style="shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="340" y="290" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-16" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="280" y="430" as="sourcePoint" />
+            <mxPoint x="280" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-17" value="Forward path" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="B_Le31ezV2yMH2FOFBGa-16" vertex="1" connectable="0">
+          <mxGeometry x="0.275" y="-1" relative="1" as="geometry">
+            <mxPoint y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-19" value="$$\hat{T}_{rel}(\Gamma(\mathcal{A}))$$" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="340" y="340" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="B_Le31ezV2yMH2FOFBGa-20" value="Test set B" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#FFFFFF;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="320" y="450" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
