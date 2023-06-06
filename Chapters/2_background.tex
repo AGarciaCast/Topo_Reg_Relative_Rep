@@ -5,40 +5,43 @@
 \chapter{Background}
 \label{ch:background}
 
-\section{Mathematical backgound}
+\section{Mathematical background}
 \label{sec:tda}
-In this section, we will introduce the basic mathematic notions needed to understand the methods proposed in \cite{hofer_densified_2021, moschella_relative_2022} as well as the ones described in Chapter \ref{ch:methods}.  For that, I will mainly follow \cite{edelsbrunner_computational_2010}.
+This section provides the necessary mathematical background to comprehend the methods proposed in \cite{hofer_densified_2021, moschella_relative_2022} and the ones described in Chapter \ref{ch:methods}. The exposition is mainly based on \cite{edelsbrunner_computational_2010}.
 
-\subsection{Simplicial complex}
-As we discussed in the introduction, we would want to analyze the characteristics of the underlying manifold from which our dataset has been sampled. Therefore, our objective will be to give some structure to our dataset from which we can assess the aforementioned topological properties.
+\subsection{Simplicial Complexes}
+\subsubsection*{Geometric simplicial complexes}
 
-One way to represent some topological spaces is through decomposition in simpler pieces. A decomposition is called a complex if its pieces are topologically simpler and its intersections are pieces of the same type but lower dimensional \cite{edelsbrunner_computational_2010}. There is a great variety of complexes with different levels of abstraction. However, we will focus on simplicial complexes, which can represent most of the spaces that arise in data science, and they are especially convenient from a computational perspective.\\
+As discussed in the introduction, our objective is to analyze the characteristics of the underlying manifold from which our dataset has been sampled. To achieve this, we aim to introduce structure to our dataset that allows us to assess the desired topological properties.
 
-Simplicial complexes can be observed from a geometric and combinatorial point of view. First, we will study their definition and main properties from the geometric perspective. For that, reviewing the following affine geometry concepts will be helpful. 
+One approach to represent topological spaces is through decomposition into simpler pieces. A decomposition is referred to as a complex if its pieces are topologically simpler and their intersections are of the same type, but lower dimensional \cite{edelsbrunner_computational_2010}. There exists a wide variety of complexes with different levels of abstraction. However, our focus will be on simplicial complexes, which can represent most spaces encountered in data science and are particularly advantageous from a computational standpoint.\\
+
+Simplicial complexes can be studied from both geometric and combinatorial perspectives. In this subsection, we will examine their definition and main properties from a geometric viewpoint. To this end, it will be helpful to review the following concepts from affine geometry.
 
 \begin{definition}
-A subset of points $\{u_0, u_1, ..., u_k\} \subseteq \mathbb{R}^d$ is \emph{affinely independent} if the vectors $\{\overrightarrow{u_0u_1}, ..., \overrightarrow{u_0u_k}\}$ are linearly independent.
+A subset of points $\{u_0, u_1, ..., u_k\} \subseteq \RR^d$ is \emph{affinely independent} if the vectors $\{\overrightarrow{u_0u_1}, ..., \overrightarrow{u_0u_k}\}$ are linearly independent.
 \end{definition}
 
 \begin{definition}
 \begin{sloppypar}
-We say that $x \in \mathbb{R}^d$ is a \emph{convex combination} of the points ${u_0, u_1, ..., u_k}$ if $x = \sum_{i=0}^{k} \lambda_i u_i$ with $\lambda_i \geq 0 \ \text{ for all } i \in \{0,...,k\}$ and $\sum_{i=0}^{k} \lambda_i = 1$.
+Given ${u_0, u_1, ..., u_k} \subseteq \RR^d$, we say that $x \in \RR^d$ is a \emph{convex combination} of these points if $x = \sum_{i=0}^{k} \lambda_i u_i$, where $\lambda_i \geq 0$ for all $i \in {0,...,k}$ and $\sum_{i=0}^{k} \lambda_i = 1$.
 \end{sloppypar}
 \end{definition}
 
 \begin{definition}
 \begin{sloppypar}
-We call \emph{convex hull} of $u_0, u_1, ..., u_k$, denoted by ${\text{conv}\{u_0, u_1, ..., u_k\}}$, the set of all convex combinations of the given points.
+The \emph{convex hull} of $u_0, u_1, ..., u_k$, denoted by ${\text{conv}{u_0, u_1, ..., u_k}}$, is the set of all convex combinations of the given points.
 \end{sloppypar}
 \end{definition}
-Using this set, we can define our decomposition pieces as follows:
+
+Using these concepts, we can define the building blocks of our decomposition as follows:
 
 \begin{definition}
-A \emph{$k$-simplex} $\sigma$ in $\mathbb{R}^d$ with $d \geq k$ is the convex hull of $k+1$ affinely independent points $u_0, u_1, ..., u_k \in \mathbb{R}^d$, i.e.,
+A \emph{$k$-simplex} $\sigma$ in $\RR^d$ with $d \geq k$ is the convex hull of $k+1$ affinely independent points $u_0, u_1, ..., u_k \in \RR^d$, i.e.,
 $\sigma \coloneqq \text{conv}\{u_0, u_1, ..., u_k\}$.
 \end{definition}
 
-We say that the $k$-simplex $\sigma$ has dimension $k$ and we call \emph{vertex of $\sigma$} to the points $u_0, u_1, ..., u_k$.
+We say that the $k$-simplex $\sigma$ has dimension $k$, and the points $u_0, u_1, ..., u_k$ are referred to as the \emph{vertices of $\sigma$}.
 
 \begin{figure}[h]
 \centering
@@ -105,10 +108,9 @@ We say that the $k$-simplex $\sigma$ has dimension $k$ and we call \emph{vertex 
 \caption{Representation of 0, 1, 2, and 3-dimensional simplices}
 \end{figure}
 
-
 We can see that any subset of the vertices of $\sigma$ will be affinely independent and will therefore define a lower dimensional simplex $\tau$. Hence, we will say that \emph{$\tau$ is a face of $\sigma$} if it is a convex combination of a non-empty subset of the vertices of $\sigma$, and we will denote it by $\tau \leq \sigma$. If the subset is proper, we will say that \emph{$\tau$ is the proper face of $\sigma$}, and we will denote it by $\tau < \sigma$.\\
 
-Using the definition of faces of a simplex $\sigma$, we can define \emph{the boundary and interior} of $\sigma$.
+Based on the concept of faces, we can establish the notions of the \emph{boundary and interior} of a simplex $\sigma$.
 
 \begin{definition}
 Let a simplex $\sigma$. Then we define
@@ -118,9 +120,9 @@ Let a simplex $\sigma$. Then we define
 \end{itemize}
 \end{definition}
 
-Once we know the pieces of our decomposition, we are going to see how we have to combine them and what are the main properties of the resulting complexes.
+Now that we have established the components of our decomposition, we need to understand how to combine them and explore the main properties of the resulting complexes.
 
-As we have already seen at the beginning of the section, for a decomposition to be a complex, its pieces have to be topologically simple, and their intersections have to be lower-dimensional pieces of the same type. The natural way to do this is to glue some simplices together by their faces.
+As previously mentioned, for a decomposition to be considered a complex, its components must be topologically simple, and the intersections between them should yield lower-dimensional components of the same type. The most natural way to achieve this is by gluing simplices together using their faces.
 
 \begin{definition}
 A \emph{simplicial complex} is a finite collection of simplices $K$ that satisfy the following properties:
@@ -221,7 +223,7 @@ We can see in Figure \ref{fig:comp1} an example of a simplicial complex, while F
 \end{figure}
 
 \begin{definition}
-The \emph{underlying space} of a simplicial complex $K$, denoted $\abs{K}$, is the union of the simplices in $K$ with the induced topology of $\mathbb{R}^d$ where the simplex are contained. This underlying space is also called \emph{polyhedron}.
+The \emph{underlying space} of a simplicial complex $K$, denoted $\abs{K}$, is the union of the simplices in $K$ with the induced topology of $\RR^d$, where the simplex are contained. This underlying space is also called \emph{polyhedron}.
 \end{definition}
 As can be seen, the underlying space of a simplicial complex is compact since it is a finite union of simplices. The following result characterizes the open and closed sets of the underlying space $\abs{K}$ of a simplicial complex $K$.
 
@@ -232,17 +234,17 @@ Let $K$ be a simplicial complex and $A \subset \abs{K}$ a subset. Then $A$ is an
 \begin{definition}
 A \emph{triangulation} of a topological space $X$ is a pair $(K, h)$ where $K$ is a simplicial complex and $h: X \to \abs{K}$ is a homeomorphism (i.e., $h $ continuous, bijective and $h^{-1}$ continuous).
 \end{definition}
-We will say that a topological space is \emph{triangulable} if it admits triangulation.\\
+We say that a topological space is \emph{triangulable} if it admits triangulation.\\
 
 It will also be helpful for us to be able to study the simplicial complexes contained in another simplicial complex.
 \begin{definition}
 A \emph{subcomplex} $L$ of a simplicial complex $K$ is a simplicial complex $L \subseteq K$.
 \end{definition}
 
-A type of subcomplex of great interest are the \emph{$j$-skeletons}, defined as follows: \[K^{(j)} = \{\sigma \in K \mid dim\ \sigma\ \leq j \}\,.\]
+A particular type of subcomplex that is of great interest is the \emph{$j$-skeletons}, defined as follows: \[K^{(j)} = \{\sigma \in K \mid dim\ \sigma\ \leq j \}\,.\]
 
 \subsubsection*{Abstract simplicial complexes}
-Once we know the simplicial complexes from the geometric point of view, we will approach them from a combinatorial approach, which will significantly help us code the simplicial complexes.
+Now that we have established the concept of simplicial complexes from a geometric perspective, we will approach them from a combinatorial standpoint, which will significantly aid in the representation and manipulation of simplicial complexes.
 
 \begin{definition}
 An \emph{abstract simplicial complex $A$} is a finite collection of finite sets such that if $\alpha \in A$ and $\beta \subset \alpha$, then $\beta \in A$.
@@ -269,27 +271,27 @@ Where the set of vertices is: $\text{Vert }A = \{0, 1, 2, 3, 4, 5, 6\}$.
 \end{exmp}
 
 \begin{definition}
-Let $A$ and $B$ be two abstract simplicial complexes. We say that $A$ and $B$ are \emph{isomorphic} if there exists a bijection \[b:\text{Vert }A \to \text{Vert }B\] such that $\alpha \in A$ if and only if $b(\alpha) \in B$.
+Let $A$ and $B$ be two abstract simplicial complexes. We say that $A$ and $B$ are \emph{isomorphic} if there exists a bijection $b:\text{Vert }A \to \text{Vert }B$ such that $\alpha \in A$ if and only if $b(\alpha) \in B$.
 \end{definition}
 
-Each geometric complex naturally induces an abstract complex in the following way:
+Each geometric complex naturally induces an abstract complex as follows:
 \begin{definition}
 Let $K$ be a simplicial complex, and let $V$ be the set of vertices of $K$. Then, we will call \emph{vertex scheme} the abstract simplicial complex $A$ formed by all those subsets of $V$ that generate simplices in $K$.
 \end{definition}
 
-And under certain circumstances, we can do the opposite step of constructing a (geometric) simplicial complex from an abstract one:
+Under certain circumstances, it is possible to construct a (geometric) simplicial complex from an abstract complex:
 \begin{definition}
 Let $A$ be an abstract simplicial complex and $K$ a simplicial complex. We will say that $K$ is a \emph{geometric realization} of $A$ if $A$ is isomorphic to the vertex scheme of $K$.
 \end{definition}
 
 \begin{theorem}[{\cite[Chapter~3]{edelsbrunner_computational_2010}}]
-Every abstract simplicial complex of dimension $d$ admits a geometric realization in $\mathbb{R}^{2d + 1}$.
+Every abstract simplicial complex of dimension $d$ admits a geometric realization in $\RR^{2d + 1}$.
 \end{theorem}
 
-Thus, abstract simplicial complexes are a faithful representation of (geometric) simplicial complexes.
+Thus, abstract simplicial complexes provide a faithful representation of (geometric) simplicial complexes.
 
 \subsection{Simplicial complexes built from point clouds}
-From the computational point of view, we find ourselves with the problem that we have a representation of a topological space through a finite discretization, and our objective is to be able to recover properties of the original topological space from this cloud of points. Hence, to give some structure to our distance space $(X,d)$, where $X$ is the dataset and $d: X \to \overline{\mathbb{R}}_+$ is a distance function, we will create a simplicial complex with the data points as vertices, and encoding some of the relevant information of $d$.
+From the computational point of view, we find ourselves with the problem that we have a representation of a topological space through a finite discretization, and our objective is to be able to recover properties of the original topological space from this cloud of points. Hence, to give some structure to our distance space $(X,d)$, where $X$ is the dataset and $d: X \to \overline{\RR}_+$ is a distance function, we will create a simplicial complex with the data points as vertices, and encoding some of the relevant information of $d$.
 
 \subsubsection*{\v{C}ech complex}
 The \v{C}ech complex is defined from the intersection of a collection of disks (closed balls). The idea underlying this construction is that of the nerve of a collection, which is introduced below.
@@ -306,12 +308,12 @@ One of the reasons we are interested in simplicial complexes constructed through
 \begin{theorem}[Nerve theorem {\cite[Chapter~3]{edelsbrunner_computational_2010}}]
 If $F$ is a finite collection of closed and convex subsets in Euclidean space, then the nerve of $F$ has the same type of homotopy as the union of the sets of $F$.
 \end{theorem}
-Therefore, by this theorem, we know that \v{C}ech complexes ``behaves similarly'' to subsets of $\mathbb{R}^d$ (since it is homopoty equivalent). This property will ensure us that our analysis of the topological properties obtained through homology groups of our simplicial complex will be the same as if we studied them on neighborhoods of our dataset $X\subset \mathbb{R}^d$ \cite{doherty_cech_2018}.\\
+Therefore, according to this theorem, \v{C}ech complexes exhibit similar topological properties to subsets of $\mathbb{R}^d$ (as they are homotopy equivalent). This property ensures that our analysis of topological properties obtained through homology groups of the simplicial complex will be equivalent to studying them on neighborhoods of our dataset $X \subset \mathbb{R}^d$ \cite{doherty_cech_2018}.\\
 
-We consider the particular case in which the sets of the family are the disks, i.e. closed balls, $D_r(x)\equiv\overline{B_r}(x)= \{y\in \mathbb{R}^d \mid d(x, y) \leq r\}$ in $\mathbb{R}^d$.
+Considering the case where the sets in the collection are disks (closed balls), denoted as $D_r(x) \equiv \overline{B_r}(x) = {y\in \mathbb{R}^d \mid d(x, y) \leq r}$ in $\mathbb{R}^d$, we define the \v{C}ech complex of a finite set of points $X \subset \mathbb{R}^d$ as follows:
 
 \begin{definition}
-Let $X\subset \mathbb{R}^d$ be a finite set of points. We will call \emph{\v{C}ech complex} of $X$ of radius $r$ to the abstract simplicial complex
+Let $X\subset \RR^d$ be a finite set of points. We will call \emph{\v{C}ech complex} of $X$ of radius $r$ to the abstract simplicial complex
 \[
 \text{\v{C}ech}(r)=\left\{\sigma \subset X \mid \bigcap_{u \in \sigma} D_{r/2}(u)\neq \emptyset \right\}\,.
 \]
@@ -326,12 +328,12 @@ Let $X\subset \mathbb{R}^d$ be a finite set of points. We will call \emph{\v{C}e
 
 We can check that for large enough values of $r$, $\text{\v{C}ech}(r)$ is a simplex of dimension $\text{card }(X)-1$ {\cite[Chapter~3]{edelsbrunner_computational_2010}}, so the \v{C}ech complex is computationally inefficient.
 
-Furthermore, in general, the \v{C}ech complex of a set of points $X \subset \mathbb{R}^d$ does not possess a geometric realization in $\mathbb{R}^d$. Therefore, we will present a construction that resembles the \v{C}ech complex but will be much more favorable from a computational point of view.
+Furthermore, in general, the \v{C}ech complex of a set of points $X \subset \RR^d$ does not possess a geometric realization in $\RR^d$. Therefore, we will present a construction that resembles the \v{C}ech complex while being more computationally favorable.
 
 \subsubsection*{Vietoris-Rips complex}
 
 \begin{definition}
-Let $X \subset \mathbb{R}^d$ be a finite set of points. We call \emph{Vietoris-Rips} complex of $X$ of radius $r$ to the abstract simplicial complex 
+Let $X \subset \RR^d$ be a finite set of points. We call \emph{Vietoris-Rips} complex of $X$ of radius $r$ to the abstract simplicial complex 
 \begin{align*}
 \text{VR}(X, r) =& \{\sigma \subseteq  X \mid \textrm{diam } \sigma \leq r\}\\
 =&\left\{ \{x_0, ..., x_n\} \subseteq  X \mid d(x_i, x_j) \leq r\ \forall i,j\right\}\,. 
@@ -348,21 +350,19 @@ We can see in Figure \ref{fig:vr} how the various VR complexes are generated as 
 \label{fig:vr}
 \end{figure}
 
-
 Let $\sigma \subset X$, then we recall that the diameter is defined as
 \[\textrm{diam } \sigma = \max_{u,v \in \sigma} d(u,v)\,.\]
-This observation guarantees that $\sigma \in \text{VR}(r)$ if and only if all its edges are in $\text{VR}(r)$. In other words, $\text{VR}(r)$ is completely determined by its $1$-skeleton. This makes the Vietoris-Rips complex much more efficient than the \v{C}ech complex from the computational point of view. However, as with the \v{C}ech complex, it does not admit a geometric realization in $\mathbb{R}^d$.
+It follows that $\sigma \in \text{VR}(r)$ if and only if all its edges are in $\text{VR}(r)$. In other words, the Vietoris-Rips complex is entirely determined by its $1$-skeleton. This property makes the Vietoris-Rips complex computationally more efficient than the \v{C}ech complex. However, similar to the \v{C}ech complex, the Vietoris-Rips complex does not admit a geometric realization in $\RR^d$.
 
-On the other hand, the Vietoris-Rips complex is not the nerve of any collection of subsets of $\mathbb{R}^d$. However, the following result guarantees that the VR complex approximates the \v{C}ech complex.
+On the other hand, the Vietoris-Rips complex is not the nerve of any collection of subsets of $\RR^d$. Nevertheless, the following result guarantees that the VR complex provides an approximation of the \v{C}ech complex:
 
 \begin{lemma}[Vietoris-Rips lemma {\cite[Chapter~3]{edelsbrunner_computational_2010}}]
 \label{fig:lemaVR}
-Let $X \subset \mathbb{R}^d$ be a finite set of points and let $r \geq 0$. Then,
+Let $X \subset \RR^d$ be a finite set of points and let $r \geq 0$. Then,
 \[
 \text{\rm \v{C}ech}(r) \subset \text{\rm VR}(r) \subset \text{\rm \v{C}ech}(\sqrt{2}r)\,.
 \]
 \end{lemma}
-
 
 Another important property regarding VR complexes is their ability to encode $\epsilon$-connectivity. In Section \ref{sec:topoML}, we will talk more in detail about $\epsilon$-connectivity and how it will be a crucial property for constructing our topological regularization. 
 
@@ -384,11 +384,11 @@ Therefore, for any set $X$, if we can form an \emph{$\epsilon$-chain} between an
 For any distance $d$ on $X$, and $\epsilon \geq 0$, the partition corresponding to the connected components of $\text{\rm VR}(\epsilon)$, denoted as $\pi_0(\text{\rm VR}(\epsilon))$, coincides with the $\epsilon$-components of $X$.
 \end{proposition}
 
-This can be easily seen since two points $u,v$ (vertices) are in the same connected component of a simplicial complex $K$ if there exists a sequence of vertices $u=x_0,..., x_n=v$ such as $\{x_i, x_{i+1}\} \in K$. So, we can see that in the case that $K$ is a Vietoris-Rips complex of radius $\epsilon$, then $\{x_i, x_{i+1}\} \in K$ iff $d(x_i, x_{i+1})\leq\epsilon$, i.e, there exist an $\epsilon$-chain between $u$ and $v$. 
+This result follows easily from the fact that two points $u,v$ (vertices) are in the same connected component of a simplicial complex $K$ if there exists a sequence of vertices $u=x_0,..., x_n=v$ such as $\{x_i, x_{i+1}\} \in K$. So, we can see that in the case that $K$ is a Vietoris-Rips complex of radius $\epsilon$, then $\{x_i, x_{i+1}\} \in K$ iff $d(x_i, x_{i+1})\leq\epsilon$, i.e, there exist an $\epsilon$-chain between $u$ and $v$. 
 
 \subsubsection*{Witness complex}
 
-A common \glsxtrshort{ML} scenario is that we will have a big dataset, and we apply our training procedure to small batches of that given set. Hence, ideally, we would want to be able to infer the topology of our whole dataset just from studying our reduced batches. Therefore, this type of ideas motivated Vin de Silva and Gunnar Carlsson when they introduced the Witness Complex in \cite{silva_topological_2004}: a subset of the data points, called the landmarks points, is used to construct the simplices ``seen'' by the witnesses, which are the rest of the points of the data set \cite{medbouhi_towards_2022}.
+A common ML scenario is that we will have a big dataset, and we apply our training procedure to small batches of that given set. Hence, ideally, we would want to be able to infer the topology of our whole dataset just from studying our reduced batches. Therefore, this type of ideas motivated Vin de Silva and Gunnar Carlsson when they introduced the Witness Complex in \cite{silva_topological_2004}: a subset of the data points, called the landmarks points, is used to construct the simplices ``seen'' by the witnesses, which are the rest of the points of the data set \cite{medbouhi_towards_2022}.
 
 However, the construction of the simplicial complex that we will use differs from the ones used in standard TDA libraries, such as GUDHI, when defining Witness complexes \cite{noauthor_gudhi_nodate}. We will focus on a specific type of complex presented in \cite{silva_topological_2004}, which can be seen as an example of a Dowker complex\footnote{Denoted as $W(D; R, 0)$ in the original paper \cite{silva_topological_2004}.}.
 
@@ -397,7 +397,7 @@ The \emph{Dowker complex} of a relation $(R, X, Y)$ is the simplicial complex $(
 \[
 \text{D}(R) = \{\sigma \subseteq X \mid \exists y \in Y \text{ with } \sigma \times \{y\} \subseteq R\}\,.
 \]
-We say that \emph{ the simplex $\sigma \in \text{D}(R)$ is witnessed by $y \in Y$} if $\sigma \times \{y\} \subseteq R$, i.e., all elements in the simplex $\sigma$ are related with y.
+We say that \emph{the simplex $\sigma \in \text{D}(R)$ is witnessed by $y \in Y$} if $\sigma \times \{y\} \subseteq R$, i.e., all elements in the simplex $\sigma$ are related with y.
 \end{definition}
 
 We will call Witness complex the Dowker complex of $(R_\epsilon, L, X)$ where
@@ -414,14 +414,12 @@ Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, 
 \]
 \end{definition}
 
-
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/bg/witnessCons.png} 
     \caption{Witness complex for a set  dataset of 11 points using a subset of 5 landmarks points and radius $\epsilon$. Adapted from: \cite{medbouhi_towards_2022}}
 \label{fig:witnessCons}
 \end{figure}
-
 
 A remarkable result about witness complexes is Dowker's Theorem, which states that exchanging the role of the witnesses and landmarks doesn't change the topology of the complex \cite{dowker_homology_1952}. This result is exploited in \cite{schonenberger_witness_2022} to enforce the topological regularization of a Topological Autoencoder (further explained in Section \ref{sec:topoML}) only using the data points of the batches instead of the whole dataset.
 
@@ -491,7 +489,7 @@ Another vector spaces that we will use are \emph{quotient spaces}. Let $W \subse
         \end{scriptsize}
         \end{axis}
     \end{tikzpicture}
-    \caption{Quotient space example: $\mathbb{R}^2/W$}
+    \caption{Quotient space example: $\RR^2/W$}
     \label{fig:quot_ex}
 \end{figure}
 
@@ -861,7 +859,7 @@ Let $K$ be a simplicial complex. Then $\beta_0(K)$ matches the number of connect
 $\abs{K}$ is connected if and only if $\beta_0(K)=1$.
 \end{corollary}
 
-We will see that our topological regularization will exploit the ability to study connectivity through homology. However, we can extract higher dimensional topological properties if we use higher dimensional homology groups. It can be shown \cite[Chapter~5]{edelsbrunner_computational_2010} that Betti numbers of a polyhedron contained in $\mathbb{R}^3$ can be interpreted in the following way:
+We will see that our topological regularization will exploit the ability to study connectivity through homology. However, we can extract higher dimensional topological properties if we use higher dimensional homology groups. It can be shown \cite[Chapter~5]{edelsbrunner_computational_2010} that Betti numbers of a polyhedron contained in $\RR^3$ can be interpreted in the following way:
 \begin{itemize}
 \item $\beta_0(K)$ tells us the number of connected components.
 \item $\beta_1(K)$ tells us the number of tunnels.
@@ -874,14 +872,14 @@ In conclusion, the $p$-homology groups will represent $p$-dimensional holes in t
 We will introduce the concept of persistence first for functions of one variable and then we will deepen in the case of simplicial complexes. In this section, I will use \cite{goodman_persistent_2008} as our main reference.
 
 \subsubsection*{One-dimensional real functions}
-Let $f: \mathbb{R} \to \mathbb{R}$ be a smooth function. Remember that $x$ is a \emph{critical point} and $f(x)$ is a \emph{critical value of $f$} if $f'(x)=0$. Furthermore, a critical point $x$ is \emph{non-degenerate} if $f''(x) \neq 0$. So, suppose that $f$ contains only non-degenerate critical points with distinct critical values.\\
+Let $f: \RR \to \RR$ be a smooth function. Remember that $x$ is a \emph{critical point} and $f(x)$ is a \emph{critical value of $f$} if $f'(x)=0$. Furthermore, a critical point $x$ is \emph{non-degenerate} if $f''(x) \neq 0$. So, suppose that $f$ contains only non-degenerate critical points with distinct critical values.\\
 
-Let the \emph{sublevel set} $\mathbb{R}_t=f^{-1}(-\infty, t]$ for each $t \in \mathbb{R}$. Then we see that as we increase $t$, the number of connected components of $\mathbb{R}_t$ will remain constant until we pass through a $t_0$ critical value of $f$.  As we can see in the figure \ref{fig:sublevelR}, when we pass through a local minimum, a new connected component is created. When we pass through a local maximum, two connected components are combined into one.\\
+Let the \emph{sublevel set} $\RR_t=f^{-1}(-\infty, t]$ for each $t \in \RR$. Then we see that as we increase $t$, the number of connected components of $\RR_t$ will remain constant until we pass through a $t_0$ critical value of $f$.  As we can see in the figure \ref{fig:sublevelR}, when we pass through a local minimum, a new connected component is created. When we pass through a local maximum, two connected components are combined into one.\\
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/bg/Sub-level-Filtrations.png}
-    \caption{Connected components in $\mathbb{R}$ in the different leaks. Source: \cite{curry_counting_2020}}
+    \caption{Connected components in $\RR$ in the different leaks. Source: \cite{curry_counting_2020}}
     \label{fig:sublevelR}
 \end{figure}
 
@@ -905,16 +903,16 @@ When the points $x_1$ and $x_2$ are paired following this method, we define the 
 We will see that we can expand the concept of persistence seen for real functions to simplicial complexes. To do this, we will use the \emph{filtrations} of a simplicial complex as sub-level sets and we will use the \emph{simplicial homology} as a homology theory.
 
 \begin{definition}
-Let $K$ be a simplicial complex and $f: K \to \mathbb{R}$ a function. It is said that, $f$ is \emph{monotonous} if $f(\sigma) \leq f(\tau) $ when $\sigma$ is a face of $\tau$.
+Let $K$ be a simplicial complex and $f: K \to \RR$ a function. It is said that, $f$ is \emph{monotonous} if $f(\sigma) \leq f(\tau) $ when $\sigma$ is a face of $\tau$.
 \end{definition}
 \begin{sloppypar}
 The monotony of $f$ guarantees that for every $a \in \mathbb {R}$, the sub-level set ${K(a) = f^{-1} (-\infty, a]} $ is a subcomplex of $K$. As an example, we can define a Vietoris Rips restricted to its 1-skeleton using a monotone function as follows.
 \end{sloppypar}
 
 \begin{proposition}[\cite{hofer_connectivity-optimized_2019}]
-Let $X$ be a subset of $\mathbb{R}^n$, $\abs{X}=b$, and $\mathcal{V}(X) = \{\sigma \in \mathcal{P}([b]) \mid 1 \leq \abs{\sigma} \leq 2\}$, and define
+Let $X$ be a subset of $\RR^n$, $\abs{X}=b$, and $\mathcal{V}(X) = \{\sigma \in \mathcal{P}([b]) \mid 1 \leq \abs{\sigma} \leq 2\}$, and define
 \[
-f_X: \mathcal{V}(X) \to \mathbb{R},\ f_X(\sigma) = \left\{\begin{matrix}
+f_X: \mathcal{V}(X) \to \RR,\ f_X(\sigma) = \left\{\begin{matrix}
 0 &  \text{ if } \sigma=\{i\}\\
 \frac{1}{2}d(x_i, x_j) & \text{ if } \sigma=\{i,j\}\\
 \end{matrix}\right. 
@@ -973,7 +971,7 @@ Where $\beta_p^{i, j-1}$ can be interpreted as the number of homology classes th
 
 
 \begin{definition}
-The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\mathbb{R}}^2$ of $f$ is the multiset of points $(a_i, a_j)$ with multiplicity $ \mu_p^{i, j}$ for all $0 \leq i < j \leq n$, union of diagonal points, $\Delta=\{(x, y) \in \overline{\mathbb{R }}^2 \mid y = x\}$, with infinite multiplicity.
+The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\RR}^2$ of $f$ is the multiset of points $(a_i, a_j)$ with multiplicity $ \mu_p^{i, j}$ for all $0 \leq i < j \leq n$, union of diagonal points, $\Delta=\{(x, y) \in \overline{\mathbb{R }}^2 \mid y = x\}$, with infinite multiplicity.
 \end{definition}
 
 \begin{figure}[!ht]
@@ -1129,7 +1127,7 @@ v_{i}^{(k)} =c_{i,i}^{(k)}\,.
 \end{gather*}
 
 \begin{remark}
-The cw-VR and cw-CR regularization techniques resemble what we can obtain by applying the KL divergence with some prior distribution of the latent space  $\mathcal{Z}=\mathbb{R}^m$ \footnote{For the topological densified distribution technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\varphi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, $Q(B)= P(\varphi^{-1}(B))$). However, even in image classification, we tend to vectorize our latent space before feeding it to an MLP-based classification head $\gamma$, so it is not a big assumption considering $\mathcal{Z}=\mathbb{R}^m$.}, as done in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, this bayesian setup can be more flexible than the two previously proposed since, in the selection of the prior, we can take into account more of the knowledge that we have of the latent space. Nevertheless, it would require us to have an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\varphi: \mathcal{X} \to \mathcal{Z}$ from $P$.
+The cw-VR and cw-CR regularization techniques resemble what we can obtain by applying the KL divergence with some prior distribution of the latent space  $\mathcal{Z}=\RR^m$\footnote{For the topological densified distribution technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\varphi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, $Q(B)= P(\varphi^{-1}(B))$). However, even in image classification, we tend to vectorize our latent space before feeding it to an MLP-based classification head $\gamma$, so it is not a big assumption considering $\mathcal{Z}=\RR^m$.}, as done in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, this bayesian setup can be more flexible than the two previously proposed since, in the selection of the prior, we can take into account more of the knowledge that we have of the latent space. Nevertheless, it would require us to have an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\varphi: \mathcal{X} \to \mathcal{Z}$ from $P$.
 \end{remark}
 
 As we can see, these statistical and probabilistic approaches have been successful, but they mainly rely  on empirical evidence to justify how they can directly reduce the generalization error \cite{hofer_densified_2021}. However, Hofer \etal \cite{hofer_densified_2021} proposes a new internal regularization method that has been mathematically proven that, under mild assumptions, we can ensure a reduction in the generalization error. To be precise, we define generalization error as follows:
@@ -1160,7 +1158,7 @@ then
 \]
 \end{lemma}
 
-In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view \footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq. \ref{eq:concentration} of Lemma \ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\varphi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\overline{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\overline{B_r}(z_i)$, $Q_k(\overline{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
+In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view\footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq. \ref{eq:concentration} of Lemma \ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\varphi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\overline{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\overline{B_r}(z_i)$, $Q_k(\overline{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
 
 Now that we know the benefits of obtaining mass concentration over some specific reference set $M \subseteq \mathcal{Z}$, we will see that we can provably enforce this property by applying some topological constraint on $Q_k$ in a process called \emph{topological densification}. To be precise, as we can see in Figure \ref{fig:densiScheme}, this topological constraint will give us a non-trivial lower bound on $Q_k(M_{l\cdot \epsilon})$ in terms of $Q_k(M)$, where $M_{l\cdot \epsilon}$ represents the $l\cdot \epsilon$-extension of $M$ for any $\epsilon>0$ and $l\in \mathbb{N}$, i.e.
 \[
@@ -1213,10 +1211,10 @@ Hence, the steps to enforce this topological regularisation are:
     \end{equation}
 \end{enumerate}
 
-Lastly, it can be proven that this cost function is differentiable if we refine $\tilde{\mathcal{L}}_\beta(B_i)$ using a new indicator function under the mild assumption that the pairwise distances of elements in $B_i$ are unique. This assumption will be fulfilled almost surely if we consider that $Q$ is non-atomic, i.e., $Q(\varphi(x) = z)=0$ for $x \in \mathcal{X}$, and $z \in \mathcal{Z}$. Furthermore, we will assume that $\mathcal{Z}=\mathbb{R}^m$ (i.e., we vectorized our latent space).
+Lastly, it can be proven that this cost function is differentiable if we refine $\tilde{\mathcal{L}}_\beta(B_i)$ using a new indicator function under the mild assumption that the pairwise distances of elements in $B_i$ are unique. This assumption will be fulfilled almost surely if we consider that $Q$ is non-atomic, i.e., $Q(\varphi(x) = z)=0$ for $x \in \mathcal{X}$, and $z \in \mathcal{Z}$. Furthermore, we will assume that $\mathcal{Z}=\RR^m$ (i.e., we vectorized our latent space).
 
 \begin{theorem}[Topological regularization differentiability  \cite{hofer_connectivity-optimized_2019}]
-Let $M \subseteq \mathbb{R}^m$, with $\abs{M}$. Hence, $\widetilde{\mathcal{L}}_\beta(B_i)$ as described on eq. \ref{eq:topo_loss} can be rewritten as
+Let $M \subseteq \RR^m$, with $\abs{M}$. Hence, $\widetilde{\mathcal{L}}_\beta(B_i)$ as described on eq. \ref{eq:topo_loss} can be rewritten as
 \[
 \widetilde{\mathcal{L}}_\beta(M) = \sum_{\{i,j\} \subset [b]} \abs{\beta - d(z_i, z_j)} \cdot \1{i}{j}(z_1, ..., z_b)\,,
 \]
@@ -1250,12 +1248,12 @@ In multiple areas in \glsxtrshort{ML}, there has been a great interest in obtain
 
 In this subsection, we will try to explain some of the most relevant methods used to try to answer these questions, as well as some of the possible benefits that can give us knowing this information about our networks.\\
 
-Therefore, we are in the setup where we want to compare the layer $L_1$ of network $f_A$ with the layer $L_2$ of the network $f_B$. Notice that the dimensionality of the two networks can be completely different. For simplicity, we will suppose w.l.o.g that we can vectorize the output of both layers into $\mathbb{R}^{d_1}$ and $\mathbb{R}^{d_2}$, respectively, and that $d_1 \leq d_2$.
+Therefore, we are in the setup where we want to compare the layer $L_1$ of network $f_A$ with the layer $L_2$ of the network $f_B$. Notice that the dimensionality of the two networks can be completely different. For simplicity, we will suppose w.l.o.g that we can vectorize the output of both layers into $\RR^{d_1}$ and $\RR^{d_2}$, respectively, and that $d_1 \leq d_2$.
 
-A common practice when comparing layers of different networks is to compare the activations of the neurons for a test batch of $n$ samples. Hence, if we let $X\in \mathbb{R}^{d_1 \times n}, Y \in \mathbb{R}^{d_2 \times n}$ be the matrices containing the activations of the two layers for a sample set of $n$ points, then we can define the following similarity metrics:
+A common practice when comparing layers of different networks is to compare the activations of the neurons for a test batch of $n$ samples. Hence, if we let $X\in \RR^{d_1 \times n}, Y \in \RR^{d_2 \times n}$ be the matrices containing the activations of the two layers for a sample set of $n$ points, then we can define the following similarity metrics:
 
 \begin{itemize}
-    \item \textbf{CCA:} a statistical way of comparing the activation layers is by using canonical correlation analysis (CCA). This method tries to find the best low-dimensional linear projections of $X$ and $Y$, such as we maximize its correlation, i.e., we wish to find the vectors $\mathbf{w} \in \mathbb{R}^{d_1}$, $\mathbf{s} \in \mathbb{R}^{d_2}$ such as we maximize
+    \item \textbf{CCA:} a statistical way of comparing the activation layers is by using canonical correlation analysis (CCA). This method tries to find the best low-dimensional linear projections of $X$ and $Y$, such as we maximize its correlation, i.e., we wish to find the vectors $\mathbf{w} \in \RR^{d_1}$, $\mathbf{s} \in \RR^{d_2}$ such as we maximize
     \[
     \rho = \text{corr}(\mathbf{w}^T X, \mathbf{s}^T Y ) = \frac{\langle \mathbf{w}^T X, \mathbf{s}^T Y \rangle}{\norm{\mathbf{w}^T X} \cdot \norm{\mathbf{s}^T Y}}\,.
     \]
@@ -1290,7 +1288,7 @@ A common practice when comparing layers of different networks is to compare the 
         where $\mathbf{h}_i = (\mathbf{u}^{(i)})^T\Sigma_{X, X}^{-1/2}X $ and $\mathbf{x}_j$ is the $j^{\text{th}}$ row of $X$. These weights, $\alpha_i$, are based on the hypothesis that CCA vectors that account for a larger proportion of the original outputs are likely to be more important to the underlying representation. \cite{morcos_insights_2018}.
     \end{itemize}
 
-    \item \textbf{CKA}: this method proposes that instead of comparing the covariance of the (projected) activations directly, as done in CCA, we could first compute the similarity matrices of the activations in each representation separately and then compare this similarity matrices \cite{kornblith_similarity_2019}. Hence, if we use the standard inner product, then our similarity metric between the layers $L_1$ and $L_2$ will be $\langle \text{vec}(X^T X), \text{vec}(Y^T Y) \rangle$. Furthermore, we will see that we can generalize this metric to any inner product in a reproducing kernel Hilbert Space (RKHS). For that, we will first review the following property of the Frobenious norm: let $A \in \mathbb{R}^{n \times m}$, then
+    \item \textbf{CKA}: this method proposes that instead of comparing the covariance of the (projected) activations directly, as done in CCA, we could first compute the similarity matrices of the activations in each representation separately and then compare this similarity matrices \cite{kornblith_similarity_2019}. Hence, if we use the standard inner product, then our similarity metric between the layers $L_1$ and $L_2$ will be $\langle \text{vec}(X^T X), \text{vec}(Y^T Y) \rangle$. Furthermore, we will see that we can generalize this metric to any inner product in a reproducing kernel Hilbert Space (RKHS). For that, we will first review the following property of the Frobenious norm: let $A \in \RR^{n \times m}$, then
     \[
     \norm{A}_F = \sqrt{\sum_{i=1}^n\sum_{j=1}^m A_{ij}^2} = \sqrt{\text{tr}(A^TA)}\,.
     \]
@@ -1329,7 +1327,7 @@ A common practice when comparing layers of different networks is to compare the 
 \end{itemize}
 
 
-By using these similarity metrics, we can study which are the cases where our networks tend to be more similar to one another. Some of the most relevant properties are that wider networks converge, networks with low generalization error converge to more similar solutions when trained with the same dataset \cite{morcos_insights_2018}, and that early layers, but not later layers, learn similar representations on different datasets \cite{barannikov_representation_2022}. Furthermore, it has been seen that if we have networks with a large number of layers, then even when training the same network with the same dataset but with different weight initialization, we can only ensure to preserve substantial (functional) similarities in the first and last layers of the network \cite{wang_towards_2018}.
+By using these similarity metrics, we can study which are the cases where our networks tend to be more similar to one another. Some of the most relevant properties are that wider networks, as well as networks with low generalization error, converge to more similar solutions when trained with the same dataset \cite{morcos_insights_2018}, and that early layers, but not later layers, learn similar representations on different datasets \cite{barannikov_representation_2022}. Furthermore, it has been seen that if we have networks with a large number of layers, then even when training the same network with the same dataset but with different weight initialization, we can only ensure to preserve substantial (functional) similarities in the first and last layers of the network \cite{wang_towards_2018}.
 
 
 \subsubsection*{Model stitching \& Relative representation}
@@ -1350,19 +1348,18 @@ Based on the fruitful applications that model stitching can give when we use it 
 
 However, all the previously mentioned methods have an additional overhead from training new components in order to increase the compatibility of the representations. Hence, we will present a technique called \emph{relative latent representations} which will give us the ability to do \emph{zero-shot} model stitching, i.e., we will add a transformation on the latent spaces that will increase the compatibility, but we will not require to train additional components. 
 
- In order to construct this transformation, we will assume that it is easier to obtain a compatible representation if we have higher representation similarity between the latent representations of the stitched layers \footnote{There is evidence of cases where having high functional similarity does not imply high functional similarity \cite{csiszarik_similarity_2021}, i.e., we know that having high functional similarity it is not a necessary condition for high compatibility.}. Furthermore, there is evidence that some stochastic factors of our training, such as weight initialization, some hyperparameters, and data shuffling, will (most likely) result in \emph{$\epsilon$-similar representations} \cite{moschella_relative_2022} \footnote{The evidence is based on a few experimental results, so we can consider that this method takes this result almost as an additional assumption.}. Two representations $X,Y \subseteq \mathbb{R}^n$ are $\epsilon$-similar if there exist a bijection $T:X \to Y$ st exists $\alpha \in \mathbb{R}^*$ for which $d(T(x_1), T(x_2)) = \alpha \cdot d(x_1,x_2) + \epsilon$ for all $x_1,x_2 \in X$. Hence, these stochastic transformations will result in a relaxed version of an isometry up to a certain scale $\alpha$.\\
+In order to construct this transformation, we will assume that it is easier to obtain a compatible representation if we have higher representation similarity between the latent representations of the stitched layers\footnote{There is evidence of cases where having high functional similarity does not imply high functional similarity \cite{csiszarik_similarity_2021}, i.e., we know that having high functional similarity it is not a necessary condition for high compatibility.}. Furthermore, there is evidence that some stochastic factors of our training, such as weight initialization, some hyperparameters, and data shuffling, will (most likely) result in \emph{$\epsilon$-similar representations} \cite{moschella_relative_2022}\footnote{The evidence is based on a few experimental results, so we can consider that this method takes this result almost as an additional assumption.}. Two representations $X,Y \subseteq \RR^n$ are $\epsilon$-similar if there exist a bijection $T:X \to Y$ st exists $\alpha \in \RR^*$ for which $\abs{d(T(x_1), T(x_2)) - \alpha \cdot d(x_1,x_2)} \leq \epsilon$ for all $x_1,x_2 \in X$. Hence, these stochastic transformations will result in a relaxed version of an isometry up to a certain scale $\alpha$.\\
 
- Therefore we will build a transformation $T_{rel}$ of our \emph{(absolute) latent space representations} $\varphi_\bullet(x)$ so that our new encodings are invariant to $\epsilon$-similarities. This way, we obtain higher representational similarity since we remove some known differences, as well as functional similarity because our task maps $\gamma_\bullet$.
+Therefore we will build a transformation $T_{rel}$ of our \emph{(absolute) latent space representations} $\varphi_\bullet(x)$ so that our new encodings are invariant to $\epsilon$-similarities. This way, we obtain higher representational as well as functional similarity.
 
- Hence, let $\mathcal{X}$ be our input space, and $\mathcal{A}= \{a_1, ..., a_k\}$ a subset of $\mathcal{X}$ called set of \emph{anchors}. Then for any similarity function $sim$ we define the relative representation of a point $x\in S$  w.r.t. $\mathcal{A}$ as
+Hence, let $\mathcal{X}$ be our input space, and $\mathcal{A}= \{a_1, ..., a_k\}$ a subset of $\mathcal{X}$ called set of \emph{anchors}. Then for any similarity function $sim$ we define the relative representation of a point $x\in S$  w.r.t. $\mathcal{A}$ as
 
- \begin{definition}
-Let $\varphi:\mathcal{X} \to \mathcal{Z}$ be our encoder. Then, the \emph{relative representation} of $x \in 
- \mathcal{X}$ w.r.t. $\mathcal{A}$ is
+\begin{definition}
+Let $\varphi:\mathcal{X} \to \mathcal{Z}$ be our encoder. Then, the \emph{relative representation} of $x \in \mathcal{X}$ w.r.t. $\mathcal{A}$ is
 \[
-r = (\text{sim}(\varphi(x), \varphi(a_1)), \text{sim}(\varphi(x), \varphi(a_2)), ..., \text{sim}(\varphi(x), \varphi(a_k))) \in \mathbb{R}^k\,.
+r = (\text{sim}(\varphi(x), \varphi(a_1)), \text{sim}(\varphi(x), \varphi(a_2)), ..., \text{sim}(\varphi(x), \varphi(a_k))) \in \RR^k\,.
 \]
- \end{definition}
+\end{definition}
 
 
 \begin{remark}
@@ -1379,8 +1376,8 @@ As we can see in Figure \ref{fig:relativeSche}, this construction resembles the 
 Hence, if we use the cosine similarity, then this new latent space representation will be invariant to $0$-similarity transformations. Furthermore, it has been seen that not only can this representation increase the compatibility of the network under the aforementioned stochastic factor, but also it will increase the compatibility in the following two cases:
 
 \begin{itemize}
-    \item \textbf{Cross-domain model stitching:} we stitch two networks with the same architecture trained over two distinct datasets of the same semantic domain.
-    \item \textbf{Cross-architecture model stitching:} we stitch two networks with the same architecture trained over the same dataset.
+    \item \textbf{Cross-domain model stitching:} We stitch two networks with the same architecture trained over two distinct datasets of the same semantic domain.
+    \item \textbf{Cross-architecture model stitching:} We stitch two networks with the same architecture trained over the same dataset.
 \end{itemize}
 
 
@@ -1404,7 +1401,7 @@ Hence, if we use the cosine similarity, then this new latent space representatio
 
 Lastly, we can see in Figure \ref{fig:crossDomainScheme} the standard training setup used in \cite{moschella_relative_2022} for the case of cross-domain zero-shot model stitching. Here, we will use two pretrained encoders $\varphi_A, \varphi_B$, and train the networks $\tilde{f}_{A}=\gamma_A \circ T_{rel}(\mathcal{A})  \circ \varphi_A$ and $\tilde{f}_{B}=\gamma_B \circ T_{rel}(\Gamma(\mathcal{A}))  \circ \varphi_B$ with both encoder weights frozen, using their corresponding domain-specific dataset. Note that in this case, where we have two distinct datasets, we will fix the anchors in one of the (in this case, model $A$) and use a partial correspondence mapping $\Gamma: \mathcal{P}(\mathcal{X}_A) \to \mathcal{P}(\mathcal{X}_B)$ to obtain the corresponding \emph{parallel anchors $\Gamma(\mathcal{A})$}.
 
-A use case of this cross-domain model stitching procedure could be a situation where you have several devices, each one in a specific language. Hence, with only one trained classification head (e.g., the one trained on the English corpus), you could have good performance when stitching this classification head with the language-specific encoders. This can be really helpful from a computational perspective in scenarios where you would need to have a frequent updates of your models since you would only need to do it for one of them.
+A use case of this cross-domain model stitching procedure could be a situation where you have several devices, each one in a specific language. Hence, with only one trained classification head (e.g., the one trained on the English corpus), you could have good performance when stitching this classification head with the language-specific encoders. This can be really helpful from a computational perspective in scenarios where you would need to have frequent updates of your models since you would only need to do it for one of them.
 
 
 
@@ -1413,7 +1410,7 @@ In this chapter, we have first seen a brief introduction to Topological Data Ana
 
 Secondly, we have seen that recently there has been an increased interest in applying TDA in Machine Learning, a new field that we can call Topological Machine Learning. One of the many ways that we can use our topological tools is to construct regularizers so that the network will obtain certain desired properties. Specifically, in this project, we will focus our attention on a topological regularization that will produce an increase in generalization capabilities by imposing a property called topological densification over our push-forward class-specific distributions \cite{hofer_densified_2021}.\\
 
-Lastly, we have seen different techniques in order to assess the similarity between two layers of two (possibly distinct) networks. Furthermore, we observed that if our networks have high functional similarity, then we can do model stitching without a severe performance drop. Hence, there are several techniques in order to increase this type of similarity and so making our latent representation more compatible. In this project, we will focus on one called relative latent representation, which lets us do zero-shot stitching, i.e., it does not require us to train any additional parameters in order to either make our networks more compatible or to stitch them together \cite{moschella_relative_2022}.  
+Lastly, we have seen different techniques in order to assess the similarity between two layers of two (possibly distinct) networks. Furthermore, we observed that if our networks have high functional similarity, then we can do model stitching without a severe performance drop. Hence, there are several techniques in order to increase this type of similarity, and so making our latent representation more compatible. In this project, we will focus on one called relative latent representation, which lets us do zero-shot stitching, i.e., it does not require us to train any additional parameters in order to either make our networks more compatible or to stitch them together \cite{moschella_relative_2022}.  
 
 
 

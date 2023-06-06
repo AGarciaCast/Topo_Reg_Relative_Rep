@@ -70,9 +70,9 @@
 
 
 
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}%
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
 
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
 \makeatletter
 
 \newtheorem*{rep@theorem}{\rep@title}
@@ -102,6 +102,10 @@
 \newtheorem*{remark}{Remark}
 \newtheorem*{note_math}{Note}
 
+\newcommand\op{\mathop{\circ}\nolimits}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Anch}{\mathbb{A}}
+\newcommand{\BB}{\mathbb{B}}
 \newcommand{\bigO}{\mathcal{O}}
 \newcommand{\cupdot}{\mathbin{\dot\cup}}
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -140,3 +144,94 @@
 %\renewcommand{\phi}{\varphi}
 \renewcommand{\epsilon}{\varepsilon}
 \newcommand{\stitch}{\mathbin{;}}
+
+
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+
+\lstset{ frame=Ltb,
+     framerule=0pt,
+     aboveskip=0.5cm,
+     framextopmargin=3pt,
+     framexbottommargin=3pt,
+     framexleftmargin=0.1cm,
+     framesep=0pt,
+     rulesep=.4pt,
+     backgroundcolor=\color{gray97},
+     rulesepcolor=\color{black},
+     %
+     stringstyle=\ttfamily,
+     showstringspaces = false,
+     basicstyle=\scriptsize\ttfamily,
+     commentstyle=\color{gray45},
+     keywordstyle=\bfseries,
+     %
+     numbers=left,
+     numbersep=6pt,
+     numberstyle=\tiny,
+     numberfirstline = false,
+     breaklines=true,
+     %
+     extendedchars=true,
+     literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {ã}{{\~a}}1 {ẽ}{{\~e}}1 {ĩ}{{\~i}}1 {õ}{{\~o}}1 {ũ}{{\~u}}1
+  {Ã}{{\~A}}1 {Ẽ}{{\~E}}1 {Ĩ}{{\~I}}1 {Õ}{{\~O}}1 {Ũ}{{\~U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1 {¡}{{!`}}1 
+   }
+\lstnewenvironment{listing}[1][]
+   {\lstset{#1}\pagebreak[0]}{\pagebreak[0]}
+
+\lstdefinestyle{consola}{
+   language=bash,
+   stringstyle=\mdseries\rmfamily,
+   keywordstyle=\bfseries\rmfamily,
+   basicstyle=\scriptsize\bf\ttfamily,
+   stepnumber=1,
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   showstringspaces=false,
+   showspaces=false,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b,
+   rangeprefix=-------------,
+   rangesuffix=-------------,
+   includerangemarker=false,
+   columns=flexible,
+   firstnumber=0
+}
+
+
+\lstdefinestyle{CodigoC}
+   {basicstyle=\scriptsize,
+	frame=single,
+	language=C,
+	numbers=left
+   }
+   
+\lstdefinestyle{CodigoC++}
+   {basicstyle=\small,
+	frame=single,
+	backgroundcolor=\color{gray75},
+	language=C++,
+	numbers=left
+   }
+
+\lstdefinestyle{Python}
+   {language=Python,    
+   }

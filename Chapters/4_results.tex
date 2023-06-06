@@ -255,4 +255,36 @@ In this chapter, we present the results and discuss them.
 \end{table}
 
 
+
+
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{clcccccc}
+\toprule
+   &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
+ \cmidrule(lr){3-5} 
+ \cmidrule(lr){6-8} 
+ Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
+\midrule
+\multirow{2}{*}{en} & en &  $60.20 \pm 0.88$ &   $59.69 \pm 0.37$ &    $46.33 \pm 0.47$ &  $60.90 \pm 1.05$ &  $60.98 \pm 0.71$ &  $44.75 \pm 0.24$ \\
+   & fr &  $29.48 \pm 1.73$ &   $18.15 \pm 1.15$ &  $120.68 \pm 17.25$ &  $49.50 \pm 0.34$ &  $50.05 \pm 0.40$ &  $57.57 \pm 0.83$ \\
+&\\
+\multirow{2}{*}{fr} & en &  $40.41 \pm 4.68$ &  $29.12 \pm 10.77$ &    $83.31 \pm 1.06$ &  $59.71 \pm 1.54$ &  $59.51 \pm 1.43$ &  $45.72 \pm 0.99$ \\
+   & fr &  $50.78 \pm 0.40$ &   $51.56 \pm 0.40$ &    $56.71 \pm 0.13$ &  $49.95 \pm 0.44$ &  $50.53 \pm 0.50$ &  $57.56 \pm 0.03$ \\
+\bottomrule
+\end{tabular}
+}
+\caption{Fine grained: topo-mix-paired}
+\label{tab:multilingual-topo-mix_paired-fine-grained}
+\end{table}
+
+
+
+
+
+
+
+
+
 \end{document}
