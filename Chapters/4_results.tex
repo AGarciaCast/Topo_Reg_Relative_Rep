@@ -7,9 +7,43 @@
 
 %\engExpl{Sometimes this is split into two chapters.\\Keep in mind: How you are going to evaluate what you have done? What are your metrics?\\Analysis of your data and proposed solution\\Does this meet the goals which you had when you started?}
 
-In this chapter, we present the results and discuss them.
+In this chapter, we will present the project's main results and discuss them. The code, as well as additional results, can be found in the following GitHub repository: \url{https://github.com/AGarciaCast/Topo_Reg_Relative_Rep}
+\section{Multilingual model stitching}
 
-\section{Baseline finetuning}
+\subsection{Full finetuning analysis}
+
+As discussed in Section \ref{sec:topo_meth}, we have made some methodological changes from the original paper implementation of the following experiments. As a reference, the results presented in the original relative transformation paper are shown in Table \ref{tab:multilingual-finetune-og}.
+
+\begin{table}[h]
+\centering
+\resizebox{0.7\textwidth}{!}{
+\begin{tabular}{clcccc}
+\toprule
+   &    & \multicolumn{2}{c}{Absolute} & \multicolumn{2}{c}{Relative} \\
+ \cmidrule(lr){3-4} 
+ \cmidrule(lr){5-6} 
+ Decoder & Encoder & $\text{FScore} \times 100$ & MAE & $\text{FScore} \times 100$ & MAE \\
+\midrule
+\multirow{3}{*}{en} & en &  $65.46 \pm 2.89$ &  $0.38 \pm 0.02$ &  $61.18 \pm 1.92$ &  $0.44 \pm 0.02$ \\
+   & es &  $22.70 \pm 0.41$ &  $1.39 \pm 0.03$ &  $51.67 \pm 1.20$ &  $0.62 \pm 0.01$ \\
+   & fr &  $30.75 \pm 0.67$ &  $1.19 \pm 0.02$ &  $49.18 \pm 0.83$ &  $0.69 \pm 0.02$ \\
+&\\
+\multirow{3}{*}{es} & en &  $21.24 \pm 0.81$ &  $1.43 \pm 0.07$ &  $51.02 \pm 2.54$ &  $0.68 \pm 0.05$ \\
+   & es &  $61.29 \pm 3.04$ &  $0.43 \pm 0.02$ &  $57.89 \pm 3.80$ &  $0.48 \pm 0.03$ \\
+   & fr &  $29.02 \pm 0.85$ &  $1.26 \pm 0.05$ &  $48.40 \pm 1.02$ &  $0.71 \pm 0.02$ \\
+&\\
+\multirow{3}{*}{fr} & en &  $27.39 \pm 1.22$ &  $1.23 \pm 0.06$ &  $45.55 \pm 3.55$ &  $0.76 \pm 0.09$ \\
+   & es &  $29.47 \pm 3.68$ &  $1.18 \pm 0.07$ &  $40.29 \pm 1.72$ &  $0.90 \pm 0.04$ \\
+   & fr &  $56.40 \pm 1.89$ &  $0.51 \pm 0.01$ &  $53.58 \pm 0.70$ &  $0.57 \pm 0.01$ \\
+\bottomrule
+\end{tabular}
+}
+\caption{Summary of the original results presented in \cite{moschella_relative_2022} (over five random seeds)}
+\label{tab:multilingual-finetune-og}
+\end{table}
+
+As shown in Table \ref{tab:multilingual-finetune-fine-grained}, we observe slightly worst results when replicating the original training setup while incorporating our proposed methodological changes. However, as previously discussed, we will proceed with this new setup as it represents a more common methodology. Additionally, some of the introduced changes, such as employing gradient accumulation with smaller batch sizes, were necessary to train the models on our V100 GPU successfully. It would, however, be interesting to conduct further analysis to understand why the inclusion of post $L^2$ normalization on the relative transformation and the utilization of the ``non-standard'' classification head leads to improved performance.
+
 \begin{table}[ht!]
 \centering
 \resizebox{\textwidth}{!}{
@@ -18,7 +52,7 @@ In this chapter, we present the results and discuss them.
    &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
  \cmidrule(lr){3-5} 
  \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
+ Decoder & Encoder & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ \\
 \midrule
 \multirow{3}{*}{en} & en &  $55.67 \pm 0.58$ &  $54.96 \pm 1.86$ &    $53.80 \pm 2.55$ &  $55.06 \pm 0.82$ &  $54.33 \pm 1.13$ &   $55.69 \pm 2.33$ \\
    & es &  $18.80 \pm 1.61$ &   $8.14 \pm 2.06$ &  $191.49 \pm 12.12$ &  $44.59 \pm 0.16$ &  $42.44 \pm 0.59$ &   $79.93 \pm 0.27$ \\
@@ -34,9 +68,16 @@ In this chapter, we present the results and discuss them.
 \bottomrule
 \end{tabular}
 }
-\caption{Fine-grained: finetune}
+\caption{Fine-grained: finetune (over two random seeds)}
 \label{tab:multilingual-finetune-fine-grained}
 \end{table}
+
+
+
+However, as depicted in Table \ref{tab:multilingual-full-fine-grained}, fully finetuning the model (i.e., without freezing the encoder) narrows the gap between the new methodology and the results reported in the original paper for the absolute case.
+
+As expected, when fully finetuning the networks in the absolute case (without applying relative transformations), we observe a decline in stitching performance. This outcome arises because, without additional constraints, the encoders seek latent representations that are advantageous for the specific dataset. Consequently, we deviate from the pre-trained configuration, which has been demonstrated to exhibit a high degree of similarity among BERT models \cite{roeder_linear_2020}.\\
+
 
 \begin{table}[ht!]
 \centering
@@ -46,7 +87,7 @@ In this chapter, we present the results and discuss them.
    &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
  \cmidrule(lr){3-5} 
  \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
+ Decoder & Encoder & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ \\
 \midrule
 \multirow{3}{*}{en} & en &   $65.33 \pm 0.49$ &   $65.22 \pm 0.10$ &    $39.49 \pm 0.33$ &  $64.64 \pm 0.42$ &  $64.67 \pm 0.04$ &  $39.51 \pm 0.52$ \\
    & es &  $11.64 \pm 10.30$ &    $8.65 \pm 6.27$ &  $224.77 \pm 37.46$ &  $59.15 \pm 0.27$ &  $58.87 \pm 0.32$ &  $45.68 \pm 0.25$ \\
@@ -62,15 +103,23 @@ In this chapter, we present the results and discuss them.
 \bottomrule
 \end{tabular}
 }
-\caption{Fine-grained: full}
+\caption{Fine-grained: full (over two random seeds)}
 \label{tab:multilingual-full-fine-grained}
 \end{table}
 
+Conversely, we observe an improvement in performance in the relative case compared to both the original paper and our new baseline. In the non-stitching scenario, this performance enhancement occurs as the encoder can discover a better representation that, after the relative transformation, will prove more beneficial for the classification task.\\
 
-\newpage
+Remarkably, we find that fully fine-tuning the network yields better stitching performance in the relative case. We speculate that the inclusion of relative transformations constructed using parallel anchors acts as a form of implicit regularization, enhancing the compatibility of the pre-relative latent space. As discussed in Section \ref{sec:repLearn}, specific auxiliary tasks, such as predicting transformations in the input (self-supervised) and discriminating common classes \cite{gygli_towards_2020}, have been identified to increase the compatibility of latent representations. However, in this case, an additional auxiliary classification head is not required to apply this type of regularization.
 
-\section{Topological regularization}
-\subsection{Testing setup}
+\begin{note_math}
+The same conclusions were obtained for the coarse-grained dataset (see Tables \ref{tab:multilingual-finetune-coarse-grained}, \ref{tab:multilingual-full-coarse-grained}).
+\end{note_math}
+
+\subsection{Topological regularization}
+\subsubsection*{Testing new setup}
+
+As discussed in Section \ref{sec:topo_meth}, we have once again made some methodological changes for this part of the project. One of the primary reasons for utilizing the freezing and unfreezing of the network with the new dataloader is to address a crucial issue: without this ``fix,'' we are unable to train in the relative case. In fact, when this fix is not applied, we observe a significant performance drop, obtaining approximately $7.29$ FScore $\times 100$ in English and $18.49$ in French.\\
+
 
 \begin{table}[ht!]
 \centering
@@ -80,7 +129,7 @@ In this chapter, we present the results and discuss them.
    &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
  \cmidrule(lr){3-5} 
  \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
+ Decoder & Encoder & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ \\
 \midrule
 \multirow{2}{*}{en} & en &  $60.36 \pm 0.23$ &  $60.33 \pm 0.10$ &   $46.32 \pm 0.45$ &  $60.78 \pm 0.34$ &  $60.71 \pm 0.45$ &  $45.06 \pm 0.00$ \\
    & fr &  $35.63 \pm 7.25$ &  $31.18 \pm 9.77$ &   $98.44 \pm 4.36$ &  $52.05 \pm 1.12$ &  $52.03 \pm 0.23$ &  $57.03 \pm 0.33$ \\
@@ -90,10 +139,13 @@ In this chapter, we present the results and discuss them.
 \bottomrule
 \end{tabular}
 }
-\caption{Linear vanilla dataloder}
+\caption{Linear vanilla dataloader (over two random seeds)}
 \label{tab:multilingual-linear-vanilla}
 \end{table}
 
+One might argue that a simpler solution for using biased dataloaders in the relative case would be to employ the standard relative transformation instead of the new robust one. This approach would eliminate the need for debiasing the BatchNorm mean and variance estimates. However, we find that training in the relative case with a vanilla dataloader using the standard relative transformation leads to worse performance, resulting in approximately $38.52$ FScore $\times 100$ in English and $30.87$ in French. For reference, Table \ref{tab:multilingual-linear-vanilla} presents the performance of training with the same setup described in the methodology but using a standard dataloader. It is important to note that this dataloader cannot be used when applying Hofer's topological regularization.\\
+
+Therefore, we now have both theoretical and empirical justifications for adopting this new relative transformation. We believe that the reasons behind the observed performance improvement with this change lie in the theoretical aspects we discussed. Some of the similarities in representations may originate from the (intertwiner group of the) activation functions, or it could be that BatchNorm provides additional robustness to training by mitigating potential issues like vanishing gradients.
 
 \begin{table}[ht!]
 \centering
@@ -103,30 +155,7 @@ In this chapter, we present the results and discuss them.
    &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
  \cmidrule(lr){3-5} 
  \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
-\midrule
-\multirow{2}{*}{en} & en &  $61.01 \pm 0.16$ &  $60.68 \pm 0.36$ &   $46.34 \pm 0.14$ &  $61.19 \pm 0.58$ &  $61.14 \pm 0.68$ &  $45.08 \pm 0.42$ \\
-   & fr &  $35.17 \pm 6.07$ &  $26.32 \pm 6.43$ &   $92.28 \pm 4.38$ &  $52.63 \pm 0.04$ &  $52.14 \pm 1.03$ &  $56.55 \pm 1.97$ \\
-&\\
-\multirow{2}{*}{fr} & en &  $29.16 \pm 2.57$ &  $27.71 \pm 3.72$ &  $112.68 \pm 8.97$ &  $60.35 \pm 0.55$ &  $60.40 \pm 0.20$ &  $45.67 \pm 0.44$ \\
-   & fr &  $52.63 \pm 0.35$ &  $52.29 \pm 0.88$ &   $56.60 \pm 0.40$ &  $52.72 \pm 0.11$ &  $52.90 \pm 0.10$ &  $55.88 \pm 0.99$ \\
-\bottomrule
-\end{tabular}
-}
-\caption{Linear vanilla dataloader (Early stopping)}
-\label{tab:multilingual-linear-vanilla-stop}
-\end{table}
-
-
-\begin{table}[ht!]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{clcccccc}
-\toprule
-   &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
- \cmidrule(lr){3-5} 
- \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
+ Decoder & Encoder & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ \\
 \midrule
 \multirow{2}{*}{en} & en &  $59.08 \pm 0.20$ &  $59.08 \pm 0.85$ &   $48.47 \pm 0.64$ &  $61.30 \pm 0.28$ &  $60.84 \pm 0.77$ &  $44.87 \pm 0.92$ \\
    & fr &  $35.06 \pm 4.36$ &  $31.39 \pm 4.62$ &  $101.75 \pm 4.26$ &  $48.48 \pm 0.08$ &  $48.74 \pm 0.20$ &  $59.26 \pm 0.37$ \\
@@ -136,10 +165,79 @@ In this chapter, we present the results and discuss them.
 \bottomrule
 \end{tabular}
 }
-\caption{Linear biased dataloader}
+\caption{Linear biased dataloader (over two random seeds)}
 \label{tab:multilingual-linear-biased}
 \end{table}
 
+Furthermore, Table \ref{tab:multilingual-linear-biased} demonstrates that our new baseline, against which we will compare the topological regularization, does not exhibit a significant change in performance compared to fully fine-tuning the network using a standard dataloader (see Table \ref{tab:multilingual-linear-vanilla}).\\
+
+Lastly, it is intriguing that, in this case, the relative transformation tends to yield higher performance compared to the absolute case. One hypothesis we have is that the post-relative space may be more linearly separable. However, we currently lack supporting evidence for this claim, and we believe further research could be conducted to analyze the geometric properties of this new latent space.
+
+
+\subsubsection*{Results}
+
+
+In Section \ref{sec:topo_meth}, we explored four different approaches for applying Hofer's topological regularization. Initially, we attempted the pre-relative case but could not achieve performance on par with the baseline presented in Table \ref{tab:multilingual-linear-biased}. One possible reason is that there are instances where the relative transformation fails to preserve the topology. An example of this can be observed in Figure \ref{fig:preDist}, where we have three clusters, two of which possess colinear centroids, resulting in only two clusters after the transformation.
+
+
+\begin{figure}[ht!]
+     \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/rs/clusters_1.png}
+        \caption{Three clusters w/ an anchor in each centroid}
+         \label{fig:rel_ex_1}
+     \end{subfigure}\hfill
+      \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/rs/clusters_2.png}
+        \caption{$L^2$ normalization}
+         \label{fig:rel_ex_2}
+     \end{subfigure}
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/rs/clusters_3.png}
+        \caption{Cosine similarity}
+         \label{fig:rel_ex_3}
+     \end{subfigure}
+    \caption{Non-cluster preserving relative transformation example}
+    \label{fig:rel_ex_bad}
+\end{figure}
+
+
+Therefore, we concluded that applying Hofer's topological regularization to the post-relative space is crucial. However, despite an extensive hyperparameter search, we could still not improve performance. Upon closer examination, we observed that the death times distributions of the post-relative space exhibit a significantly smaller mean than the pre-relative space (see Figure \ref{fig:distPost}). This implies that when we exclusively apply this loss to the post-relative case, the network discovers an anchor configuration that yields smaller clusters in the post-relative space while preserving the spread of clusters in the pre-relative space. We believe this configuration can lead to information bottlenecks, as compressing the clusters with this nonlinear transformation might cause a loss of expressiveness in the latent space.\\
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/en_relative_post_3_seed0.png} 
+    \caption{Death times distribution when we apply pre-relative Hofer's topological regularization on the English dataset with $\beta=3$.}
+    \label{fig:distPost}
+\end{figure}
+
+After further analysis, we discovered that when no regularization is applied, the death times distributions of the network tend to overlap (see Figure \ref{fig:distVanilla}). This insight led us to favor overlapped death times distributions to preserve $H_0$ homology through the relative transformation. Additionally, this approach addresses the issues we encountered when applying the regularization just before or after the relative transformation.\\
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/en_fr_relative_seed1.png} 
+    \caption{Death times distribution without Hofer's topological regularization on the English dataset.}
+    \label{fig:distVanilla}
+\end{figure}
+
+Following an exhaustive hyperparameter tuning process, we identified that the optimal setup for the absolute case is $\beta=7$ and $\lambda=0.1$ for both the English and French datasets. In the relative case, the best results were obtained by using a linear combination of pre-relative ($0.1$ weight) and post-relative ($0.9$ weight) regularization, with $\beta=3$ and $\lambda=0.02$ for the English case and $\beta=4$ and $\lambda=0.02$ for the French case\footnote{The complete logs of the hyperparameter tuning results and their corresponding death times distributions can be found in the Thesis' GitHub repository.}.
+
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/en_fr_relative_both_both_both_3_4_seed1.png} 
+    \caption{Death times distribution when we apply both pre and post-relative Hofer's topological regularization with $\beta=3$ on the English dataset and $\beta=4$ in the French dataset.}
+    \label{fig:distPost}
+\end{figure}
+
+
+Figure \ref{fig:distBoth} demonstrates that we successfully encouraged overlapping death times distributions and reduced the maximum death times means. However, it is worth noting that moving the post-relative max distribution proved more challenging. This difficulty arises from the fact that the geometry of the post-relative transformation is influenced by the overall pre-relative latent space and, more significantly, by the images of the anchors. As discussed in Section \ref{sec:topo_meth}, we compute the anchors' images periodically and do not allow gradients to backpropagate through the anchors\footnote{We do not allow gradients to backprop through the anchors since it would require to virtual increase the sub-batch size by 768.}. Therefore, effecting changes to the post-relative representation is more complex, as it involves adjusting the position of the anchors' images by analyzing the relative transformation of the batch.\\
+
+As shown in Table \ref{tab:multilingual-linear-topo-unpaired}, employing this topological regularization setup yields better performance in the non-stitching case compared to the new baseline in both the absolute and relative modalities. Furthermore, it outperforms the vanilla dataloader for the non-stitching English model in the relative modality and the French model in the absolute modality. Thus, it is reasonable to assume that with a GPU having much VRAM to accommodate the entire biased batch (without employing gradient accumulation and the debiasing trick), consistently superior results could be achieved compared to the vanilla baseline.\\
+
 \begin{table}[ht!]
 \centering
 \resizebox{\textwidth}{!}{
@@ -148,46 +246,21 @@ In this chapter, we present the results and discuss them.
    &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
  \cmidrule(lr){3-5} 
  \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
+ Decoder & Encoder & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ \\
 \midrule
-\multirow{2}{*}{en} & en &  $59.78 \pm 0.45$ &  $59.04 \pm 0.04$ &    $48.31 \pm 0.04$ &  $61.60 \pm 0.57$ &  $61.43 \pm 0.52$ &  $44.02 \pm 0.25$ \\
-   & fr &  $31.03 \pm 0.83$ &  $22.50 \pm 0.07$ &  $109.80 \pm 14.93$ &  $51.34 \pm 0.23$ &  $51.62 \pm 0.51$ &  $56.32 \pm 0.08$ \\
-&\\
-\multirow{2}{*}{fr} & en &  $30.43 \pm 4.91$ &  $27.09 \pm 4.91$ &   $112.66 \pm 1.95$ &  $60.91 \pm 0.13$ &  $60.52 \pm 0.13$ &  $44.75 \pm 0.38$ \\
-   & fr &  $51.67 \pm 0.81$ &  $52.17 \pm 0.56$ &    $57.09 \pm 0.07$ &  $51.59 \pm 0.58$ &  $51.60 \pm 0.35$ &  $56.75 \pm 0.38$ \\
-\bottomrule
-\end{tabular}
-}
-\caption{Linear biased dataloader (Early stopping)}
-\label{tab:multilingual-linear-biased-stop}
-\end{table}
-
-
-\newpage
-\subsection{Results}
-
-\begin{table}[ht!]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{clcccccc}
-\toprule
-   &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
- \cmidrule(lr){3-5} 
- \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
-\midrule
-\multirow{2}{*}{en} & en &  $60.20 \pm 0.88$ &   $59.69 \pm 0.37$ &    $46.33 \pm 0.47$ &  $61.25 \pm 0.24$ &  $61.37 \pm 0.07$ &  $44.50 \pm 0.17$ \\
-   & fr &  $30.04 \pm 0.93$ &   $18.56 \pm 1.73$ &  $121.52 \pm 16.07$ &  $50.14 \pm 0.76$ &  $50.55 \pm 0.50$ &  $58.81 \pm 0.16$ \\
+\multirow{2}{*}{en} & en &  $60.20 \pm 0.88$ &   $59.69 \pm 0.37$ &    $46.33 \pm 0.47$ &  $61.25 \pm 0.24$ &  $61.37 \pm 0.07$ &  $44.50 \pm 0.17$\\
+ & fr & $30.04\pm 0.93$ &   $18.56 \pm 1.73$ &  $121.52 \pm 16.07$ &  $50.14 \pm 0.76$ &  $50.55 \pm 0.50$ &  $58.81 \pm 0.16$ \\
 &\\
 \multirow{2}{*}{fr} & en &  $41.01 \pm 5.53$ &  $29.78 \pm 11.70$ &    $87.95 \pm 7.62$ &  $60.49 \pm 0.78$ &  $60.90 \pm 0.54$ &  $44.96 \pm 0.34$ \\
    & fr &  $51.06 \pm 0.00$ &   $51.81 \pm 0.04$ &    $56.63 \pm 0.01$ &  $51.27 \pm 0.01$ &  $51.71 \pm 0.19$ &  $57.94 \pm 0.74$ \\
 \bottomrule
 \end{tabular}
 }
-\caption{Topological regularization}
+\caption{Topological regularization (over two random seeds)}
 \label{tab:multilingual-linear-topo-unpaired}
 \end{table}
 
+The above results demonstrate that with the appropriate setup, we can replicate the results reported in the original Hofer's paper \cite{hofer_densified_2021}, even when using the relative transformation. However, the results of model stitching with topological regularization have not been previously reported. As shown in Table \ref{tab:multilingual-linear-topo-unpaired}, we achieve improved stitching performance in all stitching combinations and modalities, except for the ``en-fr abs'' case, compared to the new baseline. Moreover, despite observing a performance drop when using the new dataloader with the fix, we surpass the results obtained with the vanilla dataset on stitching for the ``fr-en'' cases in both the relative and absolute modalities.
 
 \begin{table}[ht!]
 \centering
@@ -196,7 +269,7 @@ In this chapter, we present the results and discuss them.
 \toprule
    &    & \multicolumn{3}{c}{Relative} \\
  \cmidrule(lr){3-5} 
- Decoder & Encoder & Acc & FScore & MAE \\
+ Decoder & Encoder & $\text{Acc} \times 100$ & $\text{FScore} \times 100$ & $\text{MAE} \times 100$ \\
 \midrule
 \multirow{2}{*}{en} & en &  $61.25 \pm 0.24$ &  $61.37 \pm 0.07$ &  $44.50 \pm 0.17$ \\
    & fr &  $\bm{50.90 \pm 0.65}$ &  $\bm{51.50 \pm 0.66}$ &  $\bm{57.27 \pm 0.07}$ \\
@@ -206,84 +279,36 @@ In this chapter, we present the results and discuss them.
 \bottomrule
 \end{tabular}
 }
-\caption{Topological regularization (Matched params)}
+\caption{Topological reg. w/ matched params (over two random seeds)}
 \label{tab:multilingual-linear-topo-paired}
 \end{table}
 
+Additionally, Table \ref{tab:multilingual-linear-topo-paired} reveals that we can enhance stitching performance by selecting the same $\beta$ parameter for topological regularization (i.e., using $\beta=4$ for the French case). However, this impacts non-stitching performance, as the optimal hyperparameter choice of $\beta=3$ is no longer used. This observation is logical since a specific hyperparameter choice will yield the best results for a given dataset during network training. Nevertheless, for stitching purposes, it is preferable to impose consistent condensation, increasing the possibility that class clusters reside within the decision boundary of the other classifier.
 
-\begin{table}[ht!]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{clcccccc}
-\toprule
-   &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
- \cmidrule(lr){3-5} 
- \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
-\midrule
-\multirow{2}{*}{en} & en &  $60.93 \pm 0.35$ &  $60.65 \pm 0.12$ &    $45.33 \pm 0.16$ &  $60.97 \pm 0.69$ &  $60.69 \pm 0.47$ &  $45.28 \pm 0.88$ \\
-   & fr &  $22.33 \pm 3.30$ &  $10.41 \pm 5.30$ &  $182.10 \pm 25.31$ &  $50.43 \pm 0.16$ &  $50.56 \pm 0.21$ &  $59.93 \pm 0.01$ \\
-&\\
-\multirow{2}{*}{fr} & en &  $35.02 \pm 1.70$ &  $23.90 \pm 3.59$ &    $88.69 \pm 8.90$ &  $59.82 \pm 1.47$ &  $59.74 \pm 0.95$ &  $46.36 \pm 0.28$ \\
-   & fr &  $51.41 \pm 1.29$ &  $51.91 \pm 1.03$ &    $56.35 \pm 0.47$ &  $51.56 \pm 0.40$ &  $51.75 \pm 0.24$ &  $58.50 \pm 0.06$ \\
-\bottomrule
-\end{tabular}
-}
-\caption{Topological regularization (Early stopping)}
-\label{tab:multilingual-linear-topo-unpaired-stop}
-\end{table}
+\begin{note_math}
+Hofer's topological regularization generally does not outperform early stopping in terms of non-stitching performance. However, in the ``fr-en'' stitching case, we achieve better results than early stopping (see Tables \ref{tab:multilingual-linear-vanilla-stop}, \ref{tab:multilingual-linear-biased-stop}).
+\end{note_math}
 
-\begin{table}[ht!]
-\centering
-\resizebox{0.7\textwidth}{!}{
-\begin{tabular}{clccc}
-\toprule
-   &    &  \multicolumn{3}{c}{Relative} \\
- \cmidrule(lr){3-5} 
- Decoder & Encoder & Acc & FScore & MAE \\
-\midrule
-\multirow{2}{*}{en} & en &  $60.97 \pm 0.69$ &  $60.69 \pm 0.47$ &  $45.28 \pm 0.88$ \\
-   & fr &  $50.43 \pm 0.16$ &  $50.56 \pm 0.21$ &  $59.93 \pm 0.01$ \\
-&\\
-\multirow{2}{*}{fr} & en &  $59.82 \pm 1.47$ &  $59.74 \pm 0.95$ &  $46.36 \pm 0.28$ \\
-   & fr &  $51.56 \pm 0.40$ &  $51.75 \pm 0.24$ &  $58.50 \pm 0.06$ \\
-\bottomrule
-\end{tabular}
-}
-\caption{Topological regularization (Matched params and early stopping)}
-\label{tab:multilingual-linear-topo-paired-stop}
-\end{table}
+The reason why we could not successfully apply Hofer's topological regularization to the Spanish case as well as why the ``en-fr'' stitching case does not perform as well as ``fr-en'', will be discussed in Chapter []\todo{Discussion chapter}.\\
+
+As outlined in Section \ref{sec:topo_meth}, utilizing $L^\infty$ in the post-relative space offers certain advantages. In this section, we will demonstrate how it can be beneficial for hyperparameter selection. In previous experiments, the approach involved computing the death times distribution and conducting a grid search based on values such as $0.3\times \text{post\_mean}$, $0.5\times \text{post\_mean}$, $0.6\times \text{post\_mean}$, $0.3\times \text{post\_max\_mean}$, $0.5\times \text{post\_max\_mean}$, and $0.6\times \text{post\_max\_mean}$. However, a new approach can be adopted:
+\begin{enumerate}
+    \item Compute the death times distributions using the $L^2$ in the pre-relative space and $L^\infty$ in the post-relative space. As an example, in Figure \ref{fig:distMix}, we can see the resulting distributions for the English relative case.
+
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=\textwidth]{figures/rs/mix_en_relative_seed0.png} 
+        \caption{Death times distribution on the English dataset. $L^2$ is used in the pre-relative space and $L^\infty$ in the post-relative space.}
+        \label{fig:distMix}
+    \end{figure}
+
+    \item Determine the approximate spread of the cluster using $\theta_{og} = 180 \arccos(1-\text{post\_mean})$. In the previous example, $\theta_{og}$ is approximately $36^{\circ}$.
+    
+    \item Conduct a grid search for $\theta \in [\tau_1 \theta_{og}, \tau_2\theta_{og}]$, where $\tau_1\geq 0$ and $\tau_2> 0$, with a specified step size $\delta \theta$. Set $\beta_{post} = 1-\cos(\pi \theta / 180)$.
+\end{enumerate}
 
 
-
-
-\begin{table}[ht]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{clcccccc}
-\toprule
-   &    & \multicolumn{3}{c}{Absolute} & \multicolumn{3}{c}{Relative} \\
- \cmidrule(lr){3-5} 
- \cmidrule(lr){6-8} 
- Decoder & Encoder & Acc & FScore & MAE & Acc & FScore & MAE \\
-\midrule
-\multirow{2}{*}{en} & en &  $60.20 \pm 0.88$ &   $59.69 \pm 0.37$ &    $46.33 \pm 0.47$ &  $60.90 \pm 1.05$ &  $60.98 \pm 0.71$ &  $44.75 \pm 0.24$ \\
-   & fr &  $29.48 \pm 1.73$ &   $18.15 \pm 1.15$ &  $120.68 \pm 17.25$ &  $49.50 \pm 0.34$ &  $50.05 \pm 0.40$ &  $57.57 \pm 0.83$ \\
-&\\
-\multirow{2}{*}{fr} & en &  $40.41 \pm 4.68$ &  $29.12 \pm 10.77$ &    $83.31 \pm 1.06$ &  $59.71 \pm 1.54$ &  $59.51 \pm 1.43$ &  $45.72 \pm 0.99$ \\
-   & fr &  $50.78 \pm 0.40$ &   $51.56 \pm 0.40$ &    $56.71 \pm 0.13$ &  $49.95 \pm 0.44$ &  $50.53 \pm 0.50$ &  $57.56 \pm 0.03$ \\
-\bottomrule
-\end{tabular}
-}
-\caption{Fine grained: topo-mix-paired}
-\label{tab:multilingual-topo-mix_paired-fine-grained}
-\end{table}
-
-
-
-
-
-
+Therefore, we performed a grid search on $\theta \in [5^{\circ}, 30^{\circ}]$ with a step size of $\delta \theta = 5^{\circ}$, while keeping $\beta_{pre}$ fixed at 3. Surprisingly, for $\theta = 25^{\circ}$, we achieved better performance compared to using $L^2$ with $\beta_{post} = 3$ ($61.48$ FScore $\times 100$). Hence, this result serves as a proof of concept for the potential exploration of different metrics when employing Hofer's topological regularization\footnote{Due to time limitations, we were not able to fully explore the $L^\infty$ case to be able to produce a table with proper hyperparameter tuning as we did for the $L^2$ cases.}.
 
 
 

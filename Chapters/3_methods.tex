@@ -101,7 +101,7 @@ $\mathrm{abs}(A)$\\
 $\sigma(x) = x^d$ (polynomial) &  $P D$, w/ $D$ non-zero entries
 & $A^{\odot  d}$
 \end{tabular}
-\caption{Explicit descriptions of $G_{\sigma_n}$ and $\phi_{\sigma}$ for seven different activations. Here $P \in \Sigma_n$ is a permutation matrix, $D$ is a diagonal matrix, and $A^{\odot d}$ denotes the entrywise $d$th power. Source: \cite{godfrey_symmetries_2023}}
+\caption{Explicit descriptions of $G_{\sigma_n}$ and $\phi_{\sigma}$ for seven different activations. Here $P \in \Sigma_n$ is a permutation matrix, $D$ is a diagonal matrix, and $A^{\odot d}$ denotes the entrywise $d$th power. CC BY Source: \cite{godfrey_symmetries_2023}}
 \label{tab:intertwiner-groups} 
 \end{table}
 
@@ -197,6 +197,7 @@ If we use the standard relative transformation (without batch normalization), th
 \end{corollary}
 
 \subsection{Topological regularization with relative transformation}
+\label{sec:topo_meth}
 
 Due to the selected topological regularization method \cite{hofer_densified_2021}, which requires a supervised classification setup for its application, it becomes necessary to finetune the pretrained encoder. This represents a deviation from the zero-shot setup described in \cite{moschella_relative_2022}, where only the decoder is finetuned using the relative representation while the encoder remains frozen. Therefore, this part of the research encompasses two primary objectives:
 
@@ -424,7 +425,7 @@ Lastly, as shown in Figure \ref{fig:relativeTopoMixScheme}, we also use the $L^\
 \end{enumerate}
 
 
-Lastly, we want to remark that due to time constraints, we will focus this analysis on the fine-grained dataset. Furthermore, we will train our networks for 40 epochs to ensure that the topological regularization prevents overfitting. We will also use a ''\texttt{cosine\_schedule\_with\_warmup}'' scheduler on the learning rate and a linear cyclic scheduler for the weight $\lambda$ component of the regularization loss. This cyclic scheduler has been previously used in VAEs to obtain a better synergy between the classification loss and the regularization \cite{fu_cyclical_2019}.
+Lastly, we want to remark that due to time constraints, we will focus this analysis on a random 1\% sub-sample of the fine-grained dataset. Furthermore, we will train our networks for 40 epochs to ensure that the topological regularization prevents overfitting. We will also use a ''\texttt{cosine\_schedule\_with\_warmup}'' scheduler on the learning rate and a linear cyclic scheduler for the weight $\lambda$ component of the regularization loss. This cyclic scheduler has been previously used in VAEs to obtain a better synergy between the classification loss and the regularization \cite{fu_cyclical_2019}.
 
 
 \end{document}
