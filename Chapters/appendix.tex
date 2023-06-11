@@ -8,8 +8,112 @@
 \label{sec:additionalResults}
 
 
+\section{Latent space similarity analysis}
+\label{sec:add_lat}
 
-\begin{table}[ht]
+\begin{figure}[ht!]
+     \centering
+    \includegraphics[width=0.84\textwidth]{figures/rs/sim_ae/cka_2__42_200_121_2013_2023.png} 
+    \caption{Additional CKA analysis for the autoencoder with linear layers: 2}
+    \label{fig:extra_cka_ae_2} 
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_ae/frob_2__42_200_121_2013_2023.png}
+    \caption{Additional Min. Frobenius norm analysis for the autoencoder with linear layers: 2}
+    \label{fig:extra_frob_ae_2}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_ae/procrustes_2__42_200_121_2013_2023.png} 
+    \caption{Additional Procrustes analysis for the autoencoder with linear layers: 2}
+    \label{fig:extra_proc_ae_2}
+\end{figure}
+%
+\begin{figure}[ht!]
+     \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_ae/cka_512-256-128-32-2__42_200_121_2013_2023.png} 
+    \caption{Additional CKA analysis for the autoencoder with linear layers: 512-256-128-32-2}
+    \label{fig:extra_cka_ae_512_256_128_32_2}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_ae/frob_512-256-128-32-2__42_200_121_2013_2023.png}
+    \caption{Additional Min. Frobenius norm analysis for the autoencoder with linear layers: 512-256-128-32-2}
+    \label{fig:extra_frob_ae_512_256_128_32_2}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_ae/procrustes_512-256-128-32-2__42_200_121_2013_2023.png} 
+    \caption{Additional Procrustes analysis for the autoencoder with linear layers: 512-256-128-32-2}
+    \label{fig:extra_proc_ae_512_256_128_32_2}
+\end{figure}
+%
+\begin{figure}[ht!]
+     \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_ae/cka_512-256-128-32__42_200_121_2013_2023.png} 
+    \caption{Additional CKA analysis for the autoencoder with linear layers: 512-256-128-32}
+    \label{fig:extra_cka_ae_512_256_128_32}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/rs/sim_ae/frob_512-256-128-32__42_200_121_2013_2023.png}
+    \caption{Additional Min. Frobenius norm analysis for the autoencoder with linear layers: 512-256-128-32}
+    \label{fig:extra_frob_ae_512_256_128_32}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/rs/sim_ae/vis_tsne_512-256-128-32__42_200_121_2013_2023.png} 
+    \caption{T-SNE of the encoded latent space for the autoencoder with linear layers: 512-256-128-32}
+    \label{fig:tsne_ae_512_256_128_32}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_ae/procrustes_512-256-128-32__42_200_121_2013_2023.png} 
+    \caption{Additional Procrustes analysis for the autoencoder with linear layers: 512-256-128-32}
+    \label{fig:extra_proc_ae_512_256_128_32}
+\end{figure}
+%
+\begin{figure}[ht!]
+     \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_cls/cka_512-256-128-32__42_200_121_2013_2023.png} 
+    \caption{Additional CKA analysis for the CNN classifier}
+    \label{fig:extra_cka_cls}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/rs/sim_cls/frob_512-256-128-32__42_200_121_2013_2023.png}
+    \caption{Additional Min. Frobenius norm analysis for the CNN classifier}
+    \label{fig:extra_frob_cls}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/rs/sim_cls/vis_tsne_512-256-128-32__42_200_121_2013_2023.png} 
+    \caption{T-SNE of the encoded latent space  for the CNN classifier}
+    \label{fig:tsne_cls}
+\end{figure}
+%
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/sim_cls/procrustes_512-256-128-32__42_200_121_2013_2023.png} 
+    \caption{Additional Procrustes analysis for the CNN classifier}
+    \label{fig:extra_proc_cls}
+\end{figure}
+%
+\FloatBarrier
+%
+\section{Multilingual model stitching}
+
+\begin{table}[ht!]
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{clcccccc}
@@ -33,11 +137,11 @@
 \bottomrule
 \end{tabular}
 }
-\caption{Coarse grained: finetune (over 2 random seeds)}
+\caption{Coarse grained: finetune (over two random seeds)}
 \label{tab:multilingual-finetune-coarse-grained}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[ht!]
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{clcccccc}
@@ -61,7 +165,7 @@
 \bottomrule
 \end{tabular}
 }
-\caption{Coarse grained: full (over 2 random seeds)}
+\caption{Coarse grained: full (over two random seeds)}
 \label{tab:multilingual-full-coarse-grained}
 \end{table}
 
@@ -86,7 +190,7 @@
 \bottomrule
 \end{tabular}
 }
-\caption{Linear vanilla dataloader w/ early stopping (over 2 random seeds)}
+\caption{Linear vanilla dataloader w/ early stopping (over two random seeds)}
 \label{tab:multilingual-linear-vanilla-stop}
 \end{table}
 
@@ -109,7 +213,7 @@
 \bottomrule
 \end{tabular}
 }
-\caption{Linear biased dataloader  w/ early stopping (over 2 random seeds)}
+\caption{Linear biased dataloader  w/ early stopping (over two random seeds)}
 \label{tab:multilingual-linear-biased-stop}
 \end{table}
 

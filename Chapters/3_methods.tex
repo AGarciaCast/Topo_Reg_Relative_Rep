@@ -17,6 +17,7 @@ Prior to conducting this analysis, it was noted that the original paper on relat
 This section provides an overview of the experiments conducted to address the aforementioned objectives.
 
 \subsection{Latent Space Analysis}
+\label{sec:latent_meth}
 To assess whether two different initializations yield nearly isometric latent representations, we will explore both theoretical and empirical approaches.
 
 \subsubsection*{Empirical analysis}
@@ -124,7 +125,7 @@ However, the importance of the intertwiner group will come from the following pr
   where $f_{\leq m}$ and $f_{> m}$ represent the truncations of the network before and after layer $m$, respectively. In particular, $f(x, \widetilde{W} ) = f(x, W)$ for all $x \in \RR^{n_0}$.
 \end{proposition}
 
-Thus, we have identified a potential theoretical reason for having a variation of $\epsilon$-similar representations when we have two random initializations of the same network. Nevertheless, we acknowledge that this property produced by the activation function is not the whole explanation of why we observe $\epsilon$-similar representations, and further discussion regarding our hypothesis of the potential causes will be presented in Chapter \todo{discussion chapter}.\\
+Thus, we have identified a potential theoretical reason for having a variation of $\epsilon$-similar representations when we have two random initializations of the same network. Nevertheless, we acknowledge that this property produced by the activation function is not the whole explanation of why we observe $\epsilon$-similar representations, and further discussion regarding our hypothesis of the potential causes will be presented in Chapter \ref{ch:discussion}.\\
 
 Based on these findings, we will modify the relative transformation to make it invariant to the intertwiner group actions induced by common activation functions, as well as $\epsilon$-similarities (with small $\epsilon$). Thereof, we will know that if the symmetry comes from the activation function, we will produce a good composable representation \cite[Theorem 4.2]{godfrey_symmetries_2023}.
 
@@ -143,9 +144,9 @@ D_{\BB} = \text{Diag}\left( \frac{1}{\sum_{i=1}^{m} \widehat{\varphi(\BB)}^2_{i,
 and $\widehat{\varphi(\Anch)}$ and $\widehat{\varphi(\BB)}$ represent the respective BatchNorm mean and variance standardizations of the anchor and batch images (without the learnable affine transformation). When the batch and the encoder are implied, we can denote this transformation by $\hat{T}_{rel}(\mathcal{A})$.
 \end{definition}
 
-\begin{note}
+\begin{mathNote}
 To differentiate between the two $\text{diag}$ operators, we will denote $\text{Diag}(x)$ as the map that generates a diagonal matrix from a vector, and $\text{diag}(X)$ as the map that extracts the diagonal of a matrix.
-\end{note}
+\end{mathNote}
 
 \begin{proposition}
 \label{prop:rob_rel}
@@ -363,7 +364,7 @@ Firstly, we could see a more expressive classification head as an implicit regul
 
 Secondly, the objective of the topological regularization loss is to encourage a more favorable configuration of the latent space for the classification task. However, if we employ a complex classification head, we may not require the assistance of these losses, as the model could potentially fit more intricate decision boundaries.
 
-It is important to note that this setup is not unrealistic, as popular Transformer networks like Vision Transformers (ViTs) \cite{dosovitskiy_image_2021} often employ one or two linear layers (depending on the specific implementation) for their classification heads.\\
+It is important to note that this setup is not unrealistic, as popular Transformer networks like Vision Transformers (ViTs) \cite{dosovitskiy_vit_2021} often employ one or two linear layers (depending on the specific implementation) for their classification heads.\\
 
 
 Figure \ref{fig:topoSetups} presents the different topological regularization setups we will explore when using the relative transformation. Firstly, we will analyze the case of applying topological regularization both before (pre-relative) and after (post-relative) the relative transformation. Additionally, based on empirical results discussed in Chapter \ref{ch:resultsAndAnalysis}, we will also apply $L^2$ topological regularization using the same $\beta$ hyperparameter both before and after the relative transformation simultaneously.
