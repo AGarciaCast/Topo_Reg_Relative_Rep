@@ -390,7 +390,7 @@ This result follows easily from the fact that two points $u,v$ (vertices) are in
 
 A common ML scenario is that we will have a big dataset, and we apply our training procedure to small batches of that given set. Hence, ideally, we would want to be able to infer the topology of our whole dataset just from studying our reduced batches. Therefore, this type of ideas motivated Vin de Silva and Gunnar Carlsson when they introduced the Witness Complex in \cite{silva_topological_2004}: a subset of the data points, called the landmarks points, is used to construct the simplices ``seen'' by the witnesses, which are the rest of the points of the data set \cite{medbouhi_towards_2022}.
 
-However, the construction of the simplicial complex that we will use differs from the ones used in standard TDA libraries, such as GUDHI, when defining Witness complexes \cite{noauthor_gudhi_nodate}. We will focus on a specific type of complex presented in \cite{silva_topological_2004}, which can be seen as an example of a Dowker complex\footnote{Denoted as $W(D; R, 0)$ in the original paper \cite{silva_topological_2004}.}.
+However, the construction of the simplicial complex that we will use differs from the ones used in standard TDA libraries, such as GUDHI, when defining Witness complexes \cite{noauthor_gudhi_nodate}. We will focus on a specific type of complex presented in \cite{silva_topological_2004}, which can be seen as an example of a Dowker complex\footnote{Denoted as $W(D; R, 0)$ in the original paper \cite{silva_topological_2004}, and usually called ``lazy witness complexes''}.
 
 \begin{definition}[\cite{dowker_homology_1952}]
 The \emph{Dowker complex} of a relation $(R, X, Y)$ is the simplicial complex $(\text{D}(R)), X)$ where
@@ -400,7 +400,7 @@ The \emph{Dowker complex} of a relation $(R, X, Y)$ is the simplicial complex $(
 We say that \emph{the simplex $\sigma \in \text{D}(R)$ is witnessed by $y \in Y$} if $\sigma \times \{y\} \subseteq R$, i.e., all elements in the simplex $\sigma$ are related with y.
 \end{definition}
 
-We will call Witness complex the Dowker complex of $(R_\epsilon, L, X)$ where
+We will call Lazy Witness complex the Dowker complex of $(R_\epsilon, L, X)$ where
 \begin{itemize}
     \item $X$ is the whole dataset,
     \item $L\subseteq X$ is a batch, and
@@ -408,7 +408,7 @@ We will call Witness complex the Dowker complex of $(R_\epsilon, L, X)$ where
 \end{itemize}
 
 \begin{definition}[Nested family of witness complexes \cite{silva_topological_2004}]
-Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, $L = \{l_0, ..., l_n\} \subseteq X$ be a set of landmark points, and $\epsilon>0$. Then the $k$-simplex $\sigma = \{u_1, ..., u_k\}$ with $u_i \in L$ belongs to the \emph{Witness complex} $\text{W}_\epsilon(X, L)$ iff all its faces belong to $\text{W}_\epsilon(X, L)$ and there is a witness $x \in X$, such that:
+Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, $L = \{l_0, ..., l_n\} \subseteq X$ be a set of landmark points, and $\epsilon>0$. Then the $k$-simplex $\sigma = \{u_1, ..., u_k\}$ with $u_i \in L$ belongs to the \emph{Lazy Witness complex} $\text{W}_\epsilon(X, L)$ iff all its faces belong to $\text{W}_\epsilon(X, L)$ and there is a witness $x \in X$, such that:
 \[
 \max \{d(u_i, x) \mid u_i \in \{u_1, ..., u_k\}\} \leq \epsilon\,.
 \]
@@ -424,6 +424,7 @@ Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, 
 A remarkable result about witness complexes is Dowker's Theorem, which states that exchanging the role of the witnesses and landmarks doesn't change the topology of the complex \cite{dowker_homology_1952}. This result is exploited in \cite{schonenberger_witness_2022} to enforce the topological regularization of a Topological Autoencoder (further explained in Section \ref{sec:topoML}) only using the data points of the batches instead of the whole dataset.
 
 \begin{proposition}[\cite{silva_topological_2004}]
+\label{prop:witness-vr}
 The family of complexes $\text{\rm W}_\epsilon(X, L)$ is closely related to the family $\text{\rm VR}(L, \epsilon)$. Specifically, there are inclusions:
 \[
 \text{\rm W}_\epsilon(X, L) \subseteq \text{\rm VR}(L, 2\epsilon) \subseteq \text{\rm W}_{2\epsilon}(X, L)\,.
@@ -1241,7 +1242,7 @@ We can see in Figure \ref{fig:attrac} a representation of the mass attraction th
     \label{fig:attrac}
 \end{figure}
 
-\subsection{Representation Comparison \& Model Stitching}
+\subsection{Representation Similarity \& Model Stitching}
 \label{sec:repLearn}
 
 In multiple areas in \glsxtrshort{ML}, there has been a great interest in obtaining a function that is capable of extracting the most relevant features of our inputs. We can see that the field that tackles all these interests, called Representation Learning, had existed before the use of DL. For instance, in Computer Vision, multiple algorithms are based on the fact that we can extract these relevant features and descriptors, such as SIFT descriptors \cite{gonzalez_digital_2002}. These "classical" feature extractors were hand-made in the sense that they had to be designed specifically for the domain they will be used for (e.g., using Haar features for face detection \cite{viola_rapid_2001}). However, nowadays, we have a new paradigm in representation learning since DL networks can be seen as a complex feature extractor composed of a task-specific map \cite{moschella_relative_2022}. Nevertheless, even if we can see that this new approach can obtain state-of-the-art results, we still do not know much about the limits of the properties of these feature extractors. Some reasonable questions that we could have are: \textit{How unique are the learned features of our model? How do we compare the latent spaces of two different networks in order to assess their similarity? What do we refer to when we say that two layers act similarly?}

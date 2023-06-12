@@ -173,7 +173,7 @@ In conclusion, these empirical findings, combined with the new theoretical frame
 
 \subsection{Full finetuning analysis}
 
-As discussed in Section \ref{sec:topo_meth}, we have made some methodological changes from the original paper implementation of the following experiments. As a reference, the results presented in the original relative transformation paper are shown in Table \ref{tab:multilingual-finetune-og}.
+As discussed in Section \ref{sec:topo_meth}, we have made some methodological changes from the original paper implementation of the following experiments. As a reference, the results presented in the original relative transformation paper are shown in Table \ref{tab:multilingual-finetune-og}.\\
 
 \begin{table}[ht!]
 \centering
@@ -203,7 +203,7 @@ As discussed in Section \ref{sec:topo_meth}, we have made some methodological ch
 \label{tab:multilingual-finetune-og}
 \end{table}
 
-As shown in Table \ref{tab:multilingual-finetune-fine-grained}, we observe slightly worst results when replicating the original training setup while incorporating our proposed methodological changes. However, as previously discussed, we will proceed with this new setup as it represents a more common methodology. Additionally, some of the introduced changes, such as employing gradient accumulation with smaller batch sizes, were necessary to train the models on our V100 GPU successfully. It would, however, be interesting to conduct further analysis to understand why the inclusion of post $L^2$ normalization on the relative transformation and the utilization of the ``non-standard'' classification head leads to improved performance.
+As shown in Table \ref{tab:multilingual-finetune-fine-grained}, we observe slightly worst results when replicating the original training setup while incorporating our proposed methodological changes. However, as previously discussed, we will proceed with this new setup as it represents a more common methodology. Additionally, some of the introduced changes, such as employing gradient accumulation with smaller batch sizes, were necessary to train the models on our V100 GPU successfully. It would, however, be interesting to conduct further analysis to understand why the inclusion of post $L^2$ normalization on the relative transformation and the utilization of the ``non-standard'' classification head leads to improved performance.\\
 
 \begin{table}[ht!]
 \centering
@@ -233,12 +233,9 @@ As shown in Table \ref{tab:multilingual-finetune-fine-grained}, we observe sligh
 \label{tab:multilingual-finetune-fine-grained}
 \end{table}
 
-
-
 However, as depicted in Table \ref{tab:multilingual-full-fine-grained}, fully finetuning the model (i.e., without freezing the encoder) narrows the gap between the new methodology and the results reported in the original paper for the absolute case.
 
 As expected, when fully finetuning the networks in the absolute case (without applying relative transformations), we observe a decline in stitching performance. This outcome arises because, without additional constraints, the encoders seek latent representations that are advantageous for the specific dataset. Consequently, we deviate from the pre-trained configuration, which has been demonstrated to exhibit a high degree of similarity among BERT models \cite{roeder_linear_2020}.\\
-
 
 \begin{table}[ht!]
 \centering
@@ -306,7 +303,7 @@ As discussed in Section \ref{sec:topo_meth}, we have once again made some method
 
 One might argue that a simpler solution for using biased dataloaders in the relative case would be to employ the standard relative transformation instead of the new robust one. This approach would eliminate the need for debiasing the BatchNorm mean and variance estimates. However, we find that training in the relative case with a vanilla dataloader using the standard relative transformation leads to worse performance, resulting in approximately $38.52$ FScore $\times 100$ in English and $30.87$ in French. For reference, Table \ref{tab:multilingual-linear-vanilla} presents the performance of training with the same setup described in the methodology but using a standard dataloader. It is important to note that this dataloader cannot be used when applying Hofer's topological regularization.\\
 
-Therefore, we now have both theoretical and empirical justifications for adopting this new relative transformation. We believe that the reasons behind the observed performance improvement with this change lie in the theoretical aspects we discussed. Some of the similarities in representations may originate from the (intertwiner group of the) activation functions, or it could be that BatchNorm provides additional robustness to training by mitigating potential issues like vanishing gradients.
+Therefore, we now have both theoretical and empirical justifications for adopting this new relative transformation. We believe that the reasons behind the observed performance improvement with this change lie in the theoretical aspects we discussed. Some of the similarities in representations may originate from the (intertwiner group of the) activation functions, or it could be that BatchNorm provides additional robustness to training by mitigating potential issues like vanishing gradients.\\
 
 \begin{table}[ht!]
 \centering
@@ -338,7 +335,7 @@ Lastly, it is intriguing that, in this case, the relative transformation tends t
 \subsubsection*{Results}
 
 
-In Section \ref{sec:topo_meth}, we explored four different approaches for applying Hofer's topological regularization. Initially, we attempted the pre-relative case but could not achieve performance on par with the baseline presented in Table \ref{tab:multilingual-linear-biased}. One possible reason is that there are instances where the relative transformation fails to preserve the topology. An example of this can be observed in Figure \ref{fig:rel_ex_bad}, where we have three clusters, two of which possess colinear centroids, resulting in only two clusters after the transformation.
+In Section \ref{sec:topo_meth}, we explored four different approaches for applying Hofer's topological regularization. Initially, we attempted the pre-relative case but could not achieve performance on par with the baseline presented in Table \ref{tab:multilingual-linear-biased}. One possible reason is that there are instances where the relative transformation fails to preserve the topology. An example of this can be observed in Figure \ref{fig:rel_ex_bad}, where we have three clusters, two of which possess colinear centroids, resulting in only two clusters after the transformation.\\
 
 
 \begin{figure}[ht!]
@@ -384,7 +381,7 @@ After further analysis, we discovered that when no regularization is applied, th
     \label{fig:distVanilla}
 \end{figure}
 
-Following an exhaustive hyperparameter tuning process, we identified that the optimal setup for the absolute case is $\beta=7$ and $\lambda=0.1$ for both the English and French datasets. In the relative case, the best results were obtained by using a linear combination of pre-relative ($0.1$ weight) and post-relative ($0.9$ weight) regularization, with $\beta=3$ and $\lambda=0.02$ for the English case and $\beta=4$ and $\lambda=0.02$ for the French case\footnote{The complete logs of the hyperparameter tuning results and their corresponding death times distributions can be found in the Thesis' GitHub repository.}.
+Following an exhaustive hyperparameter tuning process, we identified that the optimal setup for the absolute case is $\beta=7$ and $\lambda=0.1$ for both the English and French datasets. In the relative case, the best results were obtained by using a linear combination of pre-relative ($0.1$ weight) and post-relative ($0.9$ weight) regularization, with $\beta=3$ and $\lambda=0.02$ for the English case and $\beta=4$ and $\lambda=0.02$ for the French case\footnote{The complete logs of the hyperparameter tuning results and their corresponding death times distributions can be found in the Thesis' GitHub repository.}.\\
 
 
 \begin{figure}[ht!]
@@ -421,7 +418,7 @@ As shown in Table \ref{tab:multilingual-linear-topo-unpaired}, employing this to
 \label{tab:multilingual-linear-topo-unpaired}
 \end{table}
 
-The above results demonstrate that with the appropriate setup, we can replicate the results reported in the original Hofer's paper \cite{hofer_densified_2021}, even when using the relative transformation. However, the results of model stitching with topological regularization have not been previously reported. As shown in Table \ref{tab:multilingual-linear-topo-unpaired}, we achieve improved stitching performance in all stitching combinations and modalities, except for the ``en-fr abs'' case, compared to the new baseline. Moreover, despite observing a performance drop when using the new dataloader with the fix, we surpass the results obtained with the vanilla dataset on stitching for the ``fr-en'' cases in both the relative and absolute modalities.
+The above results demonstrate that with the appropriate setup, we can replicate the results reported in the original Hofer's paper \cite{hofer_densified_2021}, even when using the relative transformation. However, the results of model stitching with topological regularization have not been previously reported. As shown in Table \ref{tab:multilingual-linear-topo-unpaired}, we achieve improved stitching performance in all stitching combinations and modalities, except for the ``en-fr abs'' case, compared to the new baseline. Moreover, despite observing a performance drop when using the new dataloader with the fix, we surpass the results obtained with the vanilla dataset on stitching for the ``fr-en'' cases in both the relative and absolute modalities.\\
 
 \begin{table}[ht!]
 \centering
@@ -450,18 +447,11 @@ Additionally, Table \ref{tab:multilingual-linear-topo-paired} reveals that we ca
 Hofer's topological regularization generally does not outperform early stopping in terms of non-stitching performance. However, in the ``fr-en'' stitching case, we achieve better results than early stopping (see Tables \ref{tab:multilingual-linear-vanilla-stop}, \ref{tab:multilingual-linear-biased-stop}).
 \end{mathNote}
 
-The reason why we could not successfully apply Hofer's topological regularization to the Spanish case as well as why the ``en-fr'' stitching case does not perform as well as ``fr-en'', will be discussed in Chapter \ref{ch:discussion}.\\
+The reason why we could not successfully apply Hofer's topological regularization to the Spanish case as well as why the ``en-fr'' stitching case does not perform as well as ``fr-en'', will be discussed in Section \ref{sec:more_topo}.\\
 
 As outlined in Section \ref{sec:topo_meth}, utilizing $L^\infty$ in the post-relative space offers certain advantages. In this section, we will demonstrate how it can be beneficial for hyperparameter selection. In previous experiments, the approach involved computing the death times distribution and conducting a grid search based on values such as $0.3\times \text{post\_mean}$, $0.5\times \text{post\_mean}$, $0.6\times \text{post\_mean}$, $0.3\times \text{post\_max\_mean}$, $0.5\times \text{post\_max\_mean}$, and $0.6\times \text{post\_max\_mean}$. However, a new approach can be adopted:
 \begin{enumerate}
     \item Compute the death times distributions using the $L^2$ in the pre-relative space and $L^\infty$ in the post-relative space. As an example, in Figure \ref{fig:distMix}, we can see the resulting distributions for the English relative case.
-
-    \begin{figure}[!ht]
-        \centering
-        \includegraphics[width=\textwidth]{figures/rs/stitching/mix_en_relative_seed0.png} 
-        \caption{Death times distribution on the English dataset. $L^2$ is used in the pre-relative space and $L^\infty$ in the post-relative space.}
-        \label{fig:distMix}
-    \end{figure}
 
     \item Determine the approximate spread of the cluster using
     \[\theta_{og} = 180 \arccos(1-\text{post\_mean}).\]
@@ -470,8 +460,18 @@ As outlined in Section \ref{sec:topo_meth}, utilizing $L^\infty$ in the post-rel
     \item Conduct a grid search for $\theta \in [\tau_1 \theta_{og}, \tau_2\theta_{og}]$, where $\tau_1\geq 0$ and $\tau_2> 0$, with a specified step size $\delta \theta$. Set $\beta_{post} = 1-\cos(\pi \theta / 180)$.
 \end{enumerate}
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/rs/stitching/mix_en_relative_seed0.png} 
+    \caption{Death times distribution on the English dataset. $L^2$ is used in the pre-relative space and $L^\infty$ in the post-relative space.}
+    \label{fig:distMix}
+\end{figure}
 
 Therefore, we performed a grid search on $\theta \in [5^{\circ}, 30^{\circ}]$ with a step size of $\delta \theta = 5^{\circ}$, while keeping $\beta_{pre}$ fixed at 3. Surprisingly, for $\theta = 25^{\circ}$, we achieved better performance compared to using $L^2$ with $\beta_{post} = 3$ ($61.48$ FScore $\times 100$). Hence, this result serves as a proof of concept for the potential exploration of different metrics when employing Hofer's topological regularization\footnote{Due to time limitations, we were not able to fully explore the $L^\infty$ case to be able to produce a table with proper hyperparameter tuning as we did for the $L^2$ cases.}.
+
+
+
+
 
 
 
