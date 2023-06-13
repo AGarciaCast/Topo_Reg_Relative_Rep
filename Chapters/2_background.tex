@@ -7,7 +7,7 @@
 
 \section{Mathematical background}
 \label{sec:tda}
-This section provides the necessary mathematical background to comprehend the methods proposed in \cite{hofer_densified_2021, moschella_relative_2022} and the ones described in Chapter \ref{ch:methods}. The exposition is mainly based on \cite{edelsbrunner_computational_2010}.
+This section provides the necessary mathematical background to comprehend the methods proposed in \cite{hofer_densified_2021, moschella_relative_2022} and the ones described in Chapter~\ref{ch:methods}. The exposition is mainly based on \cite{edelsbrunner_computational_2010}.
 
 \subsection{Simplicial Complexes}
 \subsubsection*{Geometric simplicial complexes}
@@ -134,7 +134,7 @@ A \emph{simplicial complex} is a finite collection of simplices $K$ that satisfy
 
 We define the dimension of $K$ as the maximum of its simplices dimensions.
 
-We can see in Figure \ref{fig:comp1} an example of a simplicial complex, while Figure \ref{fig:noComp} shows an example of something that does not verify the abovementioned properties.
+We can see in Figure~\ref{fig:comp1} an example of a simplicial complex, while Figure~\ref{fig:noComp} shows an example of something that does not verify the abovementioned properties.
 
 \begin{figure}[ht]
 \centering
@@ -341,7 +341,7 @@ Let $X \subset \RR^d$ be a finite set of points. We call \emph{Vietoris-Rips} co
 If the set $X$ is understood from the context, then we can note it as $\text{VR}(r)$.
 \end{definition}
 
-We can see in Figure \ref{fig:vr} how the various VR complexes are generated as the radius increases.
+We can see in Figure~\ref{fig:vr} how the various VR complexes are generated as the radius increases.
 
 \begin{figure}[!ht]
 \centering
@@ -364,7 +364,7 @@ Let $X \subset \RR^d$ be a finite set of points and let $r \geq 0$. Then,
 \]
 \end{lemma}
 
-Another important property regarding VR complexes is their ability to encode $\epsilon$-connectivity. In Section \ref{sec:topoML}, we will talk more in detail about $\epsilon$-connectivity and how it will be a crucial property for constructing our topological regularization. 
+Another important property regarding VR complexes is their ability to encode $\epsilon$-connectivity. In Section~\ref{sec:topoML}, we will talk more in detail about $\epsilon$-connectivity and how it will be a crucial property for constructing our topological regularization. 
 
 \begin{definition}[\cite{robins_resolutions_2000}]
 We say that a metric space $X$ is \emph{$\epsilon$-disconnected} if there exist two subsets $U$ and $V$ with $U\cup V = X$, and $d(U,V)\equiv \inf_{x\in U,\, y\in V}d(x,y) > \epsilon$.
@@ -421,7 +421,7 @@ Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, 
 \label{fig:witnessCons}
 \end{figure}
 
-A remarkable result about witness complexes is Dowker's Theorem, which states that exchanging the role of the witnesses and landmarks doesn't change the topology of the complex \cite{dowker_homology_1952}. This result is exploited in \cite{schonenberger_witness_2022} to enforce the topological regularization of a Topological Autoencoder (further explained in Section \ref{sec:topoML}) only using the data points of the batches instead of the whole dataset.
+A remarkable result about witness complexes is Dowker's Theorem, which states that exchanging the role of the witnesses and landmarks doesn't change the topology of the complex \cite{dowker_homology_1952}. This result is exploited in \cite{schonenberger_witness_2022} to enforce the topological regularization of a Topological Autoencoder (further explained in Section~\ref{sec:topoML}) only using the data points of the batches instead of the whole dataset.
 
 \begin{proposition}[\cite{silva_topological_2004}]
 \label{prop:witness-vr}
@@ -452,7 +452,7 @@ We recall that an $F_2$ vector space is a set $V$ with a zero element $0 \in V$ 
     \item $v + v = 0$.
 \end{itemize}
 
-Another vector spaces that we will use are \emph{quotient spaces}. Let $W \subset V$ be a vector subspace. We define the following equivalence relation: we say that two elements $v$ and $w$ in $V$ are \emph{equivalent modulo} $W$ if $v-w \in W$. As we can see in Figure \ref{fig:quot_ex}, the equivalence classes are of the form $[v]=v+W \subset V$. Moreover, the set of equivalence classes, denoted by $V/W$, with the following operations, is a vector space:
+Another vector spaces that we will use are \emph{quotient spaces}. Let $W \subset V$ be a vector subspace. We define the following equivalence relation: we say that two elements $v$ and $w$ in $V$ are \emph{equivalent modulo} $W$ if $v-w \in W$. As we can see in Figure~\ref{fig:quot_ex}, the equivalence classes are of the form $[v]=v+W \subset V$. Moreover, the set of equivalence classes, denoted by $V/W$, with the following operations, is a vector space:
 \begin{itemize}
     \item $(v+W)+(w+W)=v+w+W$,
     \item $0 = 0 +W = W$,
@@ -533,7 +533,7 @@ with $\sigma_i$ is a $p$-simplex for each $i$ and $a_i$ are the \emph{coefficien
 \begin{exmp}
 We will write the simplices as the list of their vertices, $\sigma = [u_0, u_1, ..., u_p]$.
 \begin{itemize}
-	\item In the figure \ref{fig:0cad} the $0$-chain $c=[0]+[2]+[6]+[9]$ is shown in red.
+	\item In the figure~\ref{fig:0cad} the $0$-chain $c=[0]+[2]+[6]+[9]$ is shown in red.
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick,scale=3]
@@ -583,7 +583,7 @@ We will write the simplices as the list of their vertices, $\sigma = [u_0, u_1, 
 \caption{Example of $0$-chain}
 \label{fig:0cad}
 \end{figure}
-	\item In the figure \ref{fig:1cad} the $1$-chain $c=[0,1]+[1,2]+[2,4]+[8,9]$ is shown in red.
+	\item In the figure~\ref{fig:1cad} the $1$-chain $c=[0,1]+[1,2]+[2,4]+[8,9]$ is shown in red.
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick,scale=3]
@@ -634,7 +634,7 @@ We will write the simplices as the list of their vertices, $\sigma = [u_0, u_1, 
 \caption{Example of $1$-chain}
 \label{fig:1cad}
 \end{figure}
-	\item In the figure \ref{fig:2cad} the $2$-chain $c=[1,2,3] + [2,3,4] + [6,7,8]$ is shown in red.
+	\item In the figure~\ref{fig:2cad} the $2$-chain $c=[1,2,3] + [2,3,4] + [6,7,8]$ is shown in red.
 \begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[thick,scale=3]
@@ -726,7 +726,7 @@ or, equivalently, if $c \in \text{ker }\partial$.
 \end{definition}
 
 \begin{exmp}
-We will see that geometrically, the $p$-cycles represent cycles in the simplicial complex. These, in turn, can be holes of dimension $p$. In the figure \ref{fig:1-ciclo} the $1$-cycle $[4,5] + [4,6] + [5,6]$ is shown in red, which is a hole. While blue represents the $1$-cycle $[6,7] + [6,8] + [7,8]$, which is not a hole.
+We will see that geometrically, the $p$-cycles represent cycles in the simplicial complex. These, in turn, can be holes of dimension $p$. In the figure~\ref{fig:1-ciclo} the $1$-cycle $[4,5] + [4,6] + [5,6]$ is shown in red, which is a hole. While blue represents the $1$-cycle $[6,7] + [6,8] + [7,8]$, which is not a hole.
 
 \begin{figure}[!ht]
 \centering
@@ -795,7 +795,7 @@ or, equivalently, if $c \in \text{im }\partial_{p+1}$.
 \end{definition}
 
 \begin{exmp}
-The $1$-cycle that we had highlighted in blue in the Figure \ref{fig:1-ciclo} is a $1$-boundary.
+The $1$-cycle that we had highlighted in blue in the Figure~\ref{fig:1-ciclo} is a $1$-boundary.
 \end{exmp}
 
 \begin{remark}
@@ -813,7 +813,7 @@ It follows that $\text{B}_p$ is a vector subspace of $\text{Z}_p$, that is, $\te
 ...\overset{\partial_{p+2}}{\longrightarrow}\text{C}_{p+1}\overset{\partial_{p+1}}{\longrightarrow}\text{C}_ {p}\overset{\partial_{p}}{\longrightarrow}\text{C}_{p-1}\overset{\partial_{p-1}}{\longrightarrow}...
 \]
 
-We can see in Figure \ref{fig:gruposCadenasOpBorde} this relationship between the chain group $\text{C}_p$, the group of cycles $\text{Z}_p$ and the group of boundaries $\text{B}_p $; and its connections generated by the boundary operator.
+We can see in Figure~\ref{fig:gruposCadenasOpBorde} this relationship between the chain group $\text{C}_p$, the group of cycles $\text{Z}_p$ and the group of boundaries $\text{B}_p $; and its connections generated by the boundary operator.
 
 \begin{figure}[!ht]
 \centering
@@ -875,7 +875,7 @@ We will introduce the concept of persistence first for functions of one variable
 \subsubsection*{One-dimensional real functions}
 Let $f: \RR \to \RR$ be a smooth function. Remember that $x$ is a \emph{critical point} and $f(x)$ is a \emph{critical value of $f$} if $f'(x)=0$. Furthermore, a critical point $x$ is \emph{non-degenerate} if $f''(x) \neq 0$. So, suppose that $f$ contains only non-degenerate critical points with distinct critical values.\\
 
-Let the \emph{sublevel set} $\RR_t=f^{-1}(-\infty, t]$ for each $t \in \RR$. Then we see that as we increase $t$, the number of connected components of $\RR_t$ will remain constant until we pass through a $t_0$ critical value of $f$.  As we can see in the figure \ref{fig:sublevelR}, when we pass through a local minimum, a new connected component is created. When we pass through a local maximum, two connected components are combined into one.\\
+Let the \emph{sublevel set} $\RR_t=f^{-1}(-\infty, t]$ for each $t \in \RR$. Then we see that as we increase $t$, the number of connected components of $\RR_t$ will remain constant until we pass through a $t_0$ critical value of $f$.  As we can see in the figure~\ref{fig:sublevelR}, when we pass through a local minimum, a new connected component is created. When we pass through a local maximum, two connected components are combined into one.\\
 
 \begin{figure}[!ht]
     \centering
@@ -890,7 +890,7 @@ The critical points of $f$ are paired as follows:
     \item When we pass through a local maximum and two components meet, we pair the maximum with the higher (youngest) of the two local minima that these components represent. The other minimum (the oldest) becomes the representative of the new component resulting from joining the two previous ones.
 \end{enumerate}
 
-When the points $x_1$ and $x_2$ are paired following this method, we define the \emph{persistence} of the pair as $f(x_2) - f(x_1)$. This persistence is coded through the \emph{persistence diagram}, representing each pair with the point $(f(x_1),f(x_2))$, as can be seen in the figure \ref{fig:persistenceR}. It can be seen that all points will lie above the diagonal $y=x$ and that persistence is the vertical distance from a point to the diagonal. For reasons that will be explained later, the points on the diagonal will be added to the persistence diagram.
+When the points $x_1$ and $x_2$ are paired following this method, we define the \emph{persistence} of the pair as $f(x_2) - f(x_1)$. This persistence is coded through the \emph{persistence diagram}, representing each pair with the point $(f(x_1),f(x_2))$, as can be seen in the figure~\ref{fig:persistenceR}. It can be seen that all points will lie above the diagonal $y=x$ and that persistence is the vertical distance from a point to the diagonal. For reasons that will be explained later, the points on the diagonal will be added to the persistence diagram.
 
 \begin{figure}[!ht]
 \centering
@@ -982,7 +982,7 @@ The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\RR}^2$ of $f$ i
 \label{fig:codigoBarras}
 \end{figure}
 
-Therefore, in a persistence diagram, each point $(a_i, a_j)$ represents $\mu_p^{i, j}$ independent homology classes whose persistence coincides with the distance from point $(a_i, a_j)$ to its vertical projection on the diagonal $\Delta $. In addition to the persistence diagrams, we can encode information about persistent homology through so-called \emph{barcodes}. These representations can be obtained from the persistence diagram by drawing for each point $(a_i, a_j)$ with $a_i < a_j$ of said diagram $\mu_p^{i, j}$ half-open intervals $[a_i, a_j) $, as shown in the Figure \ref{fig:codigoBarras}.\\
+Therefore, in a persistence diagram, each point $(a_i, a_j)$ represents $\mu_p^{i, j}$ independent homology classes whose persistence coincides with the distance from point $(a_i, a_j)$ to its vertical projection on the diagonal $\Delta $. In addition to the persistence diagrams, we can encode information about persistent homology through so-called \emph{barcodes}. These representations can be obtained from the persistence diagram by drawing for each point $(a_i, a_j)$ with $a_i < a_j$ of said diagram $\mu_p^{i, j}$ half-open intervals $[a_i, a_j) $, as shown in the Figure~\ref{fig:codigoBarras}.\\
 
 Finally, we will denote by $\#(A)$ the \emph{total multiplicity} of a multiset $A$, which, by definition, is the sum of the multiplicities of the elements of $A$. Thus the total multiplicity of the persistence diagram minus the diagonal is
 \[
@@ -1016,7 +1016,7 @@ Once we have reviewed the required mathematical background, we will study some r
 \subsection{Topological Machine Learning}
 \label{sec:topoML}
 
-We have seen in Section \ref{sec:tda} that Persistent Homology is a great tool to obtain some of the ``possible'' topological characteristics of the underlying manifold from where our dataset has been sampled. This tool has been of great use for exploratory data analysis \cite{cheng_application_2020, topaz_topological_2015, amezquita_shape_2020} since it allows us to get a new sense of how our data looks from a geometric perspective. We can see in Figure \ref{fig:tdaPipe} a standard pipeline for this purpose.
+We have seen in Section~\ref{sec:tda} that Persistent Homology is a great tool to obtain some of the ``possible'' topological characteristics of the underlying manifold from where our dataset has been sampled. This tool has been of great use for exploratory data analysis \cite{cheng_application_2020, topaz_topological_2015, amezquita_shape_2020} since it allows us to get a new sense of how our data looks from a geometric perspective. We can see in Figure~\ref{fig:tdaPipe} a standard pipeline for this purpose.
 
 \begin{figure}[!ht]
 \centering
@@ -1031,7 +1031,7 @@ Usually, our goal would be to see if there are certain groups of data points tha
 Therefore, there are multiple ways to be able to handle these multisets as input for Machine Learning or Data Science methods \cite{hensel_survey_2021}. The main ones are:
 
 \begin{itemize}
-    \item We can encode the persistent homology information in a piecewise constant function, such as Stable Ranks \cite{agerberg_supervised_2021} or Betti curves \cite{hensel_survey_2021}. Furthermore, one of the most popular techniques is the use of persistence landscapes \cite{bubenik_statistical_2015}, which, as we can see in Figure \ref{fig:landscapes}, are functional vector spaces. The main benefit of using these representations is the facility that it gives us to compare them by using distances such as interleaving distance or $L_p$ norms. Moreover, we can use all our knowledge of calculus to obtain statistical analysis rewarding our newly obtained functions. 
+    \item We can encode the persistent homology information in a piecewise constant function, such as Stable Ranks \cite{agerberg_supervised_2021} or Betti curves \cite{hensel_survey_2021}. Furthermore, one of the most popular techniques is the use of persistence landscapes \cite{bubenik_statistical_2015}, which, as we can see in Figure~\ref{fig:landscapes}, are functional vector spaces. The main benefit of using these representations is the facility that it gives us to compare them by using distances such as interleaving distance or $L_p$ norms. Moreover, we can use all our knowledge of calculus to obtain statistical analysis rewarding our newly obtained functions. 
 
     \begin{figure}[!ht]
         \centering
@@ -1042,7 +1042,7 @@ Therefore, there are multiple ways to be able to handle these multisets as input
 
     From an ML perspective, we could either use some kernel methods such as SVMs making use of a scalar product defined on these functions, but also we could simulate a signal processing setup and perform some sampling and quantization to be able to vectorize the functions over a certain domain.
 
-    \item We can transform the persistence diagram to a more common input format for ML, such as images or vectors. Starting with images, the main objective of Persistence images \cite{adams_persistence_2016} is to obtain some ``heat map'' that reflects both the persistence and the relative importance of the features (see Figure \ref{fig:persImages}). On the other hand, we could encode pairwise distances of points from the multiset as a distance vector \cite{carriere_stable_2015}.
+    \item We can transform the persistence diagram to a more common input format for ML, such as images or vectors. Starting with images, the main objective of Persistence images \cite{adams_persistence_2016} is to obtain some ``heat map'' that reflects both the persistence and the relative importance of the features (see Figure~\ref{fig:persImages}). On the other hand, we could encode pairwise distances of points from the multiset as a distance vector \cite{carriere_stable_2015}.
 
     \begin{figure}[!ht]
         \centering
@@ -1055,7 +1055,7 @@ Therefore, there are multiple ways to be able to handle these multisets as input
 
 If we focus on DL, we can see some novel work that proposes to put the focus on the network instead of preprocessing the persistent diagram, as we have seen before. Currently, the two main approaches are creating layers that learn to embed the persistent diagram or utilizing a more complex network architecture that enables the use of multisets as input \cite{hensel_survey_2021}.\\
 
-However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, We will present an interesting use of TDA to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a DL context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples'' (see Figure \ref{fig:trojanTrain}).
+However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, We will present an interesting use of TDA to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a DL context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples'' (see Figure~\ref{fig:trojanTrain}).
 
 \begin{figure}[ht!]
      \centering
@@ -1081,9 +1081,9 @@ However, in this project, we will not focus our attention on using the persisten
     \label{fig:trojan}
 \end{figure}
 
-Therefore, it has been shown that if we analyze the persistent homology of the neuron connectivity graph, we can extend the Hebbian learning rule of \textit{``fire together, wire together''} to higher-level connections (now the wiring is not only for adjacent nodes but also for path-connected nodes). Hence, as we can see in Figure \ref{fig:withTrojan}, a trojaned input on a trojaned network will generate a highly persistent cycle, which will connect the shallow and deep layers, short-cutting the proper classification. The reason we showcase this study is to remark on the fact that with some creativity and ingenuity, you can utilize persistent homology in more ways than to study the geometric characteristics of your dataset.\\
+Therefore, it has been shown that if we analyze the persistent homology of the neuron connectivity graph, we can extend the Hebbian learning rule of \textit{``fire together, wire together''} to higher-level connections (now the wiring is not only for adjacent nodes but also for path-connected nodes). Hence, as we can see in Figure~\ref{fig:withTrojan}, a trojaned input on a trojaned network will generate a highly persistent cycle, which will connect the shallow and deep layers, short-cutting the proper classification. The reason we showcase this study is to remark on the fact that with some creativity and ingenuity, you can utilize persistent homology in more ways than to study the geometric characteristics of your dataset.\\
 
-As briefly explained in the Introduction, we are going to focus on the application of TDA to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space (see Figure \ref{fig:topoAuto}). By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use a simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.  
+As briefly explained in the Introduction, we are going to focus on the application of TDA to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space (see Figure~\ref{fig:topoAuto}). By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use a simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.  
 
 
 \begin{figure}[ht!]
@@ -1105,7 +1105,7 @@ As briefly explained in the Introduction, we are going to focus on the applicati
 \end{figure}
 
 
-When it comes to classification tasks, we remark on the work of Chen \etal \cite{chen_topological_2018}, where they reduce the generalization error by imposing a simpler topology of the boundary (see Figure \ref{fig:boundReg}). The benefit of using this technique is the ability to have direct control of how much direct control of the amount of suppressed spurious topological structures based on their importance for the classification task, in contrast to other regularization techniques that obtain a simpler decision boundary as a proxy of variance reduction.
+When it comes to classification tasks, we remark on the work of Chen \etal \cite{chen_topological_2018}, where they reduce the generalization error by imposing a simpler topology of the boundary (see Figure~\ref{fig:boundReg}). The benefit of using this technique is the ability to have direct control of how much direct control of the amount of suppressed spurious topological structures based on their importance for the classification task, in contrast to other regularization techniques that obtain a simpler decision boundary as a proxy of variance reduction.
 
 
 \subsubsection*{Topologically Densified Distributions}
@@ -1159,9 +1159,9 @@ then
 \]
 \end{lemma}
 
-In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view\footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq. \ref{eq:concentration} of Lemma \ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\varphi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\overline{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\overline{B_r}(z_i)$, $Q_k(\overline{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
+In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view\footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq.~\ref{eq:concentration} of Lemma~\ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\varphi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\overline{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\overline{B_r}(z_i)$, $Q_k(\overline{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
 
-Now that we know the benefits of obtaining mass concentration over some specific reference set $M \subseteq \mathcal{Z}$, we will see that we can provably enforce this property by applying some topological constraint on $Q_k$ in a process called \emph{topological densification}. To be precise, as we can see in Figure \ref{fig:densiScheme}, this topological constraint will give us a non-trivial lower bound on $Q_k(M_{l\cdot \epsilon})$ in terms of $Q_k(M)$, where $M_{l\cdot \epsilon}$ represents the $l\cdot \epsilon$-extension of $M$ for any $\epsilon>0$ and $l\in \mathbb{N}$, i.e.
+Now that we know the benefits of obtaining mass concentration over some specific reference set $M \subseteq \mathcal{Z}$, we will see that we can provably enforce this property by applying some topological constraint on $Q_k$ in a process called \emph{topological densification}. To be precise, as we can see in Figure~\ref{fig:densiScheme}, this topological constraint will give us a non-trivial lower bound on $Q_k(M_{l\cdot \epsilon})$ in terms of $Q_k(M)$, where $M_{l\cdot \epsilon}$ represents the $l\cdot \epsilon$-extension of $M$ for any $\epsilon>0$ and $l\in \mathbb{N}$, i.e.
 \[
 M_{l\cdot \epsilon} = \bigcup_{z\in M} \overline{B_{l\cdot \epsilon}}(z)\,.
 \]
@@ -1190,7 +1190,7 @@ Therefore, based on this property, we will enforce that for each batch $B$, the 
 Let $\beta>0$. A set $M\subseteq \mathcal{Z}$ is \emph{$\beta$-connected} iff all $0$-dimmensional death-times of its Vietoris-Rips persistent homology, denoted as $\dag(M)$, are in the open interval $(0, \beta]$. 
 \end{definition}
 
-We can clearly see that the two definitions are equivalent if we remember the proposition \ref{prop:connected}, stating:
+We can clearly see that the two definitions are equivalent if we remember the proposition~\ref{prop:connected}, stating:
 
 \begin{repproposition}{prop:connected}
 For any distance $d$ on $X$, and $\beta \geq 0$, the partition corresponding to the connected components of $VR(\beta)$, denoted as $\pi_0(VR(\beta))$, coincides with the $\beta$-components of $X$.
@@ -1215,7 +1215,7 @@ Hence, the steps to enforce this topological regularisation are:
 Lastly, it can be proven that this cost function is differentiable if we refine $\tilde{\mathcal{L}}_\beta(B_i)$ using a new indicator function under the mild assumption that the pairwise distances of elements in $B_i$ are unique. This assumption will be fulfilled almost surely if we consider that $Q$ is non-atomic, i.e., $Q(\varphi(x) = z)=0$ for $x \in \mathcal{X}$, and $z \in \mathcal{Z}$. Furthermore, we will assume that $\mathcal{Z}=\RR^m$ (i.e., we vectorized our latent space).
 
 \begin{theorem}[Topological regularization differentiability  \cite{hofer_connectivity-optimized_2019}]
-Let $M \subseteq \RR^m$, with $\abs{M}$. Hence, $\widetilde{\mathcal{L}}_\beta(B_i)$ as described on eq. \ref{eq:topo_loss} can be rewritten as
+Let $M \subseteq \RR^m$, with $\abs{M}$. Hence, $\widetilde{\mathcal{L}}_\beta(B_i)$ as described on eq.~\ref{eq:topo_loss} can be rewritten as
 \[
 \widetilde{\mathcal{L}}_\beta(M) = \sum_{\{i,j\} \subset [b]} \abs{\beta - d(z_i, z_j)} \cdot \1{i}{j}(z_1, ..., z_b)\,,
 \]
@@ -1233,7 +1233,7 @@ Furthermore, for $1\leq u \leq b$ and $1 \leq v \leq m$, the partial (sub-)deriv
 \end{theorem}
 
 
-We can see in Figure \ref{fig:attrac} a representation of the mass attraction that the topological regularization will do when imposed into our sub-batches during training.
+We can see in Figure~\ref{fig:attrac} a representation of the mass attraction that the topological regularization will do when imposed into our sub-batches during training.
 
 \begin{figure}[!ht]
     \centering
@@ -1334,7 +1334,7 @@ By using these similarity metrics, we can study which are the cases where our ne
 \subsubsection*{Model stitching \& Relative representation}
 So far, we have seen model similarity from a representational point of view, where we obtain the activation matrices for the two layers and then compare them either by their statistical or geometric properties. However, there is another approach when comparing two networks which we can call \emph{functional similarity}. The main difference between functional similarity and representational similarity is that in the latter, we focus on the shape and characteristics of the data embedding, while in the former, we want to compare the ``functional utility'' of these embeddings for each network, i.e., asses how well would the model $B$ achieve its task using the representations of network $A$ \cite{csiszarik_similarity_2021}.\\
 
-Therefore, for this task of assessing functional similarities between networks, there has been proposed model stitching using an additional trainable stitching layer between the desired layers \cite{csiszarik_similarity_2021, bansal_revisiting_2021, li_convergent_2016}. Hence, in these setups, we have two networks $f_A=\gamma_A \circ \varphi_A$, and $f_B=\gamma_B \circ \varphi_B$, decomposed into a \emph{representation map $\varphi_\bullet$} and a \emph{task map $\gamma_\bullet$}. As we can see in Figure \ref{fig:stich_lay}, we train our new layer $l$ on our stitched model $f_{A \stitch B}=\gamma_B \circ l \circ \varphi_A$ either on the same task and labels used for training $f_B$, or we could use pseudo-labels produced by the model $B$ (similar to the teacher network in knowledge distillation). 
+Therefore, for this task of assessing functional similarities between networks, there has been proposed model stitching using an additional trainable stitching layer between the desired layers \cite{csiszarik_similarity_2021, bansal_revisiting_2021, li_convergent_2016}. Hence, in these setups, we have two networks $f_A=\gamma_A \circ \varphi_A$, and $f_B=\gamma_B \circ \varphi_B$, decomposed into a \emph{representation map $\varphi_\bullet$} and a \emph{task map $\gamma_\bullet$}. As we can see in Figure~\ref{fig:stich_lay}, we train our new layer $l$ on our stitched model $f_{A \stitch B}=\gamma_B \circ l \circ \varphi_A$ either on the same task and labels used for training $f_B$, or we could use pseudo-labels produced by the model $B$ (similar to the teacher network in knowledge distillation). 
 
 \begin{figure}[!ht]
     \centering
@@ -1364,7 +1364,7 @@ r = (\text{sim}(\varphi(x), \varphi(a_1)), \text{sim}(\varphi(x), \varphi(a_2)),
 
 
 \begin{remark}
-As we can see in Figure \ref{fig:relativeSche}, this construction resembles the representation of a vector in coordinates of an orthonormal basis using the corresponding projection to each vector of the basis. However, in this case, we do not require to use of an inner product as a similarity function, nor the anchors to be linearly independent (or orthogonal).
+As we can see in Figure~\ref{fig:relativeSche}, this construction resembles the representation of a vector in coordinates of an orthonormal basis using the corresponding projection to each vector of the basis. However, in this case, we do not require to use of an inner product as a similarity function, nor the anchors to be linearly independent (or orthogonal).
 \end{remark}
 
 \begin{figure}[!ht]
@@ -1400,7 +1400,7 @@ Hence, if we use the cosine similarity, then this new latent space representatio
     \label{fig:crossDomainScheme}
 \end{figure}
 
-Lastly, we can see in Figure \ref{fig:crossDomainScheme} the standard training setup used in \cite{moschella_relative_2022} for the case of cross-domain zero-shot model stitching. Here, we will use two pretrained encoders $\varphi_A, \varphi_B$, and train the networks $\tilde{f}_{A}=\gamma_A \circ T_{rel}(\mathcal{A})  \circ \varphi_A$ and $\tilde{f}_{B}=\gamma_B \circ T_{rel}(\Gamma(\mathcal{A}))  \circ \varphi_B$ with both encoder weights frozen, using their corresponding domain-specific dataset. Note that in this case, where we have two distinct datasets, we will fix the anchors in one of the (in this case, model $A$) and use a partial correspondence mapping $\Gamma: \mathcal{P}(\mathcal{X}_A) \to \mathcal{P}(\mathcal{X}_B)$ to obtain the corresponding \emph{parallel anchors $\Gamma(\mathcal{A})$}.
+Lastly, we can see in Figure~\ref{fig:crossDomainScheme} the standard training setup used in \cite{moschella_relative_2022} for the case of cross-domain zero-shot model stitching. Here, we will use two pretrained encoders $\varphi_A, \varphi_B$, and train the networks $\tilde{f}_{A}=\gamma_A \circ T_{rel}(\mathcal{A})  \circ \varphi_A$ and $\tilde{f}_{B}=\gamma_B \circ T_{rel}(\Gamma(\mathcal{A}))  \circ \varphi_B$ with both encoder weights frozen, using their corresponding domain-specific dataset. Note that in this case, where we have two distinct datasets, we will fix the anchors in one of the (in this case, model $A$) and use a partial correspondence mapping $\Gamma: \mathcal{P}(\mathcal{X}_A) \to \mathcal{P}(\mathcal{X}_B)$ to obtain the corresponding \emph{parallel anchors $\Gamma(\mathcal{A})$}.
 
 A use case of this cross-domain model stitching procedure could be a situation where you have several devices, each one in a specific language. Hence, with only one trained classification head (e.g., the one trained on the English corpus), you could have good performance when stitching this classification head with the language-specific encoders. This can be really helpful from a computational perspective in scenarios where you would need to have frequent updates of your models since you would only need to do it for one of them.
 
