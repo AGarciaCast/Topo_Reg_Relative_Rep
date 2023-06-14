@@ -173,7 +173,7 @@ In conclusion, these empirical findings, combined with the new theoretical frame
 
 \subsection{Full fine-tuning analysis}
 
-As discussed in Section~\ref{sec:topo_meth}, we have made some methodological changes from the original paper implementation of the following experiments. As a reference, the results presented in the original relative transformation paper are shown in Table~\ref{tab:multilingual-fine-tune-og}.\\
+As discussed in Section~\ref{sec:topo_meth}, we have made some methodological changes from the original paper implementation of the following experiments. As a reference, the results presented in the original relative transformation paper are shown in Table~\ref{tab:multilingual-finetune-og}.\\
 
 \begin{table}[ht!]
 \centering
@@ -200,10 +200,10 @@ As discussed in Section~\ref{sec:topo_meth}, we have made some methodological ch
 \end{tabular}
 }
 \caption{Summary of the original results presented in \cite{moschella_relative_2022} (over five random seeds)}
-\label{tab:multilingual-fine-tune-og}
+\label{tab:multilingual-finetune-og}
 \end{table}
 
-As shown in Table~\ref{tab:multilingual-fine-tune-fine-grained}, we observe slightly worst results when replicating the original training setup while incorporating our proposed methodological changes. However, as previously discussed, we will proceed with this new setup as it represents a more common methodology. Additionally, some of the introduced changes, such as employing gradient accumulation with smaller batch sizes, were necessary to train the models on our V100 GPU successfully. It would, however, be interesting to conduct further analysis to understand why the inclusion of post $L^2$ normalization on the relative transformation and the utilization of the ``non-standard'' classification head leads to improved performance.\\
+As shown in Table~\ref{tab:multilingual-finetune-fine-grained}, we observe slightly worst results when replicating the original training setup while incorporating our proposed methodological changes. However, as previously discussed, we will proceed with this new setup as it represents a more common methodology. Additionally, some of the introduced changes, such as employing gradient accumulation with smaller batch sizes, were necessary to train the models on our V100 GPU successfully. It would, however, be interesting to conduct further analysis to understand why the inclusion of post $L^2$ normalization on the relative transformation and the utilization of the ``non-standard'' classification head leads to improved performance.\\
 
 \begin{table}[ht!]
 \centering
@@ -230,7 +230,7 @@ As shown in Table~\ref{tab:multilingual-fine-tune-fine-grained}, we observe slig
 \end{tabular}
 }
 \caption{Fine-grained: fine-tune (over two random seeds)}
-\label{tab:multilingual-fine-tune-fine-grained}
+\label{tab:multilingual-finetune-fine-grained}
 \end{table}
 
 However, as depicted in Table~\ref{tab:multilingual-full-fine-grained}, fully fine-tuning the model (i.e., without freezing the encoder) narrows the gap between the new methodology and the results reported in the original paper for the absolute case.
@@ -270,7 +270,7 @@ Conversely, we observe an improvement in performance in the relative case compar
 Remarkably, we find that fully fine-tuning the network yields better stitching performance in the relative case. We speculate that the inclusion of relative transformations constructed using parallel anchors acts as a form of implicit regularization, enhancing the compatibility of the pre-relative latent space. As discussed in Section~\ref{sec:repLearn}, specific auxiliary tasks, such as predicting transformations in the input (self-supervised) and discriminating common classes \cite{gygli_towards_2020}, have been identified to increase the compatibility of latent representations. However, in this case, an additional auxiliary classification head is not required to apply this type of regularization.
 
 \begin{mathNote}
-The same conclusions were obtained for the coarse-grained dataset (see Tables~\ref{tab:multilingual-fine-tune-coarse-grained},~\ref{tab:multilingual-full-coarse-grained}).
+The same conclusions were obtained for the coarse-grained dataset (see Tables~\ref{tab:multilingual-finetune-coarse-grained},~\ref{tab:multilingual-full-coarse-grained}).
 \end{mathNote}
 
 \subsection{Topological regularization}
