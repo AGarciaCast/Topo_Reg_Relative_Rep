@@ -322,7 +322,7 @@ Let $X\subset \RR^d$ be a finite set of points. We will call \emph{\v{C}ech comp
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.5\textwidth]{figures/bg/Cech.png} 
-\caption{\v{C}ech complex for a set of nine points and a radius $r$. Source: \cite{edelsbrunner_computational_2010}}
+\caption{\v{C}ech complex for a set of nine points and a radius $r$. CC BY Source: \cite{proboscidearubber15_cech_2023}}
 \label{fig:cech}
 \end{figure}
 
@@ -345,8 +345,8 @@ We can see in Figure~\ref{fig:vr} how the various VR complexes are generated as 
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/bg/vr.png} 
-\caption{Vietoris-Rips complexes for a set of seven points as we increase the radius from left to right. Source: \cite{ulmer_topological_2019}}
+\includegraphics[width=\textwidth]{figures/bg/vr.png} 
+\caption{Vietoris-Rips complexes for a set of seven points as we increase the radius from left to right. CC BY Source: \cite{choudhary_approximation_2017}}
 \label{fig:vr}
 \end{figure}
 
@@ -417,7 +417,7 @@ Let $(\mathcal{X}, d)$ be a metric space, $X \subset \mathcal{X}$ be a dataset, 
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/bg/witnessCons.png} 
+\includegraphics[width=0.8\textwidth]{figures/bg/witnessCons.png} 
     \caption{Witness complex for a set  dataset of 11 points using a subset of 5 landmarks points and radius $\epsilon$. Adapted from: \cite{medbouhi_towards_2022}}
 \label{fig:witnessCons}
 \end{figure}
@@ -818,8 +818,8 @@ We can see in Figure~\ref{fig:gruposCadenasOpBorde} this relationship between th
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.8\textwidth]{figures/bg/chain_complex.png} 
-\caption{Chain complex representing the chain group, the cycle group, and the boundary group. Source: \cite{edelsbrunner_computational_2010}}
+\includegraphics[width=0.8\textwidth]{figures/bg/chain_complex.pdf} 
+\caption{Chain complex representing the chain group, the cycle group, and the boundary group. Adapted from: \cite{edelsbrunner_computational_2010}}
 \label{fig:gruposCadenasOpBorde}
 \end{figure}
 
@@ -880,8 +880,8 @@ Let the \emph{sublevel set} $\RR_t=f^{-1}(-\infty, t]$ for each $t \in \RR$. The
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=\textwidth]{figures/bg/Sub-level-Filtrations.png}
-    \caption{Connected components in $\RR$ in the different leaks. Source: \cite{curry_counting_2020}}
+    \includegraphics[width=\textwidth]{figures/bg/1dpers.png}
+    \caption{Connected components in $\RR$ in the different leaks. Adapted from: \cite{curry_counting_2020}}
     \label{fig:sublevelR}
 \end{figure}
 
@@ -979,7 +979,7 @@ The \emph{persistence diagram} $\text{Dgm}(f) \subset \overline{\RR}^2$ of $f$ i
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.35\textwidth]{figures/bg/The-Persistence-Diagram-Associated-to-a-Barcode.png} 
-\caption{Barcode associated with a persistence diagram. Source: \cite{curry_fiber_2019}}
+\caption{Barcode associated with a persistence diagram. Adapted from: \cite{curry_fiber_2019}}
 \label{fig:codigoBarras}
 \end{figure}
 
@@ -1021,7 +1021,7 @@ We have seen in Section~\ref{sec:tda} that Persistent Homology is a great tool t
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=\textwidth]{figures/bg/pipelineTDA.png} 
+\includegraphics[width=\textwidth]{figures/bg/pipelineTDA.pdf} 
 \caption{Standard TDA pipeline. Adapted from: \cite{berwald_mathematics_2019}}
 \label{fig:tdaPipe}
 \end{figure}
@@ -1036,8 +1036,8 @@ Therefore, there are multiple ways to be able to handle these multisets as input
 
     \begin{figure}[!ht]
         \centering
-        \includegraphics[width=0.7\textwidth]{figures/bg/landscapes.png} 
-        \caption{Persistence landscape construction. Source: \cite{bubenik_statistical_2015}}
+        \includegraphics[width=0.8\textwidth]{figures/bg/landscapes.png} 
+        \caption{Persistence landscape construction. CC BY Source: \cite{ma_using_2020}}
         \label{fig:landscapes}
     \end{figure}
 
@@ -1047,8 +1047,25 @@ Therefore, there are multiple ways to be able to handle these multisets as input
 
     \begin{figure}[!ht]
         \centering
-        \includegraphics[width=\textwidth]{figures/bg/persImage.png} 
-        \caption{Persistence image construction. Source: \cite{adams_persistence_2016}}
+    \begin{subfigure}[b]{0.33\textwidth}
+         \centering
+         \includegraphics[width=0.9\textwidth]{figures/bg/pers_img_1.png}
+        \caption{Dataset}
+         \label{fig:pers_img_1}
+     \end{subfigure}\hfill
+      \begin{subfigure}[b]{0.33\textwidth}
+         \centering
+         \includegraphics[width=0.9\textwidth]{figures/bg/pers_img_2.png}
+        \caption{Persistence diagram}
+         \label{fig:pers_img_2}
+     \end{subfigure}\hfill
+     \begin{subfigure}[b]{0.33\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{figures/bg/pers_img_3.png}
+        \caption{Persistence image}
+         \label{fig:pers_img_3}
+     \end{subfigure}
+        \caption{Persistence image construction. Adapted from: \cite{saul_persistence_2019}}
         \label{fig:persImages}
     \end{figure}
     
@@ -1056,16 +1073,10 @@ Therefore, there are multiple ways to be able to handle these multisets as input
 
 If we focus on DL, we can see some novel work that proposes to put the focus on the network instead of preprocessing the persistent diagram, as we have seen before. Currently, the two main approaches are creating layers that learn to embed the persistent diagram or utilizing a more complex network architecture that enables the use of multisets as input \cite{hensel_survey_2021}.\\
 
-However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, We will present an interesting use of TDA to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a DL context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples'' (see Figure~\ref{fig:trojanTrain}).
+However, in this project, we will not focus our attention on using the persistent diagram as our input but on guiding the training of our standard classification tasks based on certain desired topological properties. But, before dealing with the main topic of topological regularization techniques, We will present an interesting use of TDA to asses certain properties of the network after being trained. It has been shown that we can make use of persistent homology in order to identify whether our network has been a victim of a trojan attack \cite{zheng_topological_2022}. This kind of attack in a DL context means that there have been introduced some modified samples with a wrongly attached label during the training. Hence, the user, during testing, will not notice that the network has memorized the trojan pattern since the testing is done with the ``clean samples''.
 
 \begin{figure}[ht!]
      \centering
-     \begin{subfigure}[b]{0.7\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{figures/bg/trojanTrain.png}
-        \caption{Trojan attack training}
-         \label{fig:trojanTrain}
-     \end{subfigure}\\
     \begin{subfigure}[b]{0.45\textwidth}
          \centering
          \includegraphics[width=0.8\textwidth]{figures/bg/noTrojan.png}
@@ -1078,35 +1089,17 @@ However, in this project, we will not focus our attention on using the persisten
         \caption{Trojaned Model + Trojaned Input}
          \label{fig:withTrojan}
      \end{subfigure}
-    \caption{Trojan attacks. Source: \cite{zheng_topological_2022}}
+    \caption{Trojan attacks. Adapted from: \cite{zheng_topological_2022}}
     \label{fig:trojan}
 \end{figure}
 
-Therefore, it has been shown that if we analyze the persistent homology of the neuron connectivity graph, we can extend the Hebbian learning rule of \textit{``fire together, wire together''} to higher-level connections (now the wiring is not only for adjacent nodes but also for path-connected nodes). Hence, as we can see in Figure~\ref{fig:withTrojan}, a trojaned input on a trojaned network will generate a highly persistent cycle, which will connect the shallow and deep layers, short-cutting the proper classification. The reason we showcase this study is to remark on the fact that with some creativity and ingenuity, you can utilize persistent homology in more ways than to study the geometric characteristics of your dataset.\\
+Therefore, it has been shown that if we analyze the persistent homology of the neuron connectivity graph, we can extend the Hebbian learning rule of \textit{``fire together, wire together''} to higher-level connections (now the wiring is not only for adjacent nodes but also for path-connected nodes). Hence, as we can see in Figure~\ref{fig:trojan}, a trojaned input on a trojaned network will generate a highly persistent cycle, which will connect the shallow and deep layers, short-cutting the proper classification. The reason we showcase this study is to remark on the fact that with some creativity and ingenuity, you can utilize persistent homology in more ways than to study the geometric characteristics of your dataset.\\
 
-As briefly explained in the Introduction, we are going to focus on the application of TDA to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space (see Figure~\ref{fig:topoAuto}). By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use a simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.  
-
-
-\begin{figure}[ht!]
-     \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{figures/bg/topologicalAutoencoder.png}
-        \caption{Topo-autoencoder. Source: \cite{moor_topological_2021}}
-         \label{fig:topoAuto}
-     \end{subfigure}\hfill
-      \begin{subfigure}[b]{0.45\textwidth}
-         \centering
-         \includegraphics[width=0.9\textwidth]{figures/bg/boundaryReg.png}
-        \caption{Boundary reg. Source: \cite{chen_topological_2018}}
-         \label{fig:boundReg}
-     \end{subfigure}
-    \caption{Topological regularization examples}
-    \label{fig:topoRegExtraEx}
-\end{figure}
+As briefly explained in the Introduction, we are going to focus on the application of TDA to help guide the training process of our networks. As an example, we can see Topological Autoencoders \cite{moor_topological_2021}, where we use persistent homology in order to maintain the topological features of our dataset in the encoded latent space. By adding this penalty term of the distance between the two persistence diagrams, we are learning the topology of the underlying manifold. Note that in order to obtain the persistent homology, we use a simplicial complex over our dataset, which is not so different from what has been done in other older dimensionality reduction techniques such as Isomap \cite{tenenbaum_global_2000} to encode the structure of the underlying manifold.\\
 
 
-When it comes to classification tasks, we remark on the work of Chen \etal \cite{chen_topological_2018}, where they reduce the generalization error by imposing a simpler topology of the boundary (see Figure~\ref{fig:boundReg}). The benefit of using this technique is the ability to have direct control of how much direct control of the amount of suppressed spurious topological structures based on their importance for the classification task, in contrast to other regularization techniques that obtain a simpler decision boundary as a proxy of variance reduction.
+
+When it comes to classification tasks, we remark on the work of Chen \etal \cite{chen_topological_2018}, where they reduce the generalization error by imposing a simpler topology of the boundary. The benefit of using this technique is the ability to have direct control of how much direct control of the amount of suppressed spurious topological structures based on their importance for the classification task, in contrast to other regularization techniques that obtain a simpler decision boundary as a proxy of variance reduction.
 
 
 \subsubsection*{Topologically Densified Distributions}
@@ -1162,17 +1155,10 @@ then
 
 In order to construct the regularization technique that increases those probabilities, we will observe this statement from a measure-theoretic probabilistic point of view\footnote{We suggest the reader look at \cite[Appendix ~ B]{schervish_theory_1995} for a brief introduction to this more foundational perspective on probability theory.}. Hence, we can reinterpret Eq.~\ref{eq:concentration} of Lemma~\ref{lem:genErr} as controlling how much probability mass of $C_k$ is concentrated in $D_k$ w.r.t. $Q_k$. Moreover, we will assume that our network perfectly classifies the training data set $S$ without much structural risk, i.e., for every $z_i=\varphi(x_i)$ with $c(x_i)=k$, then there exists $r>0$ (sufficiently large) with $\overline{B_r}(z_i)\subset D_k$. Then we can see that increasing the mass concentration in $\overline{B_r}(z_i)$, $Q_k(\overline{B_r}(z_i))$, will reduce generalization error since we will in turn increase $Q_k(D_k)$.\\
 
-Now that we know the benefits of obtaining mass concentration over some specific reference set $M \subseteq \mathcal{Z}$, we will see that we can provably enforce this property by applying some topological constraint on $Q_k$ in a process called \emph{topological densification}. To be precise, as we can see in Figure~\ref{fig:densiScheme}, this topological constraint will give us a non-trivial lower bound on $Q_k(M_{l\cdot \epsilon})$ in terms of $Q_k(M)$, where $M_{l\cdot \epsilon}$ represents the $l\cdot \epsilon$-extension of $M$ for any $\epsilon>0$ and $l\in \mathbb{N}$, i.e.
+Now that we know the benefits of obtaining mass concentration over some specific reference set $M \subseteq \mathcal{Z}$, we will see that we can provably enforce this property by applying some topological constraint on $Q_k$ in a process called \emph{topological densification}. To be precise, this topological constraint will give us a non-trivial lower bound on $Q_k(M_{l\cdot \epsilon})$ in terms of $Q_k(M)$, where $M_{l\cdot \epsilon}$ represents the $l\cdot \epsilon$-extension of $M$ for any $\epsilon>0$ and $l\in \mathbb{N}$, i.e.
 \[
 M_{l\cdot \epsilon} = \bigcup_{z\in M} \overline{B_{l\cdot \epsilon}}(z)\,.
 \]
-
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/bg/densification.png} 
-    \caption{$Q_k$ before and after being topological densified. Source: \cite{hofer_densified_2021}}
-    \label{fig:densiScheme}
-\end{figure}
 
 
 The topological constraint that we will use is the natural extension of the $\beta$-connectivity to random samples. Hence, we will create an indicator function (random variable) $\mathfrak{c}_b^\beta: \mathcal{Z}^b \to \{0,1\}$ as 
@@ -1335,14 +1321,16 @@ By using these similarity metrics, we can study which are the cases where our ne
 \subsubsection*{Model stitching \& Relative representation}
 So far, we have seen model similarity from a representational point of view, where we obtain the activation matrices for the two layers and then compare them either by their statistical or geometric properties. However, there is another approach when comparing two networks which we can call \emph{functional similarity}. The main difference between functional similarity and representational similarity is that in the latter, we focus on the shape and characteristics of the data embedding, while in the former, we want to compare the ``functional utility'' of these embeddings for each network, i.e., asses how well would the model $B$ achieve its task using the representations of network $A$ \cite{csiszarik_similarity_2021}.\\
 
-Therefore, for this task of assessing functional similarities between networks, there has been proposed model stitching using an additional trainable stitching layer between the desired layers \cite{csiszarik_similarity_2021, bansal_revisiting_2021, li_convergent_2016}. Hence, in these setups, we have two networks $f_A=\gamma_A \circ \varphi_A$, and $f_B=\gamma_B \circ \varphi_B$, decomposed into a \emph{representation map $\varphi_\bullet$} and a \emph{task map $\gamma_\bullet$}. As we can see in Figure~\ref{fig:stich_lay}, we train our new layer $l$ on our stitched model $f_{A \stitch B}=\gamma_B \circ l \circ \varphi_A$ either on the same task and labels used for training $f_B$, or we could use pseudo-labels produced by the model $B$ (similar to the teacher network in knowledge distillation). 
-
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.7\textwidth]{figures/bg/stich_lay.png} 
-    \caption{Model stitching using a stitching layer. Source: \cite{csiszarik_similarity_2021}}
+    \includegraphics[width=0.6\textwidth]{figures/bg/stitchingLayer.pdf} 
+    \caption{Model stitching using a stitching layer. Adapted from: \cite{csiszarik_similarity_2021}}
     \label{fig:stich_lay}
 \end{figure}
+
+Therefore, for this task of assessing functional similarities between networks, there has been proposed model stitching using an additional trainable stitching layer between the desired layers \cite{csiszarik_similarity_2021, bansal_revisiting_2021, li_convergent_2016}. Hence, in these setups, we have two networks $f_A=\gamma_A \circ \varphi_A$, and $f_B=\gamma_B \circ \varphi_B$, decomposed into a \emph{representation map $\varphi_\bullet$} and a \emph{task map $\gamma_\bullet$}. As we can see in Figure~\ref{fig:stich_lay}, we train our new layer $l$ on our stitched model $f_{A \stitch B}=\gamma_B \circ l \circ \varphi_A$ either on the same task and labels used for training $f_B$, or we could use pseudo-labels produced by the model $B$ (similar to the teacher network in knowledge distillation). \\
+
+
 
 Then the functional similarity can be measured as the relative accuracy obtained by $f_{A \stitch B}$ compared with $f_B$. If the two networks have high functional similarity, we will say that their representations are compatible, and we will be able to use both $\gamma_B \circ l$ and $\gamma_A$ interchangeably as task maps of network $A$. Therefore, we will be able to use into advantage the flexibility that we obtain of being able to make cross-domain and cross-architecture model stitching.\\
 

@@ -274,6 +274,7 @@ The same conclusions were obtained for the coarse-grained dataset (see Tables~\r
 \end{mathNote}
 
 \subsection{Topological regularization}
+\label{sec:res_topo}
 \subsubsection*{Testing new setup}
 
 As discussed in Section~\ref{sec:topo_meth}, we have once again made some methodological changes for this part of the project. One of the primary reasons for utilizing the freezing and unfreezing of the network with the new dataloader is to address a crucial issue: without this ``fix,'' we are unable to train in the relative case. In fact, when this fix is not applied, we observe a significant performance drop, obtaining approximately $7.29$ FScore $\times 100$ in English and $18.49$ in French.\\
@@ -358,7 +359,7 @@ In Section~\ref{sec:topo_meth}, we explored four different approaches for applyi
         \caption{Cosine similarity}
          \label{fig:rel_ex_3}
      \end{subfigure}
-    \caption{Non-cluster preserving relative transformation example}
+    \caption{Non-cluster-preserving relative transformation example}
     \label{fig:rel_ex_bad}
 \end{figure}
 

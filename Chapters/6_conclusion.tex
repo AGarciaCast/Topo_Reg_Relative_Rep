@@ -7,70 +7,50 @@
 
 \section{Conclusions}
 \label{sec:conclusions}
-\sweExpl{Slutsatser}
-\engExpl{Describe the conclusions (reflect on the whole introduction given in Chapter 1).}
+In summary, this thesis provides novel insights regarding topological regulation techniques combined with model stitching methods, such as the relative transformation.\\
 
+Firstly, our study led to the development of new theoretical foundations concerning the $\epsilon$-similarities based on the intertwiner groups of activation functions. This advancement allowed for more effective construction of the relative transformation. Additionally, through empirical analysis, we gained a deeper understanding of the similarities within the latent space. As a result, we now have stronger theoretical and empirical support for utilizing the relative transformation in zero-shot model stitching.\\
 
-  
-\engExpl{Discuss the positive effects and the drawbacks.\\
-Describe the evaluation of the results of the degree project.\\
-Did you meet your goals?\\
-What insights have you gained?\\
-What suggestions can you give to others working in this area?\\
-If you had it to do again, what would you have done differently?}
+Secondly, in the full fine-tuning analysis, we observed slightly worse results when replicating the original training setup while incorporating our proposed methodological changes. However, fully fine-tuning the model without freezing the encoder narrowed the performance gap between the new methodology and the results reported in the original paper for the absolute case.\\
 
-\sweExpl{Uppfyllde du dina mål?\\
-Vilka insikter har du fått?\\
-Vilka förslag kan du ge till andra som arbetar inom detta område?
-Om du skulle göra detta igen, vad skulle du ha gjort annorlunda?}
+Thirdly, our exploration of topological regularization revealed that applying the regularization to the post-relative space is crucial for achieving improved performance. We also found that encouraging overlapping death times distributions resulted in better performance. However, adjusting the post-relative representation proved to be more challenging due to the influence of the images of the anchors.\\
+
+Lastly, the results of model stitching with topological regularization showed improved stitching performance in all stitching combinations and modalities compared to the new baseline, except for one case. Additionally, selecting the same hyperparameters for topological regularization enhanced stitching performance but impacted non-stitching performance.\\
+
+Overall, our findings suggest that the proposed methodological changes and the application of topological regularization can potentially improve the performance of multilingual model stitching. However, further research is needed to explore the new latent space's geometric properties and investigate the use of different metrics for topological regularization.
 
 \section{Limitations}
 \label{sec:limitations}
-\sweExpl{Begränsande faktorer\\Vad gjorde du som begränsade dina ansträngningar? Vilka är begränsningarna i dina resultat?}
-\engExpl{What did you find that limited your efforts? What are the limitations of your results?}
 
+As mentioned previously, the training of the network using Hofer's topological regularization, as originally proposed in \cite{hofer_densified_2021}, was hindered by the limited VRAM of the V100 GPU we utilized. Consequently, we resorted to employing the ``debiasing trick,'' as described earlier, to accommodate this regularization technique. Unfortunately, this computational limitation imposed constraints on our ability to achieve optimal results.
+
+Additionally, the unexpected issue with Hofer's topological regularization led us to omit certain experiments, such as the analysis of representation similarity in multilingual model stitching.\\
+
+Moreover, due to time constraints, we were unable to conduct an extensive literature study on the possible sources of the observed $\epsilon$-similarity, as initially intended. We believe that conducting further research in this area could potentially unveil additional insights into the origins of the observed isometries.\\
+
+Lastly, our multilingual stitching models employed a single linear layer as the classification head. Although this architecture aligns with the standard approach in certain state-of-the-art transformer models, we aimed to investigate the utility of this regularization technique when using a more expressive classification head. Unfortunately, due to time and computational limitations, we were unable to explore this avenue.
 
 \section{Future work}
 \label{sec:futureWork}
-\sweExpl{Vad du har kvar ogjort?\\Vad är nästa självklara saker som ska göras?\\Vad tips kan du ge till nästa person som kommer att följa upp på ditt arbete?}
-\engExpl{Describe valid future work that you or someone else could or should do.\\
-Consider: What you have left undone? What are the next obvious things to be done? What hints can you give to the next person who is going to follow up on your work?}
+There are several potential directions for expanding the work presented in this thesis. Here, we highlight some of the most relevant ones:
+\begin{itemize}
+    \item \textbf{Investigation of alternative simplicial complex constructions:} As we have seen in Section \ref{sec:witness_topo}, it would be interesting to asses if our results depend on the specific construction to produce simplicial complexes in the TDA-based regularization. One good candidate for a new simplicial complex construction that could be used in the post-relative space is the Lazy Witness complex.
 
+    \item \textbf{Further exploration of metric choices for Vietoris–Rips filtrations:} In Section \ref{sec:res_topo}, we demonstrated the potential benefits of using different metrics to compute the Vietoris–Rips filtrations. However, our analysis provided only a proof of concept. A more comprehensive investigation and analysis of different metrics would be advisable.
 
+    \item \textbf{Analysis of representation similarity in multilingual model stitching:} Due to time constraints, we were unable to analyze the CKA in the multilingual model stitching experiments. Performing this representation similarity analysis would be valuable. To conduct such an analysis, a new dataset would need to be created, similar to the parallel anchor construction, where translations to other languages are available.
 
-Due to the breadth of the problem, only some of the initial goals have been
-met. In these section we will focus on some of the remaining issues that
-should be addressed in future work. ...
+    \item \textbf{Testing topological regularization on large models with increased GPU VRAM:} It is expected that better performance could be achieved by using larger VRAM in the GPU, eliminating the need for the ``debiasing fix'' utilized in this work. Therefore, it would be interesting to evaluate Hofer's topological regularization on large models while employing a more powerful GPU.
 
-\subsection{What has been left undone?}
-\label{what-has-been-left-undone}
+    \item \textbf{Exploring the combination of Hofer's regularization with the relative transformation in a multimodal setup:} Recent studies have shown that the relative transformation can transform unimodal models into multimodal ones without additional training \cite{norelli_asif_2022}. Investigating how to adapt the proposed methodology to combine Hofer's regularization with the relative transformation in this new multimodal setup would be intriguing.
+\end{itemize}
 
-The prototype does not address the third requirment, \ie a yearly unavailability of less than 3 minutes, this remains an open problem. ...
-
-
-
-
-\subsection{Next obvious things to be done}
-
-In particular, the author of this thesis wishes to point out xxxxxx remains as a problem to be solved. Solving this problem is the next thing that should be done. ...
 
 \section{Reflections}
 \label{sec:reflections}
-\sweExpl{Reflektioner}
-\sweExpl{Vilka är de relevanta ekonomiska, sociala, miljömässiga och etiska aspekter av ditt arbete?}
-\engExpl{What are the relevant economic, social,
-  environmental, and ethical aspects of your work?
-}
 
+As discussed in Section \ref{sec:repLearn}, an application of the cross-domain model stitching procedure is a scenario where multiple devices exist, each operating in a specific language. In such cases, one can achieve satisfactory performance by utilizing a single trained classification head (e.g., trained on the English corpus) and stitching it with language-specific encoders. This computational approach proves advantageous in situations requiring frequent model updates, as it necessitates updating only one model instead of all.\\
 
-
-One of the most important results is the reduction in the amount of
-energy required to process each packet while at the same time reducing the
-time required to process each packet.
-
-The thesis contributes to the  numbers 1 and 9 by
-xxxx. 
-
-
+The observation that specific regularization techniques, such as Hofer's topological regularization, can enhance model stitching performance further supports their utilization. By employing these improved model stitching setups, we can mitigate computational costs associated with training and fine-tuning networks. It is important to note that this approach would yield not only economic benefits but also have positive environmental implications by reducing the immense carbon footprint associated with training large language models \cite{strubell_energy_2019}.
 
 \end{document}
