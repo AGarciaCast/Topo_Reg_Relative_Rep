@@ -24,13 +24,13 @@ A subset of points $\{u_0, u_1, ..., u_k\} \subseteq \RR^d$ is \emph{affinely in
 
 \begin{definition}
 \begin{sloppypar}
-Given ${u_0, u_1, ..., u_k} \subseteq \RR^d$, we say that $x \in \RR^d$ is a \emph{convex combination} of these points if $x = \sum_{i=0}^{k} \lambda_i u_i$, where $\lambda_i \geq 0$ for all $i \in {0,...,k}$ and $\sum_{i=0}^{k} \lambda_i = 1$.
+Given $\{u_0, u_1, ..., u_k\} \subseteq \RR^d$, we say that $x \in \RR^d$ is a \emph{convex combination} of these points if $x = \sum_{i=0}^{k} \lambda_i u_i$, where $\lambda_i \geq 0$ for all $i \in {0,...,k}$ and $\sum_{i=0}^{k} \lambda_i = 1$.
 \end{sloppypar}
 \end{definition}
 
 \begin{definition}
 \begin{sloppypar}
-The \emph{convex hull} of $u_0, u_1, ..., u_k$, denoted by ${\text{conv}{u_0, u_1, ..., u_k}}$, is the set of all convex combinations of the given points.
+The \emph{convex hull} of $u_0, u_1, ..., u_k$, denoted by ${\text{conv}\{u_0, u_1, ..., u_k\}}$, is the set of all convex combinations of the given points.
 \end{sloppypar}
 \end{definition}
 
@@ -38,7 +38,7 @@ Using these concepts, we can define the building blocks of our decomposition as 
 
 \begin{definition}
 A \emph{$k$-simplex} $\sigma$ in $\RR^d$ with $d \geq k$ is the convex hull of $k+1$ affinely independent points $u_0, u_1, ..., u_k \in \RR^d$, i.e.,
-$\sigma \coloneqq \text{conv}\{u_0, u_1, ..., u_k\}$.
+$\sigma \equiv \text{conv}\{u_0, u_1, ..., u_k\}$.
 \end{definition}
 
 We say that the $k$-simplex $\sigma$ has dimension $k$, and the points $u_0, u_1, ..., u_k$ are referred to as the \emph{vertices of $\sigma$}.
@@ -228,7 +228,7 @@ The \emph{underlying space} of a simplicial complex $K$, denoted $\abs{K}$, is t
 As can be seen, the underlying space of a simplicial complex is compact since it is a finite union of simplices. The following result characterizes the open and closed sets of the underlying space $\abs{K}$ of a simplicial complex $K$.
 
 \begin{proposition}[{\cite[Chapter~3]{edelsbrunner_computational_2010}}]
-Let $K$ be a simplicial complex and $A \subset \abs{K}$ a subset. Then $A$ is an open (closed) set in $K$ if and only if for every $\sigma \in K$, $A \cap \abs{\sigma}$ is an open (closed) set of $\abs{\sigma}$.
+Let $K$ be a simplicial complex and ${A \subset \abs{K}}$ a subset. Then $A$ is an open (closed) set in $K$ if and only if for every $\sigma \in K$, $A \cap \abs{\sigma}$ is an open (closed) set of $\abs{\sigma}$.
 \end{proposition}
 
 \begin{definition}
@@ -260,10 +260,9 @@ In this way, it is fulfilled that
 
 \begin{exmp}
 The following set forms an abstract simplicial complex:
-
 \begin{gather*}
-A = \{\{0\},\{1\},\{2\},\{3\},\{4\},\{5\},\{6\},\{0,1\},\{1,2\},\{1,3\},\{1,4\},\{2,3\},\\
-\{2,4\},\{3,4\},\{4,5\},\{4,6\},\{5,6\},\\
+A = \{\{0\},\{1\},\{2\},\{3\},\{4\},\{5\},\{6\},\{0,1\},\{1,2\},\{1,3\},\{1,4\},\\
+\{2,3\},\{2,4\},\{3,4\},\{4,5\},\{4,6\},\{5,6\},\\
 \{1,2,3\},\{1,2,4\},\{1,3,4\},\{2,3,4\},\{1,2,3,4\}\}\,.
 \end{gather*}
 
@@ -279,7 +278,7 @@ Each geometric complex naturally induces an abstract complex as follows:
 Let $K$ be a simplicial complex, and let $V$ be the set of vertices of $K$. Then, we will call \emph{vertex scheme} the abstract simplicial complex $A$ formed by all those subsets of $V$ that generate simplices in $K$.
 \end{definition}
 
-Under certain circumstances, it is possible to construct a (geometric) simplicial complex from an abstract complex:
+Under certain circumstances, it is possible to construct a geometric simplicial complex from an abstract complex:
 \begin{definition}
 Let $A$ be an abstract simplicial complex and $K$ a simplicial complex. We will say that $K$ is a \emph{geometric realization} of $A$ if $A$ is isomorphic to the vertex scheme of $K$.
 \end{definition}
@@ -288,7 +287,7 @@ Let $A$ be an abstract simplicial complex and $K$ a simplicial complex. We will 
 Every abstract simplicial complex of dimension $d$ admits a geometric realization in $\RR^{2d + 1}$.
 \end{theorem}
 
-Thus, abstract simplicial complexes provide a faithful representation of (geometric) simplicial complexes.
+Thus, abstract simplicial complexes provide a faithful representation of geometric simplicial complexes.
 
 \subsection{Simplicial complexes built from point clouds}
 From the computational point of view, we find ourselves with the problem that we have a representation of a topological space through a finite discretization, and our objective is to be able to recover properties of the original topological space from this cloud of points. Hence, to give some structure to our distance space $(X,d)$, where $X$ is the dataset and $d: X \to \overline{\RR}_+$ is a distance function, we will create a simplicial complex with the data points as vertices, and encoding some of the relevant information of $d$.
@@ -306,11 +305,11 @@ Let $F$ be a finite collection of sets. The \emph{nerve} of $F$ is defined as th
 One of the reasons we are interested in simplicial complexes constructed through the nerve of a collection is based on the implications of the following theorem.
 
 \begin{theorem}[Nerve theorem {\cite[Chapter~3]{edelsbrunner_computational_2010}}]
-If $F$ is a finite collection of closed and convex subsets in Euclidean space, then the nerve of $F$ has the same type of homotopy as the union of the sets of $F$.
+If $F$ is a finite collection of closed and convex subsets in a Euclidean space, then the nerve of $F$ has the same type of homotopy as the union of the sets of $F$.
 \end{theorem}
 Therefore, according to this theorem, \v{C}ech complexes exhibit similar topological properties to subsets of $\mathbb{R}^d$ (as they are homotopy equivalent). This property ensures that our analysis of topological properties obtained through homology groups of the simplicial complex will be equivalent to studying them on neighborhoods of our dataset $X \subset \mathbb{R}^d$ \cite{doherty_cech_2018}.\\
 
-Considering the case where the sets in the collection are disks (closed balls), denoted as $D_r(x) \equiv \overline{B_r}(x) = {y\in \mathbb{R}^d \mid d(x, y) \leq r}$ in $\mathbb{R}^d$, we define the \v{C}ech complex of a finite set of points $X \subset \mathbb{R}^d$ as follows:
+Considering the case where the sets in the collection are disks (closed balls), denoted as $D_r(x) \equiv \overline{B_r}(x) = \{y\in \mathbb{R}^d \mid d(x, y) \leq r\}$ in $\mathbb{R}^d$, we define the \v{C}ech complex of a finite set of points $X \subset \mathbb{R}^d$ as follows:
 
 \begin{definition}
 Let $X\subset \RR^d$ be a finite set of points. We will call \emph{\v{C}ech complex} of $X$ of radius $r$ to the abstract simplicial complex
@@ -326,9 +325,9 @@ Let $X\subset \RR^d$ be a finite set of points. We will call \emph{\v{C}ech comp
 \label{fig:cech}
 \end{figure}
 
-We can check that for large enough values of $r$, $\text{\v{C}ech}(r)$ is a simplex of dimension $\text{card }(X)-1$ {\cite[Chapter~3]{edelsbrunner_computational_2010}}, so the \v{C}ech complex is computationally inefficient.
+We can check that for large enough values of $r$, $\text{\v{C}ech}(r)$ is a simplex of dimension $\text{card}(X)-1$ {\cite[Chapter~3]{edelsbrunner_computational_2010}}, so the \v{C}ech complex is computationally inefficient.
 
-Furthermore, in general, the \v{C}ech complex of a set of points $X \subset \RR^d$ does not possess a geometric realization in $\RR^d$. Therefore, we will present a construction that resembles the \v{C}ech complex while being more computationally favorable.
+Furthermore, in general, the \v{C}ech complex of a set of points ${X \subset \RR^d}$ does not possess a geometric realization in $\RR^d$. Therefore, we will present a construction that resembles the \v{C}ech complex while being more computationally favorable.
 
 \subsubsection*{Vietoris-Rips complex}
 
@@ -1005,7 +1004,7 @@ This lemma guarantees us that the persistence diagram encodes all information ab
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.7\textwidth]{figures/bg/persistenceEx.png} 
-\caption{Persistence diagram, where 0-dimensional persistence homology is in red and 1-dimensional case is in blue. The 1-dimensional persistent Betti number corresponding to the green point is 5.}
+\caption{Persistence diagram, where 0-dimensional persistent homology is in red and 1-dimensional case is in blue. The 1-dimensional persistent Betti number corresponding to the green point is 5.}
 \label{fig:persEx}
 \end{figure}
 
@@ -1171,7 +1170,7 @@ Let $\beta>0$, $c_\beta\in [0,1]$, $b\in \mathbb{N}$, and $Q_k^b$ the product me
 
 Hofer \etal proves that: \emph{If a measure is $(b, c_\beta)$-connected, then mass attracts mass; the higher $c_\beta$, the stronger the effect} \cite{hofer_densified_2021}. In the original paper, they have an in-depth study on the properties of the lower bound of $Q_k(M_{l\cdot \epsilon})$ in terms of a $(b, c_\beta)$-connected $Q_k(M)$, such as the minimum required mass to enforce proper mass condensation. As a broad idea, the way to obtain the lower bound is to study the properties of the trinomial distribution that characterizes certain events where the samples $\{z_1, ..., z_b\}$ are not $\beta$-connected.\\
 
-Therefore, based on this property, we will enforce that for each batch $B$, the subsets $B_k=\{b \in B \mid c(b)=k\}$ are $\beta$-connected. In order to measure how close they are to be $\beta$-connected and to have a numerical cost function penalizing these deviations, we will restate $\beta$-connectivity using persistent homology.
+Therefore, based on this property, we will enforce that for each batch $\mathcal{B}$, the subsets $\mathcal{B}_k=\{b \in \mathcal{B} \mid c(b)=k\}$ are $\beta$-connected. In order to measure how close they are to being $\beta$-connected and to have a numerical cost function penalizing these deviations, we will restate $\beta$-connectivity using persistent homology.
 
 \begin{definition}
 Let $\beta>0$. A set $M\subseteq \mathcal{Z}$ is \emph{$\beta$-connected} iff all $0$-dimmensional death-times of its Vietoris-Rips persistent homology, denoted as $\dag(M)$, are in the open interval $(0, \beta]$. 
@@ -1186,7 +1185,7 @@ For any distance $d$ on $X$, and $\beta \geq 0$, the partition corresponding to 
 Hence, the steps to enforce this topological regularisation are:
 
 \begin{enumerate}
-    \item We construct each mini-batch, $B$, as a collection of n sub-batches, i.e., $B = (B_1, . . . , B_n)$. Each sub-batch consists of $b$ samples from the same class, so we end up having an effective batch size of $n\cdot b$.
+    \item We construct each mini-batch, $\mathcal{B}$, as a collection of n sub-batches, i.e., $\mathcal{B}  = (\mathcal{B}_1, . . . , \mathcal{B}_n)$. Each sub-batch consists of $b$ samples from the same class, so we end up having an effective batch size of $n\cdot b$.
     \item We add the topological regularization cost function to our classification loss as follows
     \begin{equation}
     \label{eq:topo_reg}
@@ -1195,14 +1194,14 @@ Hence, the steps to enforce this topological regularisation are:
     where,
     \begin{equation}
     \label{eq:topo_loss}
-    \mathcal{L}_\beta = \sum_{i=1}^{n} \underbrace{\sum_{d \in \dag(B_i)} \abs{d-\beta}}_{\widetilde{\mathcal{L}}_\beta(B_i)}\,.
+    \mathcal{L}_\beta = \sum_{i=1}^{n} \underbrace{\sum_{d \in \dag(\mathcal{B}_i)} \abs{d-\beta}}_{\widetilde{\mathcal{L}}_\beta(\mathcal{B}_i)}\,.
     \end{equation}
 \end{enumerate}
 
-Lastly, it can be proven that this cost function is differentiable if we refine $\tilde{\mathcal{L}}_\beta(B_i)$ using a new indicator function under the mild assumption that the pairwise distances of elements in $B_i$ are unique. This assumption will be fulfilled almost surely if we consider that $Q$ is non-atomic, i.e., $Q(\varphi(x) = z)=0$ for $x \in \mathcal{X}$, and $z \in \mathcal{Z}$. Furthermore, we will assume that $\mathcal{Z}=\RR^m$ (i.e., we vectorized our latent space).
+Lastly, it can be proven that this cost function is differentiable if we refine $\tilde{\mathcal{L}}_\beta(\mathcal{B}_i)$ using a new indicator function under the mild assumption that the pairwise distances of elements in $\BB_i$ are unique. This assumption will be fulfilled almost surely if we consider that $Q$ is non-atomic, i.e., ${Q(\varphi(x) = z)}=0$ for $x \in \mathcal{X}$, and $z \in \mathcal{Z}$. Furthermore, we will assume that $\mathcal{Z}=\RR^m$ (i.e., we vectorized our latent space).
 
-\begin{theorem}[Topological regularization differentiability  \cite{hofer_connectivity-optimized_2019}]
-Let $M \subseteq \RR^m$, with $\abs{M}$. Hence, $\widetilde{\mathcal{L}}_\beta(B_i)$ as described on eq.~\ref{eq:topo_loss} can be rewritten as
+\begin{theorem}[Topological regularization differentiability \cite{hofer_connectivity-optimized_2019}]
+Let $M \subseteq \RR^m$, with $\abs{M}$. Hence, $\widetilde{\mathcal{L}}_\beta(\mathcal{B}_i)$ as described on eq.~\ref{eq:topo_loss} can be rewritten as
 \[
 \widetilde{\mathcal{L}}_\beta(M) = \sum_{\{i,j\} \subset [b]} \abs{\beta - d(z_i, z_j)} \cdot \1{i}{j}(z_1, ..., z_b)\,,
 \]
@@ -1396,7 +1395,7 @@ A use case of this cross-domain model stitching procedure could be a situation w
 
 
 \section{Summary}
-In this chapter, we have first seen a brief introduction to Topological Data Analysis (TDA), where we have seen how we can use algebraic constructions such as Simplical Persistence Homology in order to asses some topological characteristics of the underlying manifold from which our dataset has been sampled from. Furthermore, in the specific case of $n$-dimensional simplicial homology, we have seen that the obtained topological features will indicate to us the number of $n$-dimensional holes.\\
+In this chapter, we have first seen a brief introduction to Topological Data Analysis (TDA), where we have seen how we can use algebraic constructions such as Simplical Persistent Homology in order to asses some topological characteristics of the underlying manifold from which our dataset has been sampled from. Furthermore, in the specific case of $n$-dimensional simplicial homology, we have seen that the obtained topological features will indicate to us the number of $n$-dimensional holes.\\
 
 Secondly, we have seen that recently there has been an increased interest in applying TDA in Machine Learning, a new field that we can call Topological Machine Learning. One of the many ways that we can use our topological tools is to construct regularizers so that the network will obtain certain desired properties. Specifically, in this project, we will focus our attention on a topological regularization that will produce an increase in generalization capabilities by imposing a property called topological densification over our push-forward class-specific distributions \cite{hofer_densified_2021}.\\
 
