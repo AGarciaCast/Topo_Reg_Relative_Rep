@@ -22,9 +22,9 @@ Overall, our findings suggest that the proposed methodological changes and the a
 \section{Limitations}
 \label{sec:limitations}
 
-As mentioned previously, the training of the network using Hofer's topological regularization, as originally proposed in \cite{hofer_densified_2021}, was hindered by the limited VRAM of the V100 GPU we utilized. Consequently, we resorted to employing the ``debiasing trick,'' as described earlier, to accommodate this regularization technique. Unfortunately, this computational limitation imposed constraints on our ability to achieve optimal results.
+As mentioned previously, the training of the network using the topological densification technique, as originally proposed in \cite{hofer_densified_2021}, was hindered by the limited VRAM of the V100 GPU we utilized. Consequently, we resorted to employing the ``debiasing trick,'' as described earlier, to accommodate this regularization technique. Unfortunately, this computational limitation imposed constraints on our ability to achieve optimal results.
 
-Additionally, the unexpected issue with Hofer's topological regularization led us to omit certain experiments, such as the analysis of representation similarity in multilingual model stitching.\\
+Additionally, the unexpected issue with the topological densification led us to omit certain experiments, such as the analysis of representation similarity in multilingual model stitching.\\
 
 Moreover, due to time constraints, we were unable to conduct an extensive literature study on the possible sources of the observed $\epsilon$-similarity, as initially intended. We believe that conducting further research in this area could potentially unveil additional insights into the origins of the observed isometries.\\
 
@@ -40,9 +40,9 @@ There are several potential directions for expanding the work presented in this 
 
     \item \textbf{Analysis of representation similarity in multilingual model stitching:} Due to time constraints, we were unable to analyze the CKA in the multilingual model stitching experiments. Performing this representation similarity analysis would be valuable. To conduct such an analysis, a new dataset would need to be created, similar to the parallel anchor construction, where translations to other languages are available.
 
-    \item \textbf{Testing topological regularization on large models with increased GPU VRAM:} It is expected that better performance could be achieved by using larger VRAM in the GPU, eliminating the need for the ``debiasing fix'' utilized in this work. Therefore, it would be interesting to evaluate Hofer's topological regularization on large models while employing a more powerful GPU.
+    \item \textbf{Testing topological regularization on large models with increased GPU VRAM:} It is expected that better performance could be achieved by using larger VRAM in the GPU, eliminating the need for the ``debiasing fix'' utilized in this work. Therefore, it would be interesting to evaluate the topological densification technique on large models while employing a more powerful GPU.
 
-    \item \textbf{Exploring the combination of Hofer's regularization with the relative transformation in a multimodal setup:} Recent studies have shown that the relative transformation can transform unimodal models into multimodal ones without additional training \cite{norelli_asif_2022}. Investigating how to adapt the proposed methodology to combine Hofer's regularization with the relative transformation in this new multimodal setup would be intriguing.
+    \item \textbf{Exploring the combination of topological regularization with the relative transformation in a multimodal setup:} Recent studies have shown that the relative transformation can transform unimodal models into multimodal ones without additional training \cite{norelli_asif_2022}. Investigating how to adapt the proposed methodology to combine the topological densification with the relative transformation in this new multimodal setup would be intriguing.
 \end{itemize}
 
 
@@ -51,6 +51,6 @@ There are several potential directions for expanding the work presented in this 
 
 As discussed in Section \ref{sec:repLearn}, an application of the cross-domain model stitching procedure is a scenario where multiple devices exist, each operating in a specific language. In such cases, one can achieve satisfactory performance by utilizing a single trained classification head (e.g., trained on the English corpus) and stitching it with language-specific encoders. This computational approach proves advantageous in situations requiring frequent model updates, as it necessitates updating only one model instead of all.\\
 
-The observation that specific regularization techniques, such as Hofer's topological regularization, can enhance model stitching performance further supports their utilization. By employing these improved model stitching setups, we can mitigate computational costs associated with training and fine-tuning networks. It is important to note that this approach would yield not only economic benefits but also have positive environmental implications by reducing the immense carbon footprint associated with training large language models \cite{strubell_energy_2019}.
+The observation that specific regularization techniques, such as the topological densification, can enhance model stitching performance further supports their utilization. By employing these improved model stitching setups, we can mitigate computational costs associated with training and fine-tuning networks. It is important to note that this approach would yield not only economic benefits but also have positive environmental implications by reducing the immense carbon footprint associated with training large language models \cite{strubell_energy_2019}.
 
 \end{document}

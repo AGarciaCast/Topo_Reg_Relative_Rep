@@ -20,7 +20,7 @@ However, despite these observations, we believe that establishing a theoretical 
 
 
 \section{Post-relative geometry}
-In the previous chapter, we observed that applying Hofer's topological regularization in the post-relative space posed more challenges compared to the pre-relative space. One of the reasons identified was the significant influence of the anchors on the post-relative geometry. To illustrate the importance of anchors in supporting this claim, we provide the following proposition:
+In the previous chapter, we observed that applying the topological densification in the post-relative space posed more challenges compared to the pre-relative space. One of the reasons identified was the significant influence of the anchors on the post-relative geometry. To illustrate the importance of anchors in supporting this claim, we provide the following proposition:
 
 \begin{proposition}
 Let $\Anch\in \RR^{d \times k}$ be the matrix representation of the (normalized) images of the anchor set $\mathcal{A}$, and let $z_1, z_2 \in \mathcal{Z}$ be the (normalized) images of samples $x_1, x_2 \in \mathcal{X}$. Then,
@@ -45,25 +45,25 @@ Hence, we can see that an upper bound on the diameter of the relative transforma
 \label{sec:more_topo}
 
 \subsection{High computational complexity}
-As we have seen, Hofer's topological regularization requires a specific dataloader which does not work as originally presented when we use gradient accumulation and the robust relative transformation. To address this issue, we employed the freezing/unfreezing technique, extensively discussed in Section~\ref{sec:topo_meth}. However, it is worth noting that this fix led to slightly inferior results compared to the vanilla case.\\
+As we have seen, the topological densification technique requires a specific dataloader which does not work as originally presented when we use gradient accumulation and the robust relative transformation. To address this issue, we employed the freezing/unfreezing technique, extensively discussed in Section~\ref{sec:topo_meth}. However, it is worth noting that this fix led to slightly inferior results compared to the vanilla case.\\
 
-The scalability concern we encountered is not exclusive to Hofer's regularization; several topological data analysis (TDA) methods face similar challenges. For instance, the standard algorithm for computing Persistent Homology has a complexity that scales cubically with the number of simplices \cite{akcora_reduction_2022}. Consequently, current practice often restricts the analysis to $\text{H}_0$ and $\text{H}_1$ since computing higher homologies on large datasets can take weeks. Nevertheless, due to the growing interest in TDA, recent research has aimed to enhance the scalability of various TDA methods \cite{akcora_reduction_2022, polianskii_breaking_2022}.\\
+The scalability concern we encountered is not exclusive to the topological densification technique; several topological data analysis (TDA) methods face similar challenges. For instance, the standard algorithm for computing Persistent Homology has a complexity that scales cubically with the number of simplices \cite{akcora_reduction_2022}. Consequently, current practice often restricts the analysis to $\text{H}_0$ and $\text{H}_1$ since computing higher homologies on large datasets can take weeks. Nevertheless, due to the growing interest in TDA, recent research has aimed to enhance the scalability of various TDA methods \cite{akcora_reduction_2022, polianskii_breaking_2022}.\\
 
 Therefore, we believe that if there starts to have an increase in the visibility of topological regularization techniques, it would be required to optimize existing methods or develop new ones that are better suited for modern large-scale neural network architectures.
 
 \subsection{Strong regularization}
 
-During the hyperparameter tuning phase, we made an interesting observation regarding Hofer's topological regularization. It had a significant impact in mitigating overfitting, but the regularization effect was so pronounced that it led to inferior classification performance compared to not using the regularization. To address this issue, we employed the cyclical linear scheduler for the loss's weight component $\lambda$. This approach resulted in densified distributions that still yielded satisfactory performance for the classification task.\\
+During the hyperparameter tuning phase, we made an interesting observation regarding the topological densification technique. It had a significant impact in mitigating overfitting, but the regularization effect was so pronounced that it led to inferior classification performance compared to not using the regularization. To address this issue, we employed the cyclical linear scheduler for the loss's weight component $\lambda$. This approach resulted in densified distributions that still yielded satisfactory performance for the classification task.\\
 
 
-We believe that the reason why we could not successfully apply Hofer's topological regularization to the Spanish case as well as why the ``en-fr'' stitching case does not perform as well as ``fr-en'', is that both the French and Spanish models had less expressiveness than the English model. Hence applying a ``demanding'' regularization prevents the network from obtaining a proper latent space for the classification class. In other words, we encounter an imbalance in the bias-variance tradeoff, with excessive bias hampering the network's performance.
+We believe that the reason why we could not successfully apply the topological densification to the Spanish case as well as why the ``en-fr'' stitching case does not perform as well as ``fr-en'', is that both the French and Spanish models had less expressiveness than the English model. Hence applying a ``demanding'' regularization prevents the network from obtaining a proper latent space for the classification class. In other words, we encounter an imbalance in the bias-variance tradeoff, with excessive bias hampering the network's performance.
 
 
 \subsection{Beyond the Vietoris–Rips complex}
 \label{sec:witness_topo}
 As observed in our experiments, the use of different metrics for computing the 0-dimensional Vietoris–Rips persistent homology can have some benefits compared to using the standard $L^2$ metric.
 
-In addition, we believe that employing diverse simplicial complexes for the computation of Hofer's topological regularization can yield interesting insights. For example, utilizing Lazy Witness complexes appears to be well-suited for the post-relative space (see Definition \ref{def:witness}). This choice is motivated by the fact that Witness complexes capture the data's topology from the perspective of the witnesses, while the relative transformations look at the geometry of the data through the anchors.\\
+In addition, we believe that employing diverse simplicial complexes for the computation of the topological densification loss can yield interesting insights. For example, utilizing Lazy Witness complexes appears to be well-suited for the post-relative space (see Definition \ref{def:witness}). This choice is motivated by the fact that Witness complexes capture the data's topology from the perspective of the witnesses, while the relative transformations look at the geometry of the data through the anchors.\\
 
 Furthermore, based on Proposition~\ref{prop:witness-vr}, we can know the relations between the $H_0$ homology of a Witness complex, and the $\epsilon$-connectivity:
 \begin{corollary}

@@ -100,7 +100,7 @@ Lastly, we can see in Figure~\ref{fig:proc_ae_512_256_128_32_2} that the case wh
 
 
 \subsubsection*{Multiple linear layers and high-dimensional latent space}
-We will explore the final configuration of the Autoencoder, which utilizes multiple linear layers to transition from the convolutional feature map to a 32-dimensional space: 512-256-128-32. This choice is motivated by the assertion made in \cite{kornblith_similarity_2019} that "well-performing" networks yield more similar representations. Hence, we aim to investigate whether these networks also tend to produce representations that are $\epsilon$-similar.\\
+We will explore the final configuration of the Autoencoder, which utilizes multiple linear layers to transition from the convolutional feature map to a 32-dimensional space: 512-256-128-32. This choice is motivated by the assertion made in \cite{kornblith_similarity_2019} that ``well-performing'' networks yield more similar representations. Hence, we aim to investigate whether these networks also tend to produce representations that are $\epsilon$-similar.\\
 
 Figure~\ref{fig:lat_num_ae_512_256_128_32} supports this claim, as we observe high similarities in terms of both CKA and the Frobenius norm. We believe that this outcome may be attributed to the fact that autoencoders with a higher-dimensional latent space exhibit greater simplicity, as they lack a strong information bottleneck.\\
 
@@ -302,7 +302,7 @@ As discussed in Section~\ref{sec:topo_meth}, we have once again made some method
 \label{tab:multilingual-linear-vanilla}
 \end{table}
 
-One might argue that a simpler solution for using biased dataloaders in the relative case would be to employ the standard relative transformation instead of the new robust one. This approach would eliminate the need for debiasing the BatchNorm mean and variance estimates. However, we find that training in the relative case with a vanilla dataloader using the standard relative transformation leads to worse performance, resulting in approximately $38.52$ FScore $\times 100$ in English and $30.87$ in French. For reference, Table~\ref{tab:multilingual-linear-vanilla} presents the performance of training with the same setup described in the methodology but using a standard dataloader. It is important to note that this dataloader cannot be used when applying Hofer's topological regularization.\\
+One might argue that a simpler solution for using biased dataloaders in the relative case would be to employ the standard relative transformation instead of the new robust one. This approach would eliminate the need for debiasing the BatchNorm mean and variance estimates. However, we find that training in the relative case with a vanilla dataloader using the standard relative transformation leads to worse performance, resulting in approximately $38.52$ FScore $\times 100$ in English and $30.87$ in French. For reference, Table~\ref{tab:multilingual-linear-vanilla} presents the performance of training with the same setup described in the methodology but using a standard dataloader. It is important to note that this dataloader cannot be used when applying the topological densification technique.\\
 
 Therefore, we now have both theoretical and empirical justifications for adopting this new relative transformation. We believe that the reasons behind the observed performance improvement with this change lie in the theoretical aspects we discussed. Some of the similarities in representations may originate from the (intertwiner group of the) activation functions, or it could be that BatchNorm provides additional robustness to training by mitigating potential issues like vanishing gradients.\\
 
@@ -336,7 +336,7 @@ Lastly, it is intriguing that, in this case, the relative transformation tends t
 \subsubsection*{Results}
 
 
-In Section~\ref{sec:topo_meth}, we explored four different approaches for applying Hofer's topological regularization. Initially, we attempted the pre-relative case but could not achieve performance on par with the baseline presented in Table~\ref{tab:multilingual-linear-biased}. One possible reason is that there are instances where the relative transformation fails to preserve the topology. An example of this can be observed in Figure~\ref{fig:rel_ex_bad}, where we have three clusters, two of which possess colinear centroids, resulting in only two clusters after the transformation.\\
+In Section~\ref{sec:topo_meth}, we explored four different approaches for applying the topological densification. Initially, we attempted the pre-relative case but could not achieve performance on par with the baseline presented in Table~\ref{tab:multilingual-linear-biased}. One possible reason is that there are instances where the relative transformation fails to preserve the topology. An example of this can be observed in Figure~\ref{fig:rel_ex_bad}, where we have three clusters, two of which possess colinear centroids, resulting in only two clusters after the transformation.\\
 
 
 \begin{figure}[ht!]
@@ -364,21 +364,21 @@ In Section~\ref{sec:topo_meth}, we explored four different approaches for applyi
 \end{figure}
 
 
-Therefore, we concluded that applying Hofer's topological regularization to the post-relative space is crucial. However, despite an extensive hyperparameter search, we could still not improve performance. Upon closer examination, we observed that the death times distributions of the post-relative space exhibit a significantly smaller mean than the pre-relative space (see Figure~\ref{fig:distPost}). This implies that when we exclusively apply this loss to the post-relative case, the network discovers an anchor configuration that yields smaller clusters in the post-relative space while preserving the spread of clusters in the pre-relative space. We believe this configuration can lead to information bottlenecks, as compressing the clusters with this nonlinear transformation might cause a loss of expressiveness in the latent space.\\
+Therefore, we concluded that applying the topological densification to the post-relative space is crucial. However, despite an extensive hyperparameter search, we could still not improve performance. Upon closer examination, we observed that the death times distributions of the post-relative space exhibit a significantly smaller mean than the pre-relative space (see Figure~\ref{fig:distPost}). This implies that when we exclusively apply this loss to the post-relative case, the network discovers an anchor configuration that yields smaller clusters in the post-relative space while preserving the spread of clusters in the pre-relative space. We believe this configuration can lead to information bottlenecks, as compressing the clusters with this nonlinear transformation might cause a loss of expressiveness in the latent space.\\
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{figures/rs/stitching/en_relative_post_3_seed0.png} 
-    \caption{Death times distribution when we apply pre-relative Hofer's topological regularization on the English dataset with $\beta=3$.}
+    \caption{Death times distribution when we apply pre-relative the topological densification on the English dataset with $\beta=3$.}
     \label{fig:distPost}
 \end{figure}
 
-After further analysis, we discovered that when no regularization is applied, the death times distributions of the network tend to overlap (see Figure~\ref{fig:distVanilla}). This insight led us to favor overlapped death times distributions to preserve $H_0$ homology through the relative transformation. Additionally, this approach addresses the issues we encountered when applying the regularization just before or after the relative transformation.\\
+After further analysis, we discovered that when no regularization is applied, the death times distributions of the network tend to overlap\footnote{Formally, two real probability density functions $f_A$ and $f_B$ overlap if their overlapping index  $\eta(A, B)=\int_{\RR^n} \min\{f_A(x),f_B(x)\}\,dx$ is close to one \cite{pastore_measuring_2019}.} (see Figure~\ref{fig:distVanilla}). This insight led us to favor overlapped death times distributions to preserve $H_0$ homology through the relative transformation. Additionally, this approach addresses the issues we encountered when applying the regularization just before or after the relative transformation.\\
 
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{figures/rs/stitching/en_fr_relative_seed1.png} 
-    \caption{Death times distribution without Hofer's topological regularization on the English dataset.}
+    \caption{Death times distribution without the topological densification on the English dataset.}
     \label{fig:distVanilla}
 \end{figure}
 
@@ -388,7 +388,7 @@ Following an exhaustive hyperparameter tuning process, we identified that the op
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{figures/rs/stitching/en_fr_relative_both_both_both_3_4_seed1.png} 
-    \caption{Death times distribution when we apply both pre and post-relative Hofer's topological regularization with $\beta=3$ on the English dataset and $\beta=4$ in the French dataset.}
+    \caption{Death times distribution when we apply both pre and post-relative the topological densification with $\beta=3$ on the English dataset and $\beta=4$ in the French dataset.}
     \label{fig:distBoth}
 \end{figure}
 
@@ -445,10 +445,10 @@ The above results demonstrate that with the appropriate setup, we can replicate 
 Additionally, Table~\ref{tab:multilingual-linear-topo-paired} reveals that we can enhance stitching performance by selecting the same $\beta$ parameter for topological regularization (i.e., using $\beta=4$ for the French case). However, this impacts non-stitching performance, as the optimal hyperparameter choice of $\beta=3$ is no longer used. This observation is logical since a specific hyperparameter choice will yield the best results for a given dataset during network training. Nevertheless, for stitching purposes, it is preferable to impose consistent condensation, increasing the possibility that class clusters reside within the decision boundary of the other classifier.
 
 \begin{mathNote}
-Hofer's topological regularization generally does not outperform early stopping in terms of non-stitching performance. However, in the ``fr-en'' stitching case, we achieve better results than early stopping (see Tables~\ref{tab:multilingual-linear-vanilla-stop},~\ref{tab:multilingual-linear-biased-stop}).
+The topological densification generally does not outperform early stopping in terms of non-stitching performance. However, in the ``fr-en'' stitching case, we achieve better results than early stopping (see Tables~\ref{tab:multilingual-linear-vanilla-stop},~\ref{tab:multilingual-linear-biased-stop}).
 \end{mathNote}
 
-The reason why we could not successfully apply Hofer's topological regularization to the Spanish case as well as why the ``en-fr'' stitching case does not perform as well as ``fr-en'', will be discussed in Section~\ref{sec:more_topo}.\\
+The reason why we could not successfully apply the topological densification to the Spanish case as well as why the ``en-fr'' stitching case does not perform as well as ``fr-en'', will be discussed in Section~\ref{sec:more_topo}.\\
 
 As outlined in Section~\ref{sec:topo_meth}, utilizing $L^\infty$ in the post-relative space offers certain advantages. In this section, we will demonstrate how it can be beneficial for hyperparameter selection. In previous experiments, the approach involved computing the death times distribution and conducting a grid search based on values such as $0.3\times \text{post\_mean}$, $0.5\times \text{post\_mean}$, $0.6\times \text{post\_mean}$, $0.3\times \text{post\_max\_mean}$, $0.5\times \text{post\_max\_mean}$, and $0.6\times \text{post\_max\_mean}$. However, a new approach can be adopted:
 \begin{enumerate}
@@ -468,7 +468,7 @@ As outlined in Section~\ref{sec:topo_meth}, utilizing $L^\infty$ in the post-rel
     \label{fig:distMix}
 \end{figure}
 
-Therefore, we performed a grid search on $\theta \in [5^{\circ}, 30^{\circ}]$ with a step size of $\delta \theta = 5^{\circ}$, while keeping $\beta_{pre}$ fixed at 3. Surprisingly, for $\theta = 25^{\circ}$, we achieved better performance compared to using $L^2$ with $\beta_{post} = 3$ ($61.48$ FScore $\times 100$). Hence, this result serves as a proof of concept for the potential exploration of different metrics when employing Hofer's topological regularization\footnote{Due to time limitations, we were not able to fully explore the $L^\infty$ case to be able to produce a table with proper hyperparameter tuning as we did for the $L^2$ cases.}.
+Therefore, we performed a grid search on $\theta \in [5^{\circ}, 30^{\circ}]$ with a step size of $\delta \theta = 5^{\circ}$, while keeping $\beta_{pre}$ fixed at 3. Surprisingly, for $\theta = 25^{\circ}$, we achieved better performance compared to using $L^2$ with $\beta_{post} = 3$ ($61.48$ FScore $\times 100$). Hence, this result serves as a proof of concept for the potential exploration of different metrics when employing the topological densification technique\footnote{Due to time limitations, we were not able to fully explore the $L^\infty$ case to be able to produce a table with proper hyperparameter tuning as we did for the $L^2$ cases.}.
 
 
 

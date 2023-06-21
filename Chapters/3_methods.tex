@@ -9,7 +9,7 @@ This chapter aims to provide an overview of the research methodology employed in
 \section{Problem Formulation}
 The primary research question addressed in this study is as follows: \emph{To what extent does the application of the topological regularization method described in \cite{hofer_densified_2021} impact the classification performance of zero-shot stitching when utilizing relative latent representations \cite{moschella_relative_2022}?}\\
 
-The main objective, therefore, is to train multiple networks on a classification task using relative transformations and examine the potential advantages and disadvantages of incorporating Hofer's regularization technique within this framework.
+The main objective, therefore, is to train multiple networks on a classification task using relative transformations and examine the potential advantages and disadvantages of incorporating the topological densification technique within this framework.
 
 Prior to conducting this analysis, it was noted that the original paper on relative transformations \cite{moschella_relative_2022} asserts that certain stochastic factors during training, such as weight initialization, hyperparameters, and data shuffling, are likely to produce $\epsilon$-similar representations. However, the cited references in the original paper only indicate that ``well-performing'' networks tend to exhibit similar latent representations based on metrics such as CCA and CKA\footnote{While a high CKA score can be obtained if we have isometric spaces, we might have cases with high CKA and not necessarily be $\epsilon$-similar representations.}. Hence, an additional objective of this project has been to establish a theoretical explanation for why two networks could produce nearly isometric latent spaces. By achieving this, we can lend theoretical validity to the construction of the relative transformation and gain valuable insights into the latent space of our network.
 
@@ -251,7 +251,7 @@ However, upon inspecting the provided code from the original relative representa
 
 Hence, the proposed new methodology is:
 \begin{itemize}
-    \item \textbf{Data:}  We will retain the same dataset as the original paper, which involves randomly subsampling 25\% of the Amazon Reviews dataset \cite{keung_multilingual_2020}. As mentioned earlier, we will use the "translated" setup to construct the parallel anchors. Training will be conducted on both the coarse-grained version (predicting whether a review is greater or smaller than 3 stars) and the fine-grained version (predicting ratings from 1 to 5 stars).
+    \item \textbf{Data:}  We will retain the same dataset as the original paper, which involves randomly subsampling 25\% of the Amazon Reviews dataset \cite{keung_multilingual_2020}. As mentioned earlier, we will use the ``translated'' setup to construct the parallel anchors. Training will be conducted on both the coarse-grained version (predicting whether a review is greater or smaller than 3 stars) and the fine-grained version (predicting ratings from 1 to 5 stars).
     
   
     
@@ -279,7 +279,7 @@ decoder = nn.Sequential(
 
     \item \textbf{Training:} Since we want to compare the performance between the fully fine-tuned model against the frozen encoder version, we will have two training setups. For the fully fine-tuned case, we will use layer-wise learning rate decay on the encoder parameters with an initial learning rate of $1.75\cdot 10^{-4}/(num\_labels)$ and decay rate of 0.65. The reason is that we will want to apply the topological regularization in the subsequent experiments, and for this type of loss, we do not need to have significant changes in the initial layers.
     
-    The classification head parameters will have an initial learning rate of $10^{-3}/(num\_labels)$ for both setups. Furthermore, we will use an AdamW optimizer with weight decay 0.01, along with the ''\texttt{constant\_schedule\_with\_warmup}'' scheme, incorporating a warmup phase that spans 10\% of the first epoch\footnote{These optimization strategies are considered standard practice when fine-tuning large Transformer models \cite{chang_advanced_2021}.}. We will train the networks for five epochs in the fine-grained and three in the coarse-grained cases.\\
+    The classification head parameters will have an initial learning rate of $10^{-3}/(num\_labels)$ for both setups. Furthermore, we will use an AdamW optimizer with weight decay 0.01, along with the ``\texttt{constant\_schedule\_with\_warmup}'' scheme, incorporating a warmup phase that spans 10\% of the first epoch\footnote{These optimization strategies are considered standard practice when fine-tuning large Transformer models \cite{chang_advanced_2021}.}. We will train the networks for five epochs in the fine-grained and three in the coarse-grained cases.\\
 
 
     Due to the size of the transformer models and the reviews, using large batch sizes will exceed the available VRAM. Therefore, we will address this issue using a common technique called gradient accumulation. This involves using a batch size of 16 but updating the network gradients only every $num\_labels$ steps. The corresponding gradients are accumulated during these steps, effectively simulating a batch size of $num\_labels \times 16$. 
@@ -300,7 +300,7 @@ As we have seen in Section~\ref{sec:topoML}, the original topological regulariza
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/mt/hoferData.pdf} 
-    \caption{Hofer's original dataloader used for the topological regularization with $b=3$ and $n=4$.}
+    \caption{Hofer et al.'s original dataloader used for the topological regularization with $b=3$ and $n=4$.}
     \label{fig:hoferData}
 \end{figure}
 
@@ -360,7 +360,7 @@ By adopting this approach, we can utilize the running averages of the mean and v
 
 In our ablation studies, we will utilize a classification head consisting of only one linear layer without even including a pooling layer. While there is no theoretical constraint on the classification head for applying topological regularization, we have two primary methodological justifications for this choice.
 
-Firstly, we could see a more expressive classification head as an implicit regularization scheme. By using a simpler decoder, we intentionally reduce variance and increase bias, allowing the model to overfit the training data. This setup requires the aid of explicit regularization techniques, such as Hofer's topological regularization, to reduce the generalization error.
+Firstly, we could see a more expressive classification head as an implicit regularization scheme. By using a simpler decoder, we intentionally reduce variance and increase bias, allowing the model to overfit the training data. This setup requires the aid of explicit regularization techniques, such as topological densification, to reduce the generalization error.
 
 Secondly, the objective of the topological regularization loss is to encourage a more favorable configuration of the latent space for the classification task. However, if we employ a complex classification head, we may not require the assistance of these losses, as the model could potentially fit more intricate decision boundaries.
 
@@ -426,7 +426,7 @@ Lastly, as shown in Figure~\ref{fig:relativeTopoMixScheme}, we also use the $L^\
 \end{enumerate}
 
 
-Lastly, we want to remark that due to time constraints, we will focus this analysis on a random 1\% sub-sample of the fine-grained dataset. Furthermore, we will train our networks for 40 epochs to ensure that the topological regularization prevents overfitting. We will also use a ''\texttt{cosine\_schedule\_with\_warmup}'' scheduler on the learning rate and a linear cyclic scheduler for the weight $\lambda$ component of the regularization loss. This cyclic scheduler has been previously used in VAEs to obtain a better synergy between the classification loss and the regularization \cite{fu_cyclical_2019}.
+Lastly, we want to remark that due to time constraints, we will focus this analysis on a random 1\% sub-sample of the fine-grained dataset. Furthermore, we will train our networks for 40 epochs to ensure that the topological regularization prevents overfitting. We will also use a ``\texttt{cosine\_schedule\_with\_warmup}'' scheduler on the learning rate and a linear cyclic scheduler for the weight $\lambda$ component of the regularization loss. This cyclic scheduler has been previously used in VAEs to obtain a better synergy between the classification loss and the regularization \cite{fu_cyclical_2019}.
 
 
 \end{document}

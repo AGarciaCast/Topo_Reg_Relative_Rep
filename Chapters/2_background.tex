@@ -275,7 +275,7 @@ Let $A$ and $B$ be two abstract simplicial complexes. We say that $A$ and $B$ ar
 
 Each geometric complex naturally induces an abstract complex as follows:
 \begin{definition}
-Let $K$ be a simplicial complex, and let $V$ be the set of vertices of $K$. Then, we will call \emph{vertex scheme} the abstract simplicial complex $A$ formed by all those subsets of $V$ that generate simplices in $K$.
+Let $K$ be a geometric simplicial complex, and let $V$ be the set of vertices of $K$. Then, we will call \emph{vertex scheme} the abstract simplicial complex $A$ formed by all those subsets of $V$ that generate simplices in $K$.
 \end{definition}
 
 Under certain circumstances, it is possible to construct a geometric simplicial complex from an abstract complex:
@@ -434,7 +434,7 @@ The family of complexes $\text{\rm W}_\epsilon(X, L)$ is closely related to the 
 \end{proposition}
 
 \subsection{Homology}
-As can be seen in \cite{hatcher_algebraic_2002}, the homotopy is an algebraic tool to obtain properties of topological spaces. However, the methods for calculating the homotopy are not computationally manageable. Thus, homology is proposed as an algebraic formalism, which, although it is not capable of obtaining as much topological information about space as with other formalisms, is highly beneficial from a computational perspective.
+As discussed in \cite{hatcher_algebraic_2002}, homotopy is a valuable algebraic tool for studying properties of topological spaces. However, the computational methods for computing homotopy can often be challenging to manage. To address this limitation, homology is introduced as an algebraic formalism that offers computational advantages, although it may not provide the same level of detailed topological information as other formalisms.
 
 We will start by reviewing some linear algebra concepts that will be useful to understand homology's formal definition fully.
 
@@ -1122,7 +1122,7 @@ v_{i}^{(k)} =c_{i,i}^{(k)}\,.
 \end{gather*}
 
 \begin{remark}
-The cw-VR and cw-CR regularization techniques bear similarities to the application of the KL divergence with a prior distribution on the latent space $\mathcal{Z} = \mathbb{R}^m$\footnote{For the topological densified distribution technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\varphi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, ${Q(B)= P(\varphi^{-1}(B))}$).  However, even in image classification, it is common to vectorize the latent space before feeding it to an MLP-based classification head $\gamma$. Therefore, assuming $\mathcal{Z} = \RR^m$ is a reasonable assumption.} as seen in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, the Bayesian setup in VAEs offers greater flexibility since the prior can incorporate more knowledge about the latent space. Nevertheless, it requires an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\varphi: \mathcal{X} \to \mathcal{Z}$ from $P$.
+The cw-VR and cw-CR regularization techniques bear similarities to the application of the KL divergence with a prior distribution on the latent space $\mathcal{Z} = \mathbb{R}^m$\footnote{For the topological densification technique, we can generalize the latent space to any metric space $(\mathcal{Z}, d)$ endowed with the push-forward probability measure $Q$ induced by the random quantity $\varphi: \mathcal{X} \to \mathcal{Z}$, on the Borel $\sigma$-algebra $\mathcal{B}$ defined by $d$ on $\mathcal{Z}$ (i.e., for any event $B\in \mathcal{B}$, ${Q(B)= P(\varphi^{-1}(B))}$).  However, even in image classification, it is common to vectorize the latent space before feeding it to an MLP-based classification head $\gamma$. Therefore, assuming $\mathcal{Z} = \RR^m$ is a reasonable assumption.} as seen in Variational Autoencoders \cite{kingma_auto-encoding_2022}. However, the Bayesian setup in VAEs offers greater flexibility since the prior can incorporate more knowledge about the latent space. Nevertheless, it requires an explicit approximation of the push-forward probability $Q$ induced on $\mathcal{Z}$ by the random variable $\varphi: \mathcal{X} \to \mathcal{Z}$ from $P$.
 \end{remark}
 
 While statistical and probabilistic approaches have shown success, they often rely on empirical evidence to demonstrate their direct reduction of generalization error \cite{hofer_densified_2021}. However, Hofer \etal \cite{hofer_densified_2021} propose a novel internal regularization method that has been mathematically proven to reduce generalization error under mild assumptions. To be precise, we define generalization error as follows:
@@ -1168,7 +1168,7 @@ The topological constraint that we will use is the natural extension of the $\be
 Let $\beta>0$, $c_\beta\in [0,1]$, $b\in \mathbb{N}$, and $Q_k^b$ the product measure of $Q_k$. We call $Q_k$ \emph{$(b, c_\beta)$-connected} if $Q_k^b(\{\mathfrak{c}_b^\beta = 1\})\geq c_\beta$.
 \end{definition}
 
-Hofer \etal prove that: \emph{If a measure is $(b, c_\beta)$-connected, then mass attracts mass; the higher $c_\beta$, the stronger the effect} \cite{hofer_densified_2021}. In the original paper, they have an in-depth study on the properties of the lower bound of $Q_k(M_{l\cdot \epsilon})$ in terms of a $(b, c_\beta)$-connected $Q_k(M)$, such as the minimum required mass to enforce proper mass condensation. As a broad idea, the way to obtain the lower bound is to study the properties of the trinomial distribution that characterizes certain events where the samples $\{z_1, ..., z_b\}$ are not $\beta$-connected.\\
+Hofer \etal proved that: \emph{\textbf{If a measure is $\bm{(b, c_\beta)}$-connected, then mass attracts mass; the higher $\bm{c_\beta}$, the stronger the effect}} \cite{hofer_densified_2021}. In the original paper, they have an in-depth study on the properties of the lower bound of $Q_k(M_{l\cdot \epsilon})$ in terms of a $(b, c_\beta)$-connected $Q_k(M)$, such as the minimum required mass to enforce proper mass condensation. As a broad idea, the way to obtain the lower bound is to study the properties of the trinomial distribution that characterizes certain events where the samples $\{z_1, ..., z_b\}$ are not $\beta$-connected.\\
 
 Therefore, based on this property, we will enforce that for each batch $\mathcal{B}$, the subsets $\mathcal{B}_k=\{b \in \mathcal{B} \mid c(b)=k\}$ are $\beta$-connected. In order to measure how close they are to being $\beta$-connected and to have a numerical cost function penalizing these deviations, we will restate $\beta$-connectivity using persistent homology.
 
@@ -1182,7 +1182,7 @@ We can clearly see that the two definitions are equivalent if we remember the pr
 For any distance $d$ on $X$, and $\beta \geq 0$, the partition corresponding to the connected components of $\text{\rm VR}(\beta)$, denoted as $\pi_0(\text{\rm VR}(\beta))$, coincides with the $\beta$-components of $X$.
 \end{repproposition}
 
-Hence, the steps to enforce this topological regularization are:
+Hence, the steps to enforce the \emph{topological densification} are:
 
 \begin{enumerate}
     \item We construct each mini-batch, denoted as $\mathcal{B}$, as a collection of $n$ sub-batches, i.e., $\mathcal{B} = (\mathcal{B}_1, . . . , \mathcal{B}_n)$. Each sub-batch consists of $b$ samples from the same class, resulting in an effective batch size of $n \cdot b$.
@@ -1233,13 +1233,15 @@ Figure~\ref{fig:attrac} provides a visual representation of the mass attraction 
 \subsection{Representation Similarity \& Model Stitching}
 \label{sec:repLearn}
 
-In multiple areas in \glsxtrshort{ML}, there has been a great interest in obtaining a function that is capable of extracting the most relevant features of our inputs. We can see that the field that tackles all these interests, called Representation Learning, had existed before the use of DL. For instance, in Computer Vision, multiple algorithms are based on the fact that we can extract these relevant features and descriptors, such as SIFT descriptors \cite{gonzalez_digital_2002}. These "classical" feature extractors were hand-made in the sense that they had to be designed specifically for the domain they will be used for (e.g., using Haar features for face detection \cite{viola_rapid_2001}). However, nowadays, we have a new paradigm in representation learning since DL networks can be seen as a complex feature extractor composed of a task-specific map \cite{moschella_relative_2022}. Nevertheless, even if we can see that this new approach can obtain state-of-the-art results, we still do not know much about the limits of the properties of these feature extractors. Some reasonable questions that we could have are: \textit{How unique are the learned features of our model? How do we compare the latent spaces of two different networks in order to assess their similarity? What do we refer to when we say that two layers act similarly?}
+In various domains within the field of ML, there has been significant interest in obtaining a function capable of extracting the most relevant features from input data. This pursuit of feature extraction predates the advent of DL and falls under the broader umbrella of Representation Learning. For example, in computer vision, numerous algorithms rely on the extraction of relevant features and descriptors, such as SIFT descriptors \cite{gonzalez_digital_2002}. These ``classical'' feature extractors were manually crafted to suit specific domains (e.g., using Haar features for face detection \cite{viola_rapid_2001}).
 
-In this subsection, we will try to explain some of the most relevant methods used to try to answer these questions, as well as some of the possible benefits that can give us knowing this information about our networks.\\
+However, DL networks have introduced a new paradigm in representation learning, where they can be viewed as complex feature extractors composed of task-specific mappings \cite{moschella_relative_2022}. Despite achieving state-of-the-art results, we still lack a comprehensive understanding of the limits and properties of these feature extractors. Several pertinent questions arise, such as: \textit{How unique are the learned features in our models? How can we compare the latent spaces of different networks to assess their similarity? What do we mean when we say that two layers exhibit similar behavior?}
 
-Therefore, we are in the setup where we want to compare the layer $L_1$ of network $f_A$ with the layer $L_2$ of the network $f_B$. Notice that the dimensionality of the two networks can be completely different. For simplicity, we will suppose w.l.o.g that we can vectorize the output of both layers into $\RR^{d_1}$ and $\RR^{d_2}$, respectively, and that $d_1 \leq d_2$.
+In this subsection, we will elucidate some of the prominent methods employed to address these questions and highlight the potential benefits of gaining insights into these aspects of our networks.\\
 
-A common practice when comparing layers of different networks is to compare the activations of the neurons for a test batch of $n$ samples. Hence, if we let $X\in \RR^{d_1 \times n}, Y \in \RR^{d_2 \times n}$ be the matrices containing the activations of the two layers for a sample set of $n$ points, then we can define the following similarity metrics:
+Given the nature of the aforementioned questions, our focus will be on the subfield of Representation Similarity, which exhibits significant overlaps with Representation Learning. In this context, we aim to compare layer $L_1$ of network $f_A$ with layer $L_2$ of network $f_B$. It is important to note that the dimensionality of the two networks may differ completely. For simplicity, we assume, without loss of generality, that we can vectorize the output of both layers into $\RR^{d_1}$ and $\RR^{d_2}$, respectively, with $d_1 \leq d_2$.
+
+A common practice when comparing layers from different networks is to examine the neuron activations for a test batch of $n$ samples. Let $X\in \RR^{d_1 \times n}$ and $Y \in \RR^{d_2 \times n}$ be the matrices containing the activations of the two layers for the sample set of $n$ points. We can define the following similarity metrics:
 
 \begin{itemize}
     \item \textbf{CCA:} a statistical way of comparing the activation layers is by using canonical correlation analysis (CCA). This method tries to find the best low-dimensional linear projections of $X$ and $Y$, such as we maximize its correlation, i.e., we wish to find the vectors $\mathbf{w} \in \RR^{d_1}$, $\mathbf{s} \in \RR^{d_2}$ such as we maximize
@@ -1250,7 +1252,7 @@ A common practice when comparing layers of different networks is to compare the 
 
     \begin{align*}
     \max \rho &= \max_{\mathbf{w, s}} \frac{\mathbf{w}^T \Sigma_{X,Y} \mathbf{s}}{\sqrt{\mathbf{w}^T \Sigma_{X, X} \mathbf{w}} \sqrt{\mathbf{s}^T \Sigma_{Y, Y} \mathbf{s}}}\\
-    &= \max_{\mathbf{u, v}} \frac{\mathbf{u}^T \Sigma_{X,X}^{-1/2} \Sigma_{X,Y} \Sigma_{Y,Y}^{-1/2} \mathbf{v}}{\sqrt{\mathbf{u}^T \mathbf{u}} \sqrt{\mathbf{v}^T \mathbf{v}}} && \left( \mathbf{w}= \Sigma_{X,X}^{-1/2} \mathbf{u} \text{ and } \mathbf{s} =  \Sigma_{Y,Y}^{-1/2} \mathbf{v} \right) 
+    &= \max_{\mathbf{u, v}} \frac{\mathbf{u}^T \Sigma_{X,X}^{-1/2} \Sigma_{X,Y} \Sigma_{Y,Y}^{-1/2} \mathbf{v}}{\sqrt{\mathbf{u}^T \mathbf{u}} \sqrt{\mathbf{v}^T \mathbf{v}}} && \left( \mathbf{w}= \Sigma_{X,X}^{-1/2} \mathbf{u},\ \mathbf{s} =  \Sigma_{Y,Y}^{-1/2} \mathbf{v} \right) 
     \end{align*}
 
     This maximization problem can be solved with singular value decomposition \cite{morcos_insights_2018}: $U \Lambda V =  \mathbf{u}^T \Sigma_{X,X}^{-1/2} \Sigma_{X,Y} \Sigma_{Y,Y}^{-1/2} \mathbf{v}$, being $\max \rho \equiv \rho_1$ the first singular value, and $\mathbf{u}^{(1)}, \mathbf{v}^{(1)}$ its corresponding left and right singular vectors. As we know from properties of the SVD, the second highest correlation under the constraint that $\langle \mathbf{u}^{(1)}, \mathbf{u}^{(2)} \rangle=0$, $\langle \mathbf{v}^{(1)}, \mathbf{v}^{(2)} \rangle=0$ is given by the second highest singular value $\rho_2$ and its corresponding left and right singular vectors. Hence, an intuitive way to assess the similarity between network representations is by the following summary statistics:
@@ -1258,26 +1260,19 @@ A common practice when comparing layers of different networks is to compare the 
         R_{CCA}^2 = \frac{\sum_{i=1}^{d_1}\rho_i^2}{d_1},\text{ and }\ 
         \bar{\rho}_{CCA} = \frac{\sum_{i=1}^{d_1}\rho_i}{d_1}\,.
     \]
-
-    %\begin{figure}[!ht]
-    %    \centering
-    %    \includegraphics[width=0.8\textwidth]{figures/bg/ccaScheme.jpg} 
-    %    \caption{CCA analysis example. Source: \cite{wang_finding_2020}}
-    %    \label{fig:ccaScheme}
-    %\end{figure}    
-
+    
     However, it has been seen that these metrics are sensitive to perturbations when the condition number of $X$ or $Y$ is large \cite{kornblith_similarity_2019}. Therefore, we have the following two variations that try to increase the robustness:
     \begin{itemize}
         \item \textbf{SVCCA:} a simple way to avoid these perturbations is to restrict the number of singular values used when computing the metric.
         \item \textbf{PWCCA:} a less harsh way to reduce the contribution of ``less important'' singular components is by having a weighted average, i.e.
         \[
-        \rho_{PW} = \frac{\sum_{i=1}^{d_1}\alpha_i \rho_i}{\sum_{i=1}\alpha_i},\ \alpha_i = \sum_j \abs{\langle 
+        \rho_{PW} = \frac{\sum_{i=1}^{d_1}\alpha_i \rho_i}{\sum_{i=1}\alpha_i},\text{ with } \alpha_i = \sum_j \abs{\langle 
 \mathbf{h}_i, \mathbf{x}_j \rangle}
         \]
         where $\mathbf{h}_i = (\mathbf{u}^{(i)})^T\Sigma_{X, X}^{-1/2}X $ and $\mathbf{x}_j$ is the $j^{\text{th}}$ row of $X$. These weights, $\alpha_i$, are based on the hypothesis that CCA vectors that account for a larger proportion of the original outputs are likely to be more important to the underlying representation. \cite{morcos_insights_2018}.
     \end{itemize}
 
-    \item \textbf{CKA}: this method proposes that instead of comparing the covariance of the (projected) activations directly, as done in CCA, we could first compute the similarity matrices of the activations in each representation separately and then compare this similarity matrices \cite{kornblith_similarity_2019}. Hence, if we use the standard inner product, then our similarity metric between the layers $L_1$ and $L_2$ will be $\langle \text{vec}(X^T X), \text{vec}(Y^T Y) \rangle$. Furthermore, we will see that we can generalize this metric to any inner product in a reproducing kernel Hilbert Space (RKHS). For that, we will first review the following property of the Frobenious norm: let $A \in \RR^{n \times m}$, then
+    \item \textbf{CKA}: this method proposes an alternative approach to comparing the covariance of the (projected) activations directly, as done in CCA. Instead, CKA suggests computing similarity matrices for the activations in each representation separately and comparing these matrices \cite{kornblith_similarity_2019}. Hence, if we use the standard inner product, then our similarity metric between the layers $L_1$ and $L_2$ will be $\langle \text{vec}(X^T X), \text{vec}(Y^T Y) \rangle$. Furthermore, we will see that we can generalize this metric to any inner product in a reproducing kernel Hilbert Space (RKHS). For that, we will first review the following property of the Frobenious norm: let $A \in \RR^{n \times m}$, then
     \[
     \norm{A}_F = \sqrt{\sum_{i=1}^n\sum_{j=1}^m A_{ij}^2} = \sqrt{\text{tr}(A^TA)}\,.
     \]
@@ -1294,8 +1289,10 @@ A common practice when comparing layers of different networks is to compare the 
     \[
     \text{HSIC}(K, L) = \frac{1}{(n-1)^2}\text{tr}(KHLH)\,,
     \]
-    where $K$ and $L$ are the kernel matrices such as $K_{ij}=k(\mathbf{x}_i, \mathbf{x}_j)$, $L_{ij}=l(\mathbf{y}_i, \mathbf{y}_j)$ for any kernel $k,l$, and $H$ is a centering matrix $H_n= I_n - \frac{1}{n}\mathbf{1}\mathbf{1}^T$. 
-
+    \begin{sloppypar}
+     where $K$ and $L$ are kernel matrices defined as $K_{ij}=k(\mathbf{x}_i, \mathbf{x}j)$ and $L_{ij}=l(\mathbf{y}_i, \mathbf{y}_j)$ for any kernels $k$ and $l$, and $H$ is the centering matrix defined as $H_n= I_n - \frac{1}{n}\mathbf{1}\mathbf{1}^T$. 
+    \end{sloppypar}
+     
     \begin{remark}
         If we use linear kernels $k(\mathbf{x}, \mathbf{y})=l(\mathbf{x}, \mathbf{y})=\langle\mathbf{x}, \mathbf{y}\rangle$, then $\text{HSIC}(X^T X,Y^T Y) = \norm{\Sigma_{X, Y}}_F^2$
     \end{remark}
@@ -1309,17 +1306,17 @@ A common practice when comparing layers of different networks is to compare the 
 
     If we have a more in-depth look at CKA with a linear kernel, denoted as Linear CKA, we can see that it will resemble CCA weighted by the eigenvalues of the corresponding eigenvectors \cite{kornblith_similarity_2019}. Hence, in this case, CKA encodes similar information to SVCCA and PWCCA, but we will not require computing any matrix decomposition.
     
-    Moreover, the fact that CKA is defined for any kernel in an RKHS gives us more flexibility than the previous metrics. For instance, if we use the RBF kernel $k(\mathbf{x}, \mathbf{y}) = \exp(-\norm{\mathbf{x}-\mathbf{y}}_2^2/(2\sigma^2))$, we can control the extent to which similarity of small distances is emphasized over large distances \cite{kornblith_similarity_2019}, by varying the bandwidth $\sigma$.
+    Moreover, the fact that CKA is defined for any kernel in an RKHS gives us more flexibility than the previous metrics. For instance, if we use the RBF kernel $k(\mathbf{x}, \mathbf{y}) = \exp(-\norm{\mathbf{x}-\mathbf{y}}_2^2/(2\sigma^2))$,  we can control the emphasis on similarity at small distances compared to large distances by varying the bandwidth parameter $\sigma$ \cite{kornblith_similarity_2019}.
     
-    \item \textbf{Others:} The CKA is the most used similarity metric for this task. However, we can find other more complex methods to compare two latent representations, such as maximum matching similarity \cite{wang_towards_2018} or representation topology divergence (RTD) \cite{barannikov_representation_2022}. The former tries to compare the two layers by the subspaces generated by activation vectors of a subset of neurons, while the latter will try to compare the topological characteristics of the latent spaces similar to the Topological Autoencoder with the input and latent space.
+    \item \textbf{Others:} While CKA is the most commonly used similarity metric for comparing latent representations, there are other more complex methods available.  These include the maximum matching similarity \cite{wang_towards_2018}, which compares layers based on the subspaces generated by activation vectors of a subset of neurons, and the representation topology divergence (RTD) \cite{barannikov_representation_2022}, which compares the topological characteristics of the latent spaces similar to the Topological Autoencoder with the input and latent space.
     
 \end{itemize}
 
-
-By using these similarity metrics, we can study which are the cases where our networks tend to be more similar to one another. Some of the most relevant properties are that wider networks, as well as networks with low generalization error, converge to more similar solutions when trained with the same dataset \cite{morcos_insights_2018}, and that early layers, but not later layers, learn similar representations on different datasets \cite{barannikov_representation_2022}. Furthermore, it has been seen that if we have networks with a large number of layers, then even when training the same network with the same dataset but with different weight initialization, we can only ensure to preserve substantial (functional) similarities in the first and last layers of the network \cite{wang_towards_2018}.
+By employing these similarity metrics, we can investigate the circumstances under which our networks exhibit greater similarity to one another. Notably, wider networks and networks with low generalization error demonstrate a tendency to converge towards more similar solutions when trained on the same dataset \cite{morcos_insights_2018}. Additionally, earlier layers, as opposed to later layers, tend to learn similar representations across different datasets \cite{barannikov_representation_2022}. Moreover, when dealing with networks comprising a large number of layers, training the same network with the same dataset but different weight initialization only guarantees significant functional similarities in the first and last layers of the network \cite{wang_towards_2018}.
 
 
 \subsubsection*{Model stitching \& Relative representation}
+
 So far, we have seen model similarity from a representational point of view, where we obtain the activation matrices for the two layers and then compare them either by their statistical or geometric properties. However, there is another approach when comparing two networks which we can call \emph{functional similarity}. The main difference between functional similarity and representational similarity is that in the latter, we focus on the shape and characteristics of the data embedding, while in the former, we want to compare the ``functional utility'' of these embeddings for each network, i.e., asses how well would the model $B$ achieve its task using the representations of network $A$ \cite{csiszarik_similarity_2021}.\\
 
 \begin{figure}[!ht]
@@ -1329,21 +1326,20 @@ So far, we have seen model similarity from a representational point of view, whe
     \label{fig:stich_lay}
 \end{figure}
 
-Therefore, for this task of assessing functional similarities between networks, there has been proposed model stitching using an additional trainable stitching layer between the desired layers \cite{csiszarik_similarity_2021, bansal_revisiting_2021, li_convergent_2016}. Hence, in these setups, we have two networks $f_A=\gamma_A \circ \varphi_A$, and $f_B=\gamma_B \circ \varphi_B$, decomposed into a \emph{representation map $\varphi_\bullet$} and a \emph{task map $\gamma_\bullet$}. As we can see in Figure~\ref{fig:stich_lay}, we train our new layer $l$ on our stitched model $f_{A \stitch B}=\gamma_B \circ l \circ \varphi_A$ either on the same task and labels used for training $f_B$, or we could use pseudo-labels produced by the model $B$ (similar to the teacher network in knowledge distillation). \\
+To assess functional similarities between networks, researchers have proposed a technique called model stitching, which involves introducing an additional trainable stitching layer between the desired layers \cite{csiszarik_similarity_2021, bansal_revisiting_2021, li_convergent_2016}. In this setup, we have two networks: $f_A = \gamma_A \circ \varphi_A$ and $f_B = \gamma_B \circ \varphi_B$, where they are decomposed into a \emph{representation map $\varphi_\bullet$} and a \emph{task map $\gamma_\bullet$}. As depicted in Figure~\ref{fig:stich_lay}, we train a new layer $l$ on our stitched model $f_{A \stitch B} = \gamma_B \circ l \circ \varphi_A$. This can be achieved either by using the same task and labels employed for training network $f_B$, or by employing pseudo-labels generated by model $B$, similar to a teacher network in knowledge distillation.\\
 
 
+Functional similarity can be quantified by comparing the relative accuracy achieved by $f_{A \stitch B}$ and $f_B$. If the two networks exhibit high functional similarity, we can conclude that their representations are compatible, allowing us to interchangeably use both $\gamma_B \circ l$ and $\gamma_A$ as task maps for network A. This flexibility enables us to leverage cross-domain and cross-architecture model stitching, providing advantages in various applications.\\
 
-Then the functional similarity can be measured as the relative accuracy obtained by $f_{A \stitch B}$ compared with $f_B$. If the two networks have high functional similarity, we will say that their representations are compatible, and we will be able to use both $\gamma_B \circ l$ and $\gamma_A$ interchangeably as task maps of network $A$. Therefore, we will be able to use into advantage the flexibility that we obtain of being able to make cross-domain and cross-architecture model stitching.\\
+Building upon the potential applications of model stitching in networks with compatible representations, a training setup has been proposed to enhance compatibility between networks \cite{gygli_towards_2020}. In this setup, an additional auxiliary task head is incorporated, enabling regularization on the latent representation of both networks at corresponding layers. This regularization encourages higher functional similarity and is achieved through auxiliary tasks such as self-supervised prediction of input transformations and discrimination of common classes \cite{gygli_towards_2020}.\\
 
-Based on the fruitful applications that model stitching can give when we use it on networks with compatible representations, it has been proposed a training setup that increases the compatibility between networks \cite{gygli_towards_2020}. More explicitly, in this new setup, we incorporate an additional auxiliary task head so that we can add a regularization on the latent representation of both networks (on the corresponding layers) so that we obtain a higher functional similarity. The main auxiliary tasks are the prediction of transformation in the input (self-supervised) and discriminating common classes \cite{gygli_towards_2020}.\\
-
-However, all the previously mentioned methods have an additional overhead from training new components in order to increase the compatibility of the representations. Hence, we will present a technique called \emph{relative latent representations} which will give us the ability to do \emph{zero-shot} model stitching, i.e., we will add a transformation on the latent spaces that will increase the compatibility, but we will not require to train additional components. 
+However, the existing methods mentioned above require training additional components to enhance representation compatibility, resulting in additional overhead. In this regard, we will present a technique called \emph{relative latent representations}, which enables \emph{zero-shot} model stitching. With this approach, we introduce a transformation in the latent spaces that increases compatibility without the need for training additional components.
 
 In order to construct this transformation, we will assume that it is easier to obtain a compatible representation if we have higher representation similarity between the latent representations of the stitched layers\footnote{There is evidence of cases where having high functional similarity does not imply high functional similarity \cite{csiszarik_similarity_2021}, i.e., we know that having high functional similarity it is not a necessary condition for high compatibility.}. Furthermore, there is evidence that some stochastic factors of our training, such as weight initialization, some hyperparameters, and data shuffling, will (most likely) result in \emph{$\epsilon$-similar representations} \cite{moschella_relative_2022}\footnote{The evidence is based on a few experimental results, so we can consider that this method takes this result almost as an additional assumption.}. Two representations $X,Y \subseteq \RR^n$ are $\epsilon$-similar if there exist a bijection $T:X \to Y$ st exists $\alpha \in \RR^*$ for which $\abs{d(T(x_1), T(x_2)) - \alpha \cdot d(x_1,x_2)} \leq \epsilon$ for all $x_1,x_2 \in X$. Hence, these stochastic transformations will result in a relaxed version of an isometry up to a certain scale $\alpha$.\\
 
-Therefore we will build a transformation $T_{rel}$ of our \emph{(absolute) latent space representations} $\varphi_\bullet(x)$ so that our new encodings are invariant to $\epsilon$-similarities. This way, we obtain higher representational as well as functional similarity.
+Therefore we will build a transformation $T_{rel}$ of our \emph{(absolute) latent space representations} $\varphi_\bullet(x)$ so that our new encodings are invariant to $\epsilon$-similarities. By doing so, we achieve higher representational and functional similarity.
 
-Hence, let $\mathcal{X}$ be our input space, and $\mathcal{A}= \{a_1, ..., a_k\}$ a subset of $\mathcal{X}$ called set of \emph{anchors}. Then for any similarity function $sim$ we define the relative representation of a point $x\in S$  w.r.t. $\mathcal{A}$ as
+Let $\mathcal{X}$ denote our input space, and $\mathcal{A} = \{a_1, ..., a_k\}$ be a subset of $\mathcal{X}$ referred to as the set of \emph{anchors}. For any similarity function $sim$, we define the relative representation of a point $x \in S$ with respect to $\mathcal{A}$ as follows:
 
 \begin{definition}
 Let $\varphi:\mathcal{X} \to \mathcal{Z}$ be our encoder. Then, the \emph{relative representation} of $x \in \mathcal{X}$ w.r.t. $\mathcal{A}$ is
@@ -1354,7 +1350,7 @@ r = (\text{sim}(\varphi(x), \varphi(a_1)), \text{sim}(\varphi(x), \varphi(a_2)),
 
 
 \begin{remark}
-As we can see in Figure~\ref{fig:relativeSche}, this construction resembles the representation of a vector in coordinates of an orthonormal basis using the corresponding projection to each vector of the basis. However, in this case, we do not require to use of an inner product as a similarity function, nor the anchors to be linearly independent (or orthogonal).
+As we can see in Figure~\ref{fig:relativeSche}, this construction resembles representing a vector in coordinates of an orthonormal basis using the corresponding projection to each vector of the basis. However, in this case, we do not require the use of an inner product as a similarity function, nor do the anchors need to be linearly independent or orthogonal.
 \end{remark}
 
 \begin{figure}[!ht]
@@ -1364,11 +1360,11 @@ As we can see in Figure~\ref{fig:relativeSche}, this construction resembles the 
     \label{fig:relativeSche}
 \end{figure}
 
-Hence, if we use the cosine similarity, then this new latent space representation will be invariant to $0$-similarity transformations. Furthermore, it has been seen that not only can this representation increase the compatibility of the network under the aforementioned stochastic factor, but also it will increase the compatibility in the following two cases:
+Hence, if we use the cosine similarity, then this new latent space representation will be invariant to $0$-similarity transformations. Furthermore, it has been observed that this representation not only increases network compatibility under the aforementioned stochastic factors but also enhances compatibility in the following scenarios:
 
 \begin{itemize}
     \item \textbf{Cross-domain model stitching:} We stitch two networks with the same architecture trained over two distinct datasets of the same semantic domain.
-    \item \textbf{Cross-architecture model stitching:} We stitch two networks with the same architecture trained over the same dataset.
+    \item \textbf{Cross-architecture model stitching:} We stitch two networks with different architectures trained over the same dataset.
 \end{itemize}
 
 
@@ -1390,9 +1386,9 @@ Hence, if we use the cosine similarity, then this new latent space representatio
     \label{fig:crossDomainScheme}
 \end{figure}
 
-Lastly, we can see in Figure~\ref{fig:crossDomainScheme} the standard training setup used in \cite{moschella_relative_2022} for the case of cross-domain zero-shot model stitching. Here, we will use two pretrained encoders $\varphi_A, \varphi_B$, and train the networks $\tilde{f}_{A}=\gamma_A \circ T_{rel}(\mathcal{A})  \circ \varphi_A$ and $\tilde{f}_{B}=\gamma_B \circ T_{rel}(\Gamma(\mathcal{A}))  \circ \varphi_B$ with both encoder weights frozen, using their corresponding domain-specific dataset. Note that in this case, where we have two distinct datasets, we will fix the anchors in one of the (in this case, model $A$) and use a partial correspondence mapping $\Gamma: \mathcal{P}(\mathcal{X}_A) \to \mathcal{P}(\mathcal{X}_B)$ to obtain the corresponding \emph{parallel anchors $\Gamma(\mathcal{A})$}.
+Lastly, we can see in Figure~\ref{fig:crossDomainScheme} the standard training setup used in \cite{moschella_relative_2022} for the case of cross-domain zero-shot model stitching. Here, we will use two pretrained encoders $\varphi_A, \varphi_B$, and train the networks $\tilde{f}_{A}=\gamma_A \circ T_{rel}(\mathcal{A})  \circ \varphi_A$ and $\tilde{f}_{B}=\gamma_B \circ T_{rel}(\Gamma(\mathcal{A}))  \circ \varphi_B$ with both encoder weights frozen, using their corresponding domain-specific dataset. Note that in this case, where we have two distinct datasets, we fix the anchors in one of the networks (e.g., model $A$) and employ a partial correspondence mapping $\Gamma: \mathcal{P}(\mathcal{X}_A) \to \mathcal{P}(\mathcal{X}_B)$ to obtain the corresponding \emph{parallel anchors $\Gamma(\mathcal{A})$}.\\
 
-A use case of this cross-domain model stitching procedure could be a situation where you have several devices, each one in a specific language. Hence, with only one trained classification head (e.g., the one trained on the English corpus), you could have good performance when stitching this classification head with the language-specific encoders. This can be really helpful from a computational perspective in scenarios where you would need to have frequent updates of your models since you would only need to do it for one of them.
+One potential application of this cross-domain model stitching procedure is in scenarios where multiple devices operate in different languages. By using only one trained classification head (e.g., trained on English corpus), we can achieve good performance when stitching this classification head with language-specific encoders. This can be really helpful from a computational perspective in scenarios where you would need to have frequent updates of your models since you would only need to do it for one of them.
 
 
 
@@ -1401,7 +1397,7 @@ In this chapter, we have first seen a brief introduction to Topological Data Ana
 
 Secondly, we have seen that recently there has been an increased interest in applying TDA in Machine Learning, a new field that we can call Topological Machine Learning. One of the many ways that we can use our topological tools is to construct regularizers so that the network will obtain certain desired properties. Specifically, in this project, we will focus our attention on a topological regularization that will produce an increase in generalization capabilities by imposing a property called topological densification over our push-forward class-specific distributions \cite{hofer_densified_2021}.\\
 
-Lastly, we have seen different techniques in order to assess the similarity between two layers of two (possibly distinct) networks. Furthermore, we observed that if our networks have high functional similarity, then we can do model stitching without a severe performance drop. Hence, there are several techniques in order to increase this type of similarity, and so making our latent representation more compatible. In this project, we will focus on one called relative latent representation, which lets us do zero-shot stitching, i.e., it does not require us to train any additional parameters in order to either make our networks more compatible or to stitch them together \cite{moschella_relative_2022}.  
+Lastly, we have seen different techniques in order to assess the similarity between two layers of two (possibly distinct) networks. Furthermore, we observed that if our networks have high functional similarity, then we can do model stitching without a severe performance drop. Hence, there are several techniques in order to increase this type of similarity, thereby enhancing the compatibility of latent representations. In this project, we will focus on one called relative latent representation, which lets us do zero-shot stitching, i.e., it does not require us to train any additional parameters in order to either make our networks more compatible or to stitch them together \cite{moschella_relative_2022}.  
 
 
 
