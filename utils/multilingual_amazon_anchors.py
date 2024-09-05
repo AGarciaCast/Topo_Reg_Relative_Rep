@@ -11,7 +11,7 @@ from torch.utils.data import Dataset
 
 
 
-MULTILINGUAL_AMAZON_DIR: Path =   Path("./data/amazon_reviews_translated")
+MULTILINGUAL_AMAZON_DIR: Path =   Path("./multi_data/amazon_reviews_translated")
 
 
 class MultilingualAmazonAnchors(Dataset):
