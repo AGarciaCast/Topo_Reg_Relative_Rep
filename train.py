@@ -265,7 +265,7 @@ for lang in ALL_LANGS:
     train_lang2dataloader[lang] = DataLoader(aux_train_ds,
                                        num_workers=4,
                                        collate_fn=partial(collate_fn, tokenizer=lang_tokenizer),
-                                       pin_memory=False,
+                                       pin_memory=True,
                                        #persistent_workers= True,
                                        batch_sampler=ClassAccumulationSampler(aux_train_ds,
                                                        batch_size=16,
@@ -283,13 +283,13 @@ for lang in ALL_LANGS:
                                        num_workers=4,
                                        collate_fn=partial(collate_fn, tokenizer=lang_tokenizer),
                                        batch_size=32,
-                                       pin_memory=False
+                                       pin_memory=True
                                        ),
                                   DataLoader(ds_test_multi,
                                        num_workers=4,
                                        collate_fn=partial(multi_draw_collate_fn, tokenizer=lang_tokenizer, cls=False),
                                        batch_size=1,
-                                       pin_memory=False
+                                       pin_memory=True
                                        )
                                  )
     
@@ -301,7 +301,7 @@ for lang in ALL_LANGS:
                                        num_workers=4,
                                        collate_fn=partial(collate_fn, tokenizer=lang_tokenizer),
                                        batch_size=32,
-                                       pin_memory=False
+                                       pin_memory=True
                                        )
     
     aux_anc_ds = DictDataset(lang2anchors[lang], data_key, target_key)
