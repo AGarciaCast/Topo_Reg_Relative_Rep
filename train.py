@@ -308,9 +308,9 @@ for lang in ALL_LANGS:
      
     anchors_lang2dataloader[lang] = DataLoader(aux_anc_ds,
                                        num_workers=4,
-                                       pin_memory=False,
+                                       pin_memory=True,
                                        collate_fn=partial(collate_fn, tokenizer=lang_tokenizer, cls=False),
-                                       batch_size=16,
+                                       batch_size=48,
                                        )
     
     
@@ -342,7 +342,7 @@ torch.autograd.set_detect_anomaly(True)
 EPOCHS = 40 if fine_grained else 3
 
 
-def train_network(lang, mode="relative", seed=24, test=False, topo=("pre", "L_2", 7, 0.1, "L_1")):
+def train_network(lang, mode="relative", seed=24, test=False, topo=("pre", "L_2", 7, 0.1, "L_1"), batch_norm=True):
     
     # Create a PyTorch Lightning trainer with the generation callback
     aux = 'fine_grained' if fine_grained else 'coarse_grained'
@@ -394,8 +394,7 @@ def train_network(lang, mode="relative", seed=24, test=False, topo=("pre", "L_2"
                           anchor_dataloader=anchor_loader,
                           topo_par=topo,
                           hidden_size=num_anchors,
-                          # normalization_mode="batchnorm",
-                          normalization_mode=None,
+                          normalization_mode= "batchnorm" if batch_norm else None,
                           output_normalization_mode=None,
                           dropout_prob=0.1,
                           seed=seed,
@@ -464,7 +463,51 @@ def train_network(lang, mode="relative", seed=24, test=False, topo=("pre", "L_2"
     model.to("cpu")
     del model
     
-train_network("en", mode="relative", seed=0, test=True, topo=None)
-#train_network("en", mode="relative", seed=1, test=True, topo=("both", "L_inf", (3, grad2dif(25)), 0.1, "L_1"))
-#train_network("fr", mode="relative", seed=0, test=True, topo=("both", "L_inf", (3, grad2dif(25)), 0.1, "L_1"))
-#train_network("fr", mode="relative", seed=1, test=True, topo=("both", "L_inf", (3, grad2dif(25)), 0.1, "L_1"))
+# train_network("en", mode="relative", seed=5, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("en", mode="relative", seed=6, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("en", mode="relative", seed=7, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("en", mode="relative", seed=8, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("en", mode="relative", seed=9, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("fr", mode="relative", seed=5, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("fr", mode="relative", seed=6, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("fr", mode="relative", seed=7, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("fr", mode="relative", seed=8, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+# train_network("fr", mode="relative", seed=9, test=True, topo=("both", "L_2", 3, 0.02, "L_1"), batch_norm=True)
+
+
+# train_network("en", mode="relative", seed=5, test=True, topo=None, batch_norm=False)
+# train_network("en", mode="relative", seed=6, test=True, topo=None, batch_norm=False)
+# train_network("en", mode="relative", seed=7, test=True, topo=None, batch_norm=False)
+# train_network("en", mode="relative", seed=8, test=True, topo=None, batch_norm=False)
+# train_network("en", mode="relative", seed=9, test=True, topo=None, batch_norm=False)
+# train_network("fr", mode="relative", seed=5, test=True, topo=None, batch_norm=False)
+# train_network("fr", mode="relative", seed=6, test=True, topo=None, batch_norm=False)
+# train_network("fr", mode="relative", seed=7, test=True, topo=None, batch_norm=False)
+# train_network("fr", mode="relative", seed=8, test=True, topo=None, batch_norm=False)
+# train_network("fr", mode="relative", seed=9, test=True, topo=None, batch_norm=False)
+
+
+
+# train_network("en", mode="relative", seed=5, test=True, topo=None, batch_norm=True)
+# train_network("en", mode="relative", seed=6, test=True, topo=None, batch_norm=True)
+# train_network("en", mode="relative", seed=7, test=True, topo=None, batch_norm=True)
+# train_network("en", mode="relative", seed=8, test=True, topo=None, batch_norm=True)
+# train_network("en", mode="relative", seed=9, test=True, topo=None, batch_norm=True)
+# train_network("fr", mode="relative", seed=5, test=True, topo=None, batch_norm=True)
+# train_network("fr", mode="relative", seed=6, test=True, topo=None, batch_norm=True)
+# train_network("fr", mode="relative", seed=7, test=True, topo=None, batch_norm=True)
+# train_network("fr", mode="relative", seed=8, test=True, topo=None, batch_norm=True)
+# train_network("fr", mode="relative", seed=9, test=True, topo=None, batch_norm=True)
+
+# train_network("en", mode="absolute", seed=5, test=True, topo=None, batch_norm=True)
+# train_network("en", mode="absolute", seed=6, test=True, topo=None, batch_norm=True)
+train_network("en", mode="absolute", seed=7, test=True, topo=None, batch_norm=True)
+train_network("en", mode="absolute", seed=8, test=True, topo=None, batch_norm=True)
+# train_network("en", mode="absolute", seed=9, test=True, topo=None, batch_norm=True)
+train_network("fr", mode="absolute", seed=5, test=True, topo=None, batch_norm=True)
+# train_network("fr", mode="absolute", seed=6, test=True, topo=None, batch_norm=True)
+train_network("fr", mode="absolute", seed=7, test=True, topo=None, batch_norm=True)
+train_network("fr", mode="absolute", seed=8, test=True, topo=None, batch_norm=True)
+# train_network("fr", mode="absolute", seed=9, test=True, topo=None, batch_norm=True)
+
+
